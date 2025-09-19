@@ -1,0 +1,22 @@
+# Información sobre .gitignore https://docs.github.com/get-started/git-basics/ignoring-files
+
+# Directorios principales
+/node_modules/
+/dist/
+/.angular/
+/coverage/
+/tmp/
+
+# IDEs
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Variables de entorno
+.env*
