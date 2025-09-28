@@ -1,2 +1,64 @@
 @use './tailwind.css';
 @use "primeicons/primeicons.css";
+
+@font-face {
+    font-family: 'UTEC Gruesa 3.0';
+    src: url('assets/fonts/utec/utec_gruesa_3.0.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'UTEC Liviana 3.0';
+    src: url('assets/fonts/utec/utec_liviana_3.0.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'UTEC Text Black';
+    src: url('assets/fonts/utec/utec_txt_black.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'UTEC Text Heavy';
+    src: url('assets/fonts/utec/utec_txt_heavy.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'UTEC Text Light';
+    src: url('assets/fonts/utec/utec_txt_light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'UTEC Text Roman';
+    src: url('assets/fonts/utec/utec_txt_roman.ttf') format('truetype');
+}
+
+.utec-gruesa-3 {
+    font-family: 'UTEC Gruesa 3.0', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+.utec-liviana-3 {
+    font-family: 'UTEC Liviana 3.0', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+.utec-txt-black {
+    font-family: 'UTEC Text Black', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+.utec-txt-heavy {
+    font-family: 'UTEC Text Heavy', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+.utec-txt-light {
+    font-family: 'UTEC Text Light', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+.utec-txt-roman {
+    font-family: 'UTEC Text Roman', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+body {
+    font-family: 'UTEC Text Light', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'UTEC Text Black', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
