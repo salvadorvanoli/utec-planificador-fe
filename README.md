@@ -53,23 +53,23 @@ Contiene la funcionalidad esencial que se carga una sola vez durante el ciclo de
 #### Subdirectorios:
 
 - **`/constants`**: Valores inmutables utilizados globalmente
-  ```typescript
-  // Ejemplo: API_ENDPOINTS, DATE_FORMATS, STORAGE_KEYS
-  export const API_ENDPOINTS = {
-    AUTH: '/api/auth',
-    USERS: '/api/users'
-  } as const;
-  ```
+   ```typescript
+   // Ejemplo: API_ENDPOINTS, DATE_FORMATS, STORAGE_KEYS
+   export const API_ENDPOINTS = {
+      AUTH: '/api/auth',
+      USERS: '/api/users'
+   } as const;
+   ```
 
 - **`/enums`**: Enumeraciones que definen estados y opciones fijas
-  ```typescript
-  // Ejemplo: TaskStatus, Priority, UserRole
-  export enum TaskStatus {
-    PENDING = 'pending',
-    IN_PROGRESS = 'in_progress',
-    COMPLETED = 'completed'
-  }
-  ```
+   ```typescript
+   // Ejemplo: TaskStatus, Priority, UserRole
+   export enum TaskStatus {
+      PENDING = 'pending',
+      IN_PROGRESS = 'in_progress',
+      COMPLETED = 'completed'
+   }
+   ```
 
 - **`/guards`**: Protección de rutas y control de acceso
   - AuthGuard: Verificación de autenticación
@@ -82,15 +82,15 @@ Contiene la funcionalidad esencial que se carga una sola vez durante el ciclo de
   - LoadingInterceptor: Indicadores de carga globales
 
 - **`/models`**: Interfaces y tipos que definen la estructura de datos
-  ```typescript
-  // Ejemplo: User, Task, ApiResponse
-  export interface User {
-    id: string;
-    email: string;
-    role: UserRole;
-    profile: UserProfile;
-  }
-  ```
+   ```typescript
+   // Ejemplo: User, Task, ApiResponse
+   export interface User {
+      id: string;
+      email: string;
+      role: UserRole;
+      profile: UserProfile;
+   }
+   ```
 
 - **`/services`**: Servicios singleton para funcionalidad transversal
   - ApiService: Cliente HTTP base
@@ -139,16 +139,16 @@ Define la arquitectura visual y navegacional de la aplicación.
   - Derechos de autor
 
 - **`/main-layout`**: Layout principal que compone header, content y footer
-  ```typescript
-  // Estructura del main-layout
-  template: `
-    <app-header />
-    <main class="min-h-screen">
-      <router-outlet />
-    </main>
-    <app-footer />
-  `
-  ```
+   ```typescript
+   // Estructura del main-layout
+   template: `
+      <app-header />
+      <main class="min-h-screen">
+         <router-outlet />
+      </main>
+      <app-footer />
+   `
+   ```
 
 ### `/src/app/pages` - Páginas Independientes
 
@@ -163,13 +163,13 @@ Páginas que no requieren lazy loading y representan vistas completas.
 Elementos compartidos sin dependencias de dominio específico.
 
 - **`/components`**: Componentes UI reutilizables
-  ```typescript
-  // Ejemplo: ButtonComponent, ModalComponent, LoaderComponent
-  @Component({
-    selector: 'app-button',
-    template: `<button [class]="buttonClasses()">...</button>`
-  })
-  ```
+   ```typescript
+   // Ejemplo: ButtonComponent, ModalComponent, LoaderComponent
+   @Component({
+      selector: 'app-button',
+      template: `<button [class]="buttonClasses()">...</button>`
+   })
+   ```
 
 - **`/directives`**: Directivas personalizadas
   - HighlightDirective: Resaltado de texto
@@ -177,31 +177,31 @@ Elementos compartidos sin dependencias de dominio específico.
   - AutofocusDirective: Enfoque automático
 
 - **`/pipes`**: Transformadores de datos para templates
-  ```typescript
-  // Ejemplo: DateFormatPipe, CurrencyPipe, TruncatePipe
-  @Pipe({ name: 'dateFormat' })
-  export class DateFormatPipe implements PipeTransform {
-    transform(date: Date, format: string): string { ... }
-  }
-  ```
+   ```typescript
+   // Ejemplo: DateFormatPipe, CurrencyPipe, TruncatePipe
+   @Pipe({ name: 'dateFormat' })
+   export class DateFormatPipe implements PipeTransform {
+      transform(date: Date, format: string): string { ... }
+   }
+   ```
 
 - **`/utils`**: Funciones utilitarias y helpers
-  ```typescript
-  // Ejemplo: dateHelpers, stringUtils, arrayUtils
-  export const dateHelpers = {
-    formatToLocal: (date: Date) => { ... },
-    isWeekend: (date: Date) => { ... }
-  };
-  ```
+   ```typescript
+   // Ejemplo: dateHelpers, stringUtils, arrayUtils
+   export const dateHelpers = {
+      formatToLocal: (date: Date) => { ... },
+      isWeekend: (date: Date) => { ... }
+   };
+   ```
 
 - **`/validators`**: Validadores personalizados para formularios reactivos
-  ```typescript
-  // Ejemplo: strongPassword, utecEmail, futureDate
-  export const utecEmailValidator = (control: AbstractControl) => {
-    const email = control.value;
-    return email?.endsWith('@utec.edu.uy') ? null : { utecEmail: true };
-  };
-  ```
+   ```typescript
+   // Ejemplo: strongPassword, utecEmail, futureDate
+   export const utecEmailValidator = (control: AbstractControl) => {
+      const email = control.value;
+      return email?.endsWith('@utec.edu.uy') ? null : { utecEmail: true };
+   };
+   ```
 
 ### `/src/assets` - Recursos Estáticos
 
@@ -227,7 +227,7 @@ src/assets/
 
 #### Descripción Detallada por Categoría
 
-##### **🔤 Tipografías (`/fonts/utec/`)**
+##### **Tipografías (`/fonts/utec/`)**
 
 **Propósito**: Mantener consistencia visual con la identidad institucional de UTEC.
 
@@ -253,10 +253,10 @@ src/assets/
 ```scss
 // Carga automática en styles.scss
 @font-face {
-  font-family: 'UTEC Gruesa';
-  src: url('assets/fonts/utec/utec_gruesa_3.0.ttf') format('truetype');
-  font-weight: bold;
-  font-display: swap; // Optimización de carga
+   font-family: 'UTEC Gruesa';
+   src: url('assets/fonts/utec/utec_gruesa_3.0.ttf') format('truetype');
+   font-weight: bold;
+   font-display: swap; // Optimización de carga
 }
 ```
 
@@ -275,12 +275,12 @@ src/assets/
 ```typescript
 // Ejemplos de uso en componentes
 const ICONS = {
-  ACADEMIC: 'assets/icons/icons-25.png',      // Académico
-  PLANNING: 'assets/icons/icons-26.png',      // Planificación
-  TASKS: 'assets/icons/icons-27.png',         // Tareas
-  CALENDAR: 'assets/icons/icons-28.png',      // Calendario
-  DASHBOARD: 'assets/icons/icons-29.png',     // Panel de control
-  // ... conjunto completo disponible
+   ACADEMIC: 'assets/icons/icons-25.png',      // Académico
+   PLANNING: 'assets/icons/icons-26.png',      // Planificación
+   TASKS: 'assets/icons/icons-27.png',         // Tareas
+   CALENDAR: 'assets/icons/icons-28.png',      // Calendario
+   DASHBOARD: 'assets/icons/icons-29.png',     // Panel de control
+   // ... conjunto completo disponible
 };
 ```
 
@@ -321,10 +321,11 @@ const ICONS = {
 ```html
 <!-- Uso con NgOptimizedImage -->
 <img ngSrc="assets/logos/utec-logo-primary.svg" 
-     alt="UTEC - Universidad Tecnológica"
-     width="200" 
-     height="60"
-     priority>
+   alt="UTEC - Universidad Tecnológica"
+   width="200" 
+   height="60"
+   priority
+>
 ```
 
 #### Fuentes de Recursos Institucionales
@@ -387,17 +388,17 @@ El archivo `tsconfig.app.json` define alias para importaciones limpias y manteni
 
 ```jsonc
 {
-  "compilerOptions": {
-    "paths": {
-      "@app/*": ["./src/app/*"],
-      "@core/*": ["./src/app/core/*"],
-      "@shared/*": ["./src/app/shared/*"],
-      "@features/*": ["./src/app/features/*"],
-      "@layout/*": ["./src/app/layout/*"],
-      "@pages/*": ["./src/app/pages/*"],
-      "@assets/*": ["./src/assets/*"]
-    }
-  }
+   "compilerOptions": {
+      "paths": {
+         "@app/*": ["./src/app/*"],
+         "@core/*": ["./src/app/core/*"],
+         "@shared/*": ["./src/app/shared/*"],
+         "@features/*": ["./src/app/features/*"],
+         "@layout/*": ["./src/app/layout/*"],
+         "@pages/*": ["./src/app/pages/*"],
+         "@assets/*": ["./src/assets/*"]
+      }
+   }
 }
 ```
 
@@ -627,13 +628,13 @@ El archivo `styles.scss` centraliza la configuración global de estilos:
 ```scss
 // Configuración de @font-face para tipografías UTEC
 @font-face {
-  font-family: 'UTEC Gruesa 3.0';
-  src: url('assets/fonts/utec/utec_gruesa_3.0.ttf') format('truetype');
+   font-family: 'UTEC Gruesa 3.0';
+   src: url('assets/fonts/utec/utec_gruesa_3.0.ttf') format('truetype');
 }
 
 // Clases utilitarias para tipografías
 .utec-gruesa-3 {
-  font-family: 'UTEC Gruesa 3.0', system-ui, sans-serif !important;
+   font-family: 'UTEC Gruesa 3.0', system-ui, sans-serif !important;
 }
 ```
 
@@ -691,15 +692,15 @@ Este documento contiene las **especificaciones técnicas oficiales** para:
 ```scss
 // Colores implementados según manual oficial
 :root {
-  --utec-primary-blue: #00A9E0;     // Azul principal según especificación
-  --utec-secondary-black: #000000;  // Negro institucional
-  --utec-base-white: #FFFFFF;       // Blanco base para contraste
+   --utec-primary-blue: #00A9E0;     // Azul principal según especificación
+   --utec-secondary-black: #000000;  // Negro institucional
+   --utec-base-white: #FFFFFF;       // Blanco base para contraste
   
-  // Extensiones para variaciones aprobadas
-  --utec-blue-light: #33BAEB;       // Variante clara del azul
-  --utec-blue-dark: #0088B3;        // Variante oscura del azul
-  --utec-gray-light: #F5F5F5;       // Gris claro para fondos
-  --utec-gray-medium: #CCCCCC;      // Gris medio para separadores
+   // Extensiones para variaciones aprobadas
+   --utec-blue-light: #33BAEB;       // Variante clara del azul
+   --utec-blue-dark: #0088B3;        // Variante oscura del azul
+   --utec-gray-light: #F5F5F5;       // Gris claro para fondos
+   --utec-gray-medium: #CCCCCC;      // Gris medio para separadores
 }
 ```
 
@@ -707,24 +708,24 @@ Este documento contiene las **especificaciones técnicas oficiales** para:
 ```scss
 // Implementación exacta según manual de identidad
 @font-face {
-  font-family: 'UTEC Gruesa 3.0';
-  src: url('assets/fonts/utec/utec_gruesa_3.0.ttf') format('truetype');
-  font-weight: bold;
-  font-display: swap;
+   font-family: 'UTEC Gruesa 3.0';
+   src: url('assets/fonts/utec/utec_gruesa_3.0.ttf') format('truetype');
+   font-weight: bold;
+   font-display: swap;
 }
 
 @font-face {
-  font-family: 'UTEC Liviana 3.0';
-  src: url('assets/fonts/utec/utec_liviana_3.0.ttf') format('truetype');
-  font-weight: 300;
-  font-display: swap;
+   font-family: 'UTEC Liviana 3.0';
+   src: url('assets/fonts/utec/utec_liviana_3.0.ttf') format('truetype');
+   font-weight: 300;
+   font-display: swap;
 }
 
 // Familia UTEC Text completa según especificaciones
 @font-face {
-  font-family: 'UTEC Text';
-  src: url('assets/fonts/utec/utec_text_roman_3.0.ttf') format('truetype');
-  font-weight: normal;
+   font-family: 'UTEC Text';
+   src: url('assets/fonts/utec/utec_text_roman_3.0.ttf') format('truetype');
+   font-weight: normal;
 }
 ```
 
@@ -734,22 +735,22 @@ Este documento contiene las **especificaciones técnicas oficiales** para:
 ```typescript
 // Componente siguiendo especificaciones visuales UTEC
 @Component({
-  selector: 'app-header',
-  template: `
-    <header class="bg-utec-blue text-utec-white">
-      <img src="assets/logos/utec-logo-primary.svg" 
-           alt="UTEC - Universidad Tecnológica"
-           class="h-12 w-auto">
-      <h1 class="font-utec-gruesa text-2xl">
-        {{ title }}
-      </h1>
-    </header>
-  `,
-  styles: [`
-    .bg-utec-blue { background-color: var(--utec-primary-blue); }
-    .text-utec-white { color: var(--utec-base-white); }
-    .font-utec-gruesa { font-family: 'UTEC Gruesa 3.0', sans-serif; }
-  `]
+   selector: 'app-header',
+   template: `
+      <header class="bg-utec-blue text-utec-white">
+         <img src="assets/logos/utec-logo-primary.svg" 
+            alt="UTEC - Universidad Tecnológica"
+            class="h-12 w-auto">
+         <h1 class="font-utec-gruesa text-2xl">
+            {{ title }}
+         </h1>
+      </header>
+   `,
+   styles: [`
+      .bg-utec-blue { background-color: var(--utec-primary-blue); }
+      .text-utec-white { color: var(--utec-base-white); }
+      .font-utec-gruesa { font-family: 'UTEC Gruesa 3.0', sans-serif; }
+   `]
 })
 ```
 
@@ -767,15 +768,15 @@ Para garantizar el cumplimiento continuo de la identidad visual:
 #### Jerarquía Tipográfica Global
 ```scss
 body {
-  font-family: 'UTEC Text Light', system-ui, sans-serif !important;
+   font-family: 'UTEC Text Light', system-ui, sans-serif !important;
 }
 
 h1 {
-  font-family: 'UTEC Text Black', system-ui, sans-serif !important;
+   font-family: 'UTEC Text Black', system-ui, sans-serif !important;
 }
 
 h2, h3, h4, h5, h6 {
-  font-family: 'UTEC Text Heavy', system-ui, sans-serif !important;
+   font-family: 'UTEC Text Heavy', system-ui, sans-serif !important;
 }
 ```
 
@@ -787,22 +788,22 @@ h2, h3, h4, h5, h6 {
    VARIABLES GLOBALES
    ============================================================================= */
 :root {
-  --custom-variable: value;
+   --custom-variable: value;
 }
 
 /* =============================================================================
    COMPONENTES BASE
    ============================================================================= */
 .btn-primary {
-  background: var(--utec-blue);
-  color: var(--utec-white);
+   background: var(--utec-blue);
+   color: var(--utec-white);
 }
 
 /* =============================================================================
    UTILITIES PERSONALIZADAS
    ============================================================================= */
 .text-utec-blue {
-  color: var(--utec-blue);
+   color: var(--utec-blue);
 }
 ```
 
@@ -815,15 +816,15 @@ h2, h3, h4, h5, h6 {
 ```scss
 // Mobile First Approach
 .component {
-  font-size: 1rem;
+   font-size: 1rem;
   
-  @media (min-width: 768px) {
-    font-size: 1.125rem;
-  }
+   @media (min-width: 768px) {
+      font-size: 1.125rem;
+   }
   
-  @media (min-width: 1024px) {
-    font-size: 1.25rem;
-  }
+   @media (min-width: 1024px) {
+      font-size: 1.25rem;
+   }
 }
 ```
 
@@ -831,9 +832,9 @@ h2, h3, h4, h5, h6 {
 ```scss
 // Extender utilidades de Tailwind cuando sea necesario
 @layer utilities {
-  .text-shadow-utec {
-    text-shadow: 2px 2px 4px rgba(0, 169, 224, 0.3);
-  }
+   .text-shadow-utec {
+      text-shadow: 2px 2px 4px rgba(0, 169, 224, 0.3);
+   }
 }
 ```
 
