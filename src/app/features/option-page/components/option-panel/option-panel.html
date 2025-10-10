@@ -1,0 +1,87 @@
+<div class="w-full flex justify-center items-center">
+    <div style="width: 550px;">
+        <app-color-block [color]="'black'">
+            <div class="flex flex-col gap-5 w-full items-center justify-center p-8">
+                @if (mainMenu()) {
+                    <div class="w-[380px] mx-auto">
+                        <app-button
+                            label="Planificador"
+                            [color]="'blue'"
+                            fontFamily="'UTEC Text Heavy', Arial, sans-serif"
+                            fontWeight="700"
+                            fontSize="2rem"
+                            (onClick)="handleButtonClick('planificador')"
+                        ></app-button>
+                    </div>
+                    <div class="w-[380px] mx-auto">
+                        <app-button
+                            label="Panel estadistico"
+                            [color]="'blue'"
+                            fontFamily="'UTEC Text Heavy', Arial, sans-serif"
+                            fontWeight="700"
+                            fontSize="2rem"
+                            (onClick)="handleButtonClick('estadistico')"
+                        ></app-button>
+                    </div>
+                    <div class="w-[380px] mx-auto">
+                        <app-button
+                            label="ITR"
+                            [color]="'blue'"
+                            fontFamily="'UTEC Text Heavy', Arial, sans-serif"
+                            fontWeight="700"
+                            fontSize="2rem"
+                            (onClick)="handleButtonClick('itr')"
+                        ></app-button>
+                    </div>
+                    <div class="w-[380px] mx-auto">
+                        <app-button
+                            label="Asignar cursos"
+                            [color]="'blue'"
+                            fontFamily="'UTEC Text Heavy', Arial, sans-serif"
+                            fontWeight="700"
+                            fontSize="2rem"
+                            (onClick)="handleButtonClick('asignar-cursos')"
+                        ></app-button>
+                    </div>
+                    <div class="w-[380px] mx-auto">
+                        <app-button
+                            label="Crear cursos"
+                            [color]="'blue'"
+                            fontFamily="'UTEC Text Heavy', Arial, sans-serif"
+                            fontWeight="700"
+                            fontSize="2rem"
+                        ></app-button>
+                    </div>
+                } @else {
+                    <div class="w-[380px] mx-auto">
+                        <app-button
+                            label="Artigas"
+                            [color]="'blue'"
+                            fontFamily="'UTEC Text Heavy', Arial, sans-serif"
+                            fontWeight="700"
+                            fontSize="2rem"
+                        ></app-button>
+                    </div>
+                    <div class="w-[380px] mx-auto">
+                        <app-button
+                            label="San Jose"
+                            [color]="'blue'"
+                            fontFamily="'UTEC Text Heavy', Arial, sans-serif"
+                            fontWeight="700"
+                            fontSize="2rem"
+                        ></app-button>
+                    </div>
+                    <div class="w-[380px] mx-auto">
+                        <app-button
+                            label="Maldonado"
+                            [color]="'blue'"
+                            fontFamily="'UTEC Text Heavy', Arial, sans-serif"
+                            fontWeight="700"
+                            fontSize="2rem"
+                        ></app-button>
+                    </div>
+                }
+            </div>
+        </app-color-block>
+    </div>
+</div>

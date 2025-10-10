@@ -1,0 +1,61 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100% !important;
+}
+
+:host ::ng-deep .p-select {
+  width: 100% !important;
+  height: 100% !important;
+  border: 1.5px solid #000000;
+  border-radius: 15px;
+}
+
+:host ::ng-deep .p-select.p-focus,
+:host ::ng-deep .p-select:hover {
+  border-color: #d1d5db !important; 
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .p-select.p-focus .p-select-dropdown,
+:host ::ng-deep .p-select:hover .p-select-dropdown {
+  border-left: 1.5px solid #d1d5db !important; 
+}
+
+:host ::ng-deep .p-select .p-select-dropdown {
+  background-color: var(--select-dropdown-bg) !important;
+  position: relative;
+  width: 25px;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-left: 1.5px solid #000000;
+}
+
+:host ::ng-deep .p-select .p-select-dropdown-icon {
+  display: none !important;
+}
+
+
+:host ::ng-deep .p-select .p-select-dropdown::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border-left: 5.3px solid transparent;
+  border-right: 5.3px solid transparent;
+  border-top: 5.3px solid white; 
+}
+
+:host ::ng-deep .p-select .p-select-label {
+  color: #000000 !important;         
+  font-weight: 500 !important;    
+  font-size: 1.25rem !important; 
+  font-family: 'UTEC Text Light', system-ui, sans-serif; 
+  display: flex;
+  align-items: center;
+  height: 100%;
+}

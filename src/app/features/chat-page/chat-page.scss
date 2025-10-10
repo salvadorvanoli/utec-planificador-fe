@@ -1,0 +1,13 @@
+.chat-page-center {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+:host ::ng-deep app-color-block {
+  width: 80%;
+}
+
+:host ::ng-deep app-color-block > div {
+  border-radius: 20px !important;
+}

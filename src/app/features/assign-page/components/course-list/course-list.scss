@@ -1,0 +1,21 @@
+:host ::ng-deep app-course-card {
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box;
+  display: block;
+}
+
+.course-list-container {
+  display: flex;
+  flex-direction: column; 
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border: 2px solid #000000;
+  background: #e6f7fb;
+  border-radius: 16px;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}

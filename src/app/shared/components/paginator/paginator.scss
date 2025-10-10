@@ -1,0 +1,28 @@
+:host ::ng-deep .p-paginator {
+  .p-paginator-page,
+  .p-paginator-first,
+  .p-paginator-prev,
+  .p-paginator-next,
+  .p-paginator-last {
+    &:hover {
+      background: #00A9E0 !important;
+      color: #fff !important;
+    }
+  }
+
+  .p-paginator-page.p-highlight {
+    background: #00A9E0 !important; 
+    color: #00A9E0 !important;     
+  }
+}
+
+:host ::ng-deep .p-paginator .p-paginator-page.p-highlight {
+  color: #00A9E0; 
+  background: #00A9E0; 
+}
+
+
+
+
+
+

@@ -1,0 +1,10 @@
+<span class="p-input-icon-left">
+   
+  <p-autocomplete
+    [(ngModel)]="value"
+    [suggestions]="items"
+    (completeMethod)="search($event)"
+    placeholder="Buscar"
+    class="custom-autocomplete"
+  ></p-autocomplete>
+</span>

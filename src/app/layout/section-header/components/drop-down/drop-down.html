@@ -1,0 +1,23 @@
+<div class="card flex justify-center">
+  <p-select
+    [options]="options()"
+    [ngModel]="selectedId()"
+    (ngModelChange)="updateSelection($event)"
+    optionLabel="name"
+    optionValue="id"
+    placeholder="Seleccionar..."
+    aria-label="Seleccionar opción"
+    [dropdownIcon]="dropdownIcon()"
+    class="w-full md:w-56"
+    (onHide)="setDropdownState(false)">
+
+    <ng-template pTemplate="item" let-option>
+      <div class="logo-item" role="option" (click)="updateSelection(option.id)">
+        <i [class]="option.icon" class="prime-icon"></i>
+        <span class="visually-hidden">{{ option.name }}</span>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="selectedItem" let-option></ng-template>
+  </p-select>
+</div>

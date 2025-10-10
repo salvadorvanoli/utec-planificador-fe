@@ -1,0 +1,26 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+:host ::ng-deep .p-button {
+  border-radius: 20px !important;
+  background-color: var(--button-bg) !important;
+  border-color: var(--button-bg) !important;
+  font-family: var(--button-font-family) !important;
+  font-weight: var(--button-font-weight) !important;
+  font-size: var(--button-font-size) !important;
+  width: 100% !important;
+  height: 100% !important;
+  transition: 
+    background-color 0.2s cubic-bezier(0.4,0,0.2,1),
+    box-shadow 0.2s cubic-bezier(0.4,0,0.2,1),
+    transform 0.15s cubic-bezier(0.4,0,0.2,1);
+}
+:host ::ng-deep .p-button:hover,
+:host ::ng-deep .p-button:focus-visible {
+  background-color: var(--button-bg-hover, #0090b8) !important;
+  box-shadow: 0 4px 16px 0 rgba(0, 169, 224, 0.15), 0 1.5px 4px 0 rgba(0,0,0,0.08);
+  transform: translateY(-2px) scale(1.03);
+  outline: none;
+}

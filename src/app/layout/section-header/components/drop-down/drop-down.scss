@@ -1,0 +1,148 @@
+:host ::ng-deep {
+  // Estilos del botón principal
+  .p-select {
+    background-color: var(--dropdown-bg-color);
+    padding-inline: 0.25rem;
+    width: 5rem;
+    height: 3rem;
+    min-width: 5rem;
+    justify-content: center;
+    border: 2px solid var(--dropdown-border-color) !important;
+
+    .p-select-label {
+      display: none !important;
+    }
+
+    .p-select-trigger-icon,
+    .p-select-dropdown-icon,
+    .p-select-trigger {
+      color: #fff;
+      margin: 0;
+      font-size: 2.5rem !important; 
+    }
+  }
+
+  // Estilos del dropdown 
+  .p-select-overlay, 
+  .p-select-panel .p-select-overlay {
+    // Mueve las declaraciones arriba de las reglas anidadas para evitar la advertencia de Sass
+    width: 60px !important;
+    min-width: 60px !important;
+    border-radius: 0 0 23px 23px !important;
+    overflow: visible !important; 
+    background-color: var(--dropdown-overlay-bg) !important;
+    transform-origin: center top !important;
+    max-height: none !important; 
+    height: auto !important;
+    border: 1px solid #000000 !important;
+    box-shadow: 0px 0px 5px #0000009E !important; 
+    --p-select-option-selected-background: var(--dropdown-overlay-bg) !important; 
+    --p-select-option-focus-background: var(--dropdown-hover-color) !important; 
+    --p-select-option-selected-focus-background: var(--dropdown-overlay-bg) !important;
+
+    &.p-connected-overlay {
+      transform: translateX(0) !important; 
+      left: 50% !important; 
+      margin-left: -30px !important; 
+    }
+    
+    // Contenedor de elementos 
+    .p-select-items-wrapper {
+      max-height: none !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    
+    .p-select-items {
+      background-color: #00A9E0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      max-height: none !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    
+    .p-select-items .p-select-item,
+    li.p-select-item,
+    .p-select-item {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: center !important;
+      color: white !important;
+      transition: all 0.2s ease !important;
+      background-color: #00A9E0 !important;
+      
+      &:hover,
+      &.p-highlight:hover,
+      &:focus {
+        background-color: #0095c6 !important;
+        box-shadow: none !important;
+      }
+      
+      &.p-highlight {
+        background-color: #0095c6 !important; 
+        box-shadow: none !important;
+      }
+    }
+  }
+  
+  .p-select-item:hover,
+  li.p-select-item:hover,
+  .p-select-items .p-select-item:hover {
+    background-color: #0095c6 !important;
+    box-shadow: none !important;
+  }
+
+  // Item logo 
+  .logo-item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 8px !important;
+
+    .prime-icon {
+      font-size: 30px !important; 
+      color: white !important;
+    }
+  }
+
+  // Imagen
+  .logo-img {
+    display: block !important;
+    object-fit: contain !important;
+    filter: brightness(0) invert(1) !important;
+    margin: 0 auto !important;
+  }
+
+  .p-select-item:focus,
+  li.p-select-item:focus,
+  .p-select-items .p-select-item:focus {
+    background-color: #00A9E0 !important;
+    box-shadow: none !important;
+  }
+
+  // Estilo para iconos PrimeNG
+  .prime-icon {
+    font-size: 28px !important;
+    color: white !important;
+  }
+}
+
+// Clase de accesibilidad
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(50%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+

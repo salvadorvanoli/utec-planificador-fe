@@ -1,0 +1,37 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 mb-6 gap-6 w-fit mx-auto">
+    <!-- Card 1: Procesos cognitivos -->
+    <app-chart-card
+        [titulo]="'Procesos cognitivos'"
+        [labels]="['Comprender', 'Aplicar', 'Analizar']"
+        [values]="[120, 80, 60]"
+        [colors]="['#00A9E0', '#F59E42', '#7C3AED']"
+        [hoverColors]="['#38CFF5', '#FFB86B', '#A78BFA']"
+    ></app-chart-card>
+
+    <!-- Card 2: Competencias -->
+    <app-chart-card
+        [titulo]="'Competencias'"
+        [labels]="['Trabajo en equipo', 'Comunicación', 'Pensamiento crítico']"
+        [values]="[90, 110, 70]"
+        [colors]="['#22C55E', '#F43F5E', '#FACC15']"
+        [hoverColors]="['#4ADE80', '#FB7185', '#FDE047']"
+    ></app-chart-card>
+
+    <!-- Card 3: Modalidad de las actividades -->
+    <app-chart-card
+        [titulo]="'Modalidad de las actividades'"
+        [labels]="['Presencial', 'Virtual', 'Híbrido']"
+        [values]="[100, 60, 40]"
+        [colors]="['#6366F1', '#F472B6', '#F59E42']"
+        [hoverColors]="['#818CF8', '#F9A8D4', '#FFB86B']"
+    ></app-chart-card>
+
+    <!-- Card 4: Recursos -->
+    <app-chart-card
+        [titulo]="'Recursos'"
+        [labels]="['Pizarrón', 'Exhibición', 'Demostración']"
+        [values]="[70, 50, 90]"
+        [colors]="['#F43F5E', '#22C55E', '#00A9E0']"
+        [hoverColors]="['#FB7185', '#4ADE80', '#38CFF5']"
+    ></app-chart-card>
+</div>

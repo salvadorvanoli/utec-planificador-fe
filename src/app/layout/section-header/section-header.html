@@ -1,0 +1,25 @@
+<div class="flex w-full gap-1 h-[53px] mb-9">
+
+  <!-- Encabezado -->
+  <div
+    class="flex w-full sm:w-[460px] rounded-r-2xl"
+    [style.backgroundColor]="color() === 'blue' ? '#00A9E0' : '#000000'"
+  >
+    <!-- Icono de triángulo-->
+    <div class="flex w-2/8 items-center justify-center">
+        <app-drop-down [color]="color()"></app-drop-down>
+    </div>
+     <!-- Texto del encabezado -->
+    <div class="flex w-6/8 items-center justify-center text-white font-semibold text-xl sm:text-2xl md:text-3xl px-2">
+        {{ this.infoType().title }}
+    </div>
+  </div>
+  
+  <!-- Icono de pregunta -->
+   @if(infoType() != null) {
+        <div class="flex items-center justify-center">
+            <app-info-button [content]="this.infoType().content" [color]="color()"></app-info-button>
+        </div>
+    }
+</div>
+
