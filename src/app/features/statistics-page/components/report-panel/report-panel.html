@@ -1,0 +1,24 @@
+<app-color-block [color]="'black'">
+  <div class="grid grid-cols-1 lg:grid-cols-2 w-full h-full">
+    <div class="flex flex-col">
+      <div class="edu-bot-title mt-4 ml-6 md:ml-12">
+        EDU BOT
+      </div>
+      <div class="edu-bot-subtitle ml-6 md:ml-12 mb-4">
+        Tu asistente educativo de confianza.
+      </div>
+    </div>
+    <div class="text-left font-semibold text-lg mt-6 md:mt-9 mr-4 md:mr-12 text-white">
+      <div class="flex gap-4 md:gap-6 h-[40px] justify-start ml-4">
+        <app-select [placeholder]="'Periodo'"></app-select>
+        <app-button
+          label="Generar reporte"
+          [color]="'blue'"
+          fontFamily="'UTEC Text Light', Arial, sans-serif"
+          fontWeight="300"
+          fontSize="1.5rem"
+        ></app-button>
+      </div>
+    </div>
+  </div>
+</app-color-block>

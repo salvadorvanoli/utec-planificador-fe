@@ -1,0 +1,18 @@
+<div class="flex" style="width: 400px; height: 367px;">
+    <app-color-block [color]="alumno() ? 'blue' : 'black'">
+        <div class="flex flex-col gap-5 w-full items-center justify-center pl-2.5">
+            <div class="flex w-[320px] h-[36px] mt-5">
+                <app-select class="flex-1" [placeholder]="'Departamento'"></app-select>
+            </div>
+            
+            @if (alumno()) {
+                <div class="flex w-[320px] h-[36px]">
+                    <app-select class="flex-1" [placeholder]="'ITR'"></app-select>
+                </div>
+                <div class="flex w-[320px] h-[36px]">
+                    <app-select class="flex-1" [placeholder]="'Docente'"></app-select>
+                </div>
+            }
+        </div>
+    </app-color-block>
+</div>

@@ -1,0 +1,16 @@
+:host ::ng-deep .p-chart,
+:host ::ng-deep .p-chart > canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  display: block;
+}
+
+.rectangle-3-copy-1 {
+    width: 341px;
+    height: 346px;
+    background: #FFFFFF;
+    border: 1px solid #D6D6D6;
+    border-radius: 16px;
+}

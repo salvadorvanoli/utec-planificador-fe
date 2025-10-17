@@ -1,0 +1,30 @@
+<app-section-header
+    text="Unidades curriculares"
+    [color]="'black'"
+    [showIcon]="true"
+    [infoType]="InfoType.ASSIGN_COURSES"
+/>
+
+<div class="flex flex-col items-center w-full max-w-2xl mt-8 gap-6 mx-auto">
+  <app-select [color]="'black'" [placeholder]="'Docente'"></app-select>
+  <app-titulo class="w-full max-w-xl mx-auto text-center" [texto]="'Cursos del docente'"></app-titulo>
+  
+  <app-course-list></app-course-list>
+  <app-select [color]="'black'" [placeholder]="'Curso'"></app-select>
+  <div class="flex w-2/3 flex-row gap-4 mt-2 mb-4">
+    <app-button
+      label="Agregar curso"
+      [color]="'blue'"
+      fontFamily="'UTEC Text Light', Arial, sans-serif"
+      fontWeight="300"
+      fontSize="1.5rem"
+    ></app-button>
+    <app-button
+      label="Quitar curso"
+      [color]="'red'"
+      fontFamily="'UTEC Text Light', Arial, sans-serif"
+      fontWeight="300"
+      fontSize="1.5rem"
+    ></app-button>
+  </div>
+</div>

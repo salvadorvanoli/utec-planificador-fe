@@ -1,0 +1,14 @@
+<div class="rectangle-3-copy-1 flex flex-col items-center justify-center" style="width:341px; height:346px;">
+    <div class="w-full text-left mb-2 ml-10 font-semibold text-lg">
+        {{ titulo() }}
+    </div>
+    <div class="flex items-center justify-center w-[255px] h-[238px]">
+        <p-chart
+            type="doughnut"
+            [data]="data()"
+            [options]="options()"
+            class="w-full h-full"
+        />
+    </div>
+</div>
+
