@@ -1,0 +1,20 @@
+<div class="card">
+    <p-menubar [model]="items()">
+        <ng-template #start>
+            <a routerLink="/">
+                <img
+                    ngSrc="/assets/images/logos/06-isologotipo-para-fondo-blanco.png"
+                    alt="Logo UTEC"
+                    height="100"
+                    priority
+                />
+            </a>
+        </ng-template>
+        <ng-template #item let-item let-root="root">
+            <a pButton class="flex items-center p-menubar-item-link rounded-full">
+                <span [class]="item.icon"></span>
+                <span>{{ item.label }}</span>
+            </a>
+        </ng-template>
+    </p-menubar>
+</div>
