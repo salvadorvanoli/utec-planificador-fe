@@ -1,0 +1,32 @@
+<div class="w-[70%] min-h-[500px] mx-auto">
+  <app-container [color]="'#e6f7fb'">
+    <div class="flex flex-col h-full w-full gap-4 p-4">
+
+      <!-- Título -->
+      <app-week-title></app-week-title>
+
+      <!-- Row principal: dos columnas -->
+      <div class="flex flex-row w-full gap-6">
+
+        <!-- Sección de contenido -->
+        <app-content-section class="block w-full md:w-1/2"></app-content-section>
+
+        <!-- Sección de actividades -->
+        <app-activity-section class="block w-full md:w-1/2"></app-activity-section>
+      </div>
+
+      <div class="separator"></div>
+      <!-- Título de bibliografía -->
+      <h3 class="text-lg font-semibold">Bibliografía</h3>
+
+      <div class="w-full">
+        <div class="min-h-[40px] bg-white rounded-lg shadow w-full border border-gray-200 p-2">
+          <ul class="ml-2 list-disc list-inside text-sm text-gray-700">
+            <li>Serway, R. A., & Jewett, J. W. (2018). Física para ciencias e ingeniería (10ª ed.). Cengage Learning.</li>
+            <li>Tipler, P. A., & Mosca, G. (2008). Física: Volumen 1 – Mecánica, Oscilaciones y Ondas. Reverté.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </app-container>
+</div>

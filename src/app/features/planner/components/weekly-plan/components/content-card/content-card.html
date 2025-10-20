@@ -1,0 +1,15 @@
+  <div class="flex items-center gap-4 content-row">
+      <!-- dot y línea a la izquierda -->
+      <div class="flex flex-col items-center simple-line">
+        <div class="dot" [attr.data-label]="titulo()"></div>
+        <div class="line"></div>
+      </div>
+      
+      <p>{{ descripcion() }}</p>
+
+      <!-- acciones: visibles solo al hacer hover (inicialmente ocultas) -->
+      <span class="actions" aria-hidden="true">
+        <i class="pi pi-pencil text-gray-600 text-lg" title="Editar"></i>
+        <i class="pi pi-trash text-gray-600 text-lg" title="Eliminar"></i>
+      </span>
+    </div>

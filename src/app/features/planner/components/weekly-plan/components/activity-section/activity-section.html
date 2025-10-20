@@ -1,0 +1,43 @@
+<div class="w-full flex-none h-full">
+  <div class="w-full flex-none h-full">
+    <div class="mx-auto flex flex-col h-[350px]">
+      <app-content-card 
+          [titulo]="'Investigación inicial'" 
+          [descripcion]="'Explorar fuentes confiables y compartir las primeras conclusiones con el grupo.'" 
+          [color]="'#3B82F6'">
+        </app-content-card>
+
+        <app-content-card 
+          [titulo]="'Diseño del experimento'" 
+          [descripcion]="'Definir variables, materiales y el paso a paso del procedimiento.'" 
+          [color]="'#10B981'">
+        </app-content-card>
+
+        <app-content-card 
+          [titulo]="'Análisis de resultados'" 
+          [descripcion]="'Organizar los datos obtenidos y graficar mediante herramienta.'" 
+          [color]="'#EC4899'">
+        </app-content-card>
+
+        <app-content-card 
+          [titulo]="'Presentación final'" 
+          [descripcion]="'Prepará una exposición visual y clara para compartir los hallazgos en clase.'" 
+          [color]="'#FACC15'">
+        </app-content-card>
+
+    </div>
+    <div class="mt-4">
+            <div class="w-48 mx-auto">
+              <app-button
+                label="Agregar actividad"
+                [color]="'blue'"
+                fontFamily="'UTEC Text Light', Arial, sans-serif"
+                fontWeight="300"
+                fontSize="1rem"
+                style="width:100%;"
+              ></app-button>
+            </div>
+          </div>
+  </div>
+  
+</div>

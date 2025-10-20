@@ -1,0 +1,34 @@
+.weekly-header {
+  padding-bottom: 0.25rem;
+
+  .weekly-title {
+    margin: 0;
+    font-family: "UTEC Text Medium", Arial, sans-serif;
+    font-weight: 600;
+    font-size: 1rem; 
+    color: #2d3748; 
+    line-height: 1.2;
+  }
+
+  .weekly-range {
+    margin: 0;
+    font-family: "UTEC Text", Arial, sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem; 
+    color: #6b7280; 
+    text-align: right;
+    opacity: 0.95;
+  }
+
+  @media (min-width: 1024px) {
+    .weekly-title { font-size: 1.125rem; }   
+    .weekly-range { font-size: 0.95rem; }   
+  }
+
+  
+}
+.separator {
+  border-bottom: 1px solid #6b7280; 
+  width: 90%; 
+  margin: 0.5rem auto 0; 
+}

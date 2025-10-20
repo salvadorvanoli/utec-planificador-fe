@@ -1,0 +1,118 @@
+
+.simple-line { display: flex; flex-direction: column; align-items: center; }
+
+
+.simple-line .line {
+  width: 2px;
+  height: 4rem; 
+  background: var(--color);
+  border-radius: 2px;
+
+  transform-origin: top;
+  transform: scaleY(0);
+
+  animation: cc-draw var(--duration) linear forwards;
+  animation-delay: 220ms;
+}
+
+
+.simple-line .dot {
+  width: 1.25rem; 
+  height: 1.25rem; 
+  border-radius: 9999px;
+  background: var(--color); 
+  box-shadow: 0 2px 6px rgba(2,6,23,0.12);
+  position: relative; 
+
+  opacity: 0;
+  transform: translateY(-6px) scale(0.95);
+  animation: cc-pop 220ms cubic-bezier(.2,.9,.3,1) forwards;
+  animation-delay: 0;
+}
+
+.simple-line .dot::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 100%; 
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 1rem; 
+  font-size: 1.1rem;
+  font-weight: 900; 
+  color: #000000;
+  white-space: nowrap;
+
+
+  opacity: 0;
+  transform: translateY(-50%) translateX(-4px);
+  animation: cc-fade 220ms ease forwards;
+  animation-delay: 0;
+}
+
+@keyframes cc-draw {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+@keyframes cc-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.95);
+  }
+  60% {
+    transform: translateY(2px) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cc-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+
+.content-row {
+  position: relative;
+  align-items: center; 
+}
+
+.actions {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+  opacity: 0;
+  transform: translateX(6px) scale(0.98);
+  transition: opacity 160ms ease, transform 160ms ease;
+  pointer-events: none; 
+  align-items: center;
+}
+
+.content-row:hover .actions,
+.content-row:focus-within .actions {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+
+
+.actions i {
+  color: #4b5563; 
+  font-size: 1rem; 
+  line-height: 1;
+  cursor: pointer;
+  transition: color 140ms ease, transform 120ms ease;
+}
+
+.actions i:hover {
+  color: #111827; 
+  transform: translateY(-1px);
+}
