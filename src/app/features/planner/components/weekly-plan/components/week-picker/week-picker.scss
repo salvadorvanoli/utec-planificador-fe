@@ -1,0 +1,17 @@
+.highlight {
+  background-color: #1181cc; 
+  color: #0369a1;
+  border-radius: 4px;
+}
+
+:host ::ng-deep {
+  --p-datepicker-date-hover-background: #56bad2; 
+  --p-datepicker-date-selected-background: #00A9E0; 
+  --p-datepicker-date-selected-color: #ffffff; 
+  --p-datepicker-date-range-selected-background: #00A9E0; 
+  --p-datepicker-date-range-selected-color: #ffffff; 
+  --p-datepicker-today-background: #ffffff;
+  --p-datepicker-today-color: #000000;
+}
+
+

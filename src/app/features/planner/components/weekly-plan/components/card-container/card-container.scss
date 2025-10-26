@@ -1,12 +1,10 @@
 .card-container {
-  /* host class applied to the component element */
   width: 100%;
   box-sizing: border-box;
   background: #fff;
   border-radius: 20px;
 }
 
-/* contenido interno que puede crecer; host controla max-height/overflow */
 .card-content {
   display: flex;
   background: #fff;
@@ -16,7 +14,7 @@
   min-height: 120px; 
   width: 100%;
   box-sizing: border-box;
-
+  border-radius: 20px;
   overflow: auto;
   max-height: inherit; 
   scrollbar-width: none; 

@@ -1,31 +1,40 @@
 <div class="w-full flex-none h-full">
   <div class="w-full flex-none h-full">
-    <div class="mx-auto flex flex-col h-[350px]">
-      <app-content-card 
-          [titulo]="'Investigación inicial'" 
-          [descripcion]="'Explorar fuentes confiables y compartir las primeras conclusiones con el grupo.'" 
-          [color]="'#3B82F6'">
-        </app-content-card>
+    <div class="mx-auto flex flex-col activity-section-container">
+        <app-activity-bullet  
+          [title]="'Investigación inicial – 45 minutos'"  
+          [content]="'Explorar fuentes confiables y compartir las primeras conclusiones con el grupo.'"  
+          [colour]="'#3B82F6'">  
+        </app-activity-bullet>
 
-        <app-content-card 
-          [titulo]="'Diseño del experimento'" 
-          [descripcion]="'Definir variables, materiales y el paso a paso del procedimiento.'" 
-          [color]="'#10B981'">
-        </app-content-card>
+        <app-activity-bullet  
+          [title]="'Análisis de resultados – 30 minutos'"  
+          [content]="'Comparar la información recolectada entre equipos y discutir coincidencias y diferencias clave.'"  
+          [colour]="'#10B981'">  
+        </app-activity-bullet>
 
-        <app-content-card 
-          [titulo]="'Análisis de resultados'" 
-          [descripcion]="'Organizar los datos obtenidos y graficar mediante herramienta.'" 
-          [color]="'#EC4899'">
-        </app-content-card>
+        <app-activity-bullet  
+          [title]="'Diseño de experimento – 50 minutos'"  
+          [content]="'Proponer una experiencia práctica sencilla para comprobar una hipótesis derivada de la investigación.'"  
+          [colour]="'#EC4899'">  
+        </app-activity-bullet>
 
-        <app-content-card 
-          [titulo]="'Presentación final'" 
-          [descripcion]="'Prepará una exposición visual y clara para compartir los hallazgos en clase.'" 
-          [color]="'#FACC15'">
-        </app-content-card>
+        <app-activity-bullet  
+          [title]="'Presentación colaborativa – 40 minutos'"  
+          [content]="'Organizar una exposición grupal con apoyo visual para explicar los hallazgos y su aplicación.'"  
+          [colour]="'#FACC15'">  
+        </app-activity-bullet>
+
+        <app-activity-bullet  
+          [title]="'Reflexión final – 20 minutos'"  
+          [content]="'Debatir qué aprendizajes se lograron, qué dificultades surgieron y cómo podrían superarse en futuras actividades.'"  
+          [colour]="'#6366F1'">  
+        </app-activity-bullet>
+
+        
 
     </div>
+    
     <div class="mt-4">
             <div class="w-48 mx-auto">
               <app-button
@@ -35,9 +44,17 @@
                 fontWeight="300"
                 fontSize="1rem"
                 style="width:100%;"
+                (click)="openModal()"
               ></app-button>
             </div>
           </div>
   </div>
   
 </div>
+
+<app-add-activity
+  [visible]="modalVisible()"
+  (visibleChange)="modalVisible.set($event)"
+></app-add-activity>
+
+ 

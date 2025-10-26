@@ -1,0 +1,91 @@
+.activity-bullet {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+
+.dot {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  background: var(--colour);
+  opacity: 0;
+  transform: scale(0.8);
+  animation: cc-pop 300ms cubic-bezier(.2,.9,.3,1) forwards;
+}
+
+
+.line {
+  flex: 1;
+  width: 2px;
+  background: var(--colour);
+  transform-origin: top;
+  transform: scaleY(0);
+  animation: cc-draw 600ms linear 300ms forwards; 
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.content::after {
+  content: '';
+  display: block;
+  height: 1.5rem;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  opacity: 0;
+  transform: translateX(-6px);
+  animation: cc-fade-slide 400ms ease 900ms forwards; 
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: #374151;
+  margin-top: 0.25rem;
+  display: block;
+  opacity: 0;
+  transform: translateX(-6px);
+  animation: cc-fade-slide 400ms ease 1300ms forwards; 
+}
+
+@keyframes cc-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes cc-draw {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes cc-fade-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+

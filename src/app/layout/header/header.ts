@@ -1,18 +1,17 @@
 import { Component, signal } from '@angular/core';
-
-import { Navbar } from '@layout/header/components/navbar/navbar';
+import { Menubar } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-header',
-  imports: [
-    Navbar,
-  ],
+  imports: [ ],
   templateUrl: './header.html',
   styleUrls: ['./header.scss'],
   standalone: true
 })
 export class Header {
+  
   menuItems = signal<MenuItem[]>([
     {
       label: 'Planificación',

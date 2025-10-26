@@ -1,9 +1,13 @@
+<app-header></app-header>
+
 <app-section-header
-    [color]="'black'"
+    [color]="'blue'"
     [showIcon]="true"
     [infoType]="InfoType.PLANNER"
 />
 
-<app-titulo class="block mb-8 w-full sm:w-[460px] text-left" [texto]="'Planificación semanal'"></app-titulo>
+<app-course-info></app-course-info>
+
+<app-titulo class="block mb-8 w-full sm:w-[460px] text-left" [color]="'blue'" [texto]="'Planificación semanal'"></app-titulo>
   
 <app-weekly-plan></app-weekly-plan>

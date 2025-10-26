@@ -17,3 +17,28 @@
   width: 90%; 
   margin: 0.5rem auto 0; 
 }
+
+.pagination-icons .icon-btn {
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280; 
+  border-radius: 6px;
+  transition: background-color 120ms ease, color 120ms ease, transform 120ms ease;
+}
+
+.pagination-icons .icon-btn:hover,
+.pagination-icons .icon-btn:focus {
+  background-color: rgba(0,0,0,0.04);
+  color: #111827;
+  transform: translateY(-1px);
+}
+
+.pagination-icons .icon-btn:focus {
+  outline: 2px solid rgba(59,130,246,0.18);
+  outline-offset: 2px;
+}

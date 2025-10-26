@@ -1,23 +1,49 @@
-<div class="rectangle-9 flex gap-5">
-  <!-- Columna izquierda -->
-  <div class="flex flex-col gap-3 w-8/10">
-    <div class="flex gap-4">
-      <span class="card-title font-bold whitespace-nowrap">Título del curso</span>
+<div class="rectangle-9 flex gap-5" (click)="navigateToPlanner()">
+  @if (isLoading()) {
+    <!-- Skeletons que ocupan el 100% de los divs -->
+    <!-- Columna izquierda -->
+    <div class="flex flex-col gap-3 w-8/10">
+      <div class="flex gap-4">
+        <p-skeleton width="20%" height="24px"></p-skeleton>
+        @if (assignState() == false) {
+          <p-skeleton width="15%" height="20px"></p-skeleton>
+        }
+      </div>
       @if (assignState() == false) {
-        <span class="card-professor-name text-gray-600">Docente: Juan Pérez</span>
+        <p-skeleton width="15%" height="18px"></p-skeleton>
       }
     </div>
-    @if (assignState() == false) {
-      <span class="card-last-update-date text-gray-500">Última actualización: 8/10/2025</span>
-    }
-  </div>
 
-  <!-- Columna derecha -->
-  <div class="flex w-2/10 justify-center items-center">
-    @if (assignState() == false) {
-      <i class="pi pi-file-pdf text-red-600 pdf-icon" aria-label="PDF"></i>
-    } @else {
-      <p-checkbox [(ngModel)]="checked" [binary]="true" />
-    }
-  </div>
+    <!-- Columna derecha -->
+    <div class="flex w-2/10 justify-center items-center">
+      @if (assignState() == false) {
+        <p-skeleton width="24px" height="24px" shape="circle"></p-skeleton>
+      } @else {
+        <p-skeleton width="20px" height="20px"></p-skeleton>
+      }
+    </div>
+  } @else {
+    <!-- Contenido cuando no está cargando -->
+    <!-- Columna izquierda -->
+    <div class="flex flex-col gap-3 w-8/10">
+      <div class="flex gap-4">
+        <span class="card-title font-bold whitespace-nowrap">Título del curso</span>
+        @if (assignState() == false) {
+          <span class="card-professor-name text-gray-600">Docente: Juan Pérez</span>
+        }
+      </div>
+      @if (assignState() == false) {
+        <span class="card-last-update-date text-gray-500">Última actualización: 8/10/2025</span>
+      }
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="flex w-2/10 justify-center items-center">
+      @if (assignState() == false) {
+        <i class="pi pi-file-pdf text-red-600 pdf-icon" aria-label="PDF"></i>
+      } @else {
+        <p-checkbox [(ngModel)]="checked" [binary]="true" />
+      }
+    </div>
+  }
 </div>

@@ -1,5 +1,5 @@
 <app-color-block [color]="'black'">
-  <div class="grid grid-cols-1 lg:grid-cols-2 w-full h-full">
+  <div class="grid grid-cols-1 lg:grid-cols-2 w-full h-[180px]">
     <div class="flex flex-col">
       <div class="edu-bot-title mt-4 ml-6 md:ml-12">
         EDU BOT
@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="text-left font-semibold text-lg mt-6 md:mt-9 mr-4 md:mr-12 text-white">
-      <div class="flex gap-4 md:gap-6 h-[40px] justify-start ml-4">
+      <div class="flex flex-col md:flex-row gap-4 md:gap-6 justify-start ml-4">
         <app-select [placeholder]="'Periodo'"></app-select>
         <app-button
           label="Generar reporte"

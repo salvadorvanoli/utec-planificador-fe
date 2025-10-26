@@ -1,1 +1,61 @@
-<p>course-info works!</p>
+<div class="row w-8/10 items-center mx-auto">
+  <p-floatlabel variant="in" class="w-full">
+    <input
+      pInputText
+      id="course_description"
+      [ngModel]="description()"
+      (ngModelChange)="description.set($event)"
+      autocomplete="off"
+      class="w-full"
+    />
+    <label for="course_description">Descripción</label>
+  </p-floatlabel>
+</div>
+
+<div class="row mt-4 mb-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-8/10 mx-auto">
+  <div class="flex flex-col gap-3">
+    <div>
+      <label for="select_campo_a" class="block text-sm font-medium mb-1">SCP</label>
+      <app-select id="select_campo_a" class="w-full"></app-select>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <p-floatlabel variant="in" class="w-full">
+        <input pInputText id="input_b_left" autocomplete="off" class="w-full" />
+        <label for="input_b_left">Horas virtuales</label>
+      </p-floatlabel>
+
+      <p-floatlabel variant="in" class="w-full">
+        <input pInputText id="input_b_right" autocomplete="off" class="w-full" />
+        <label for="input_b_right">Horas presenciales</label>
+      </p-floatlabel>
+    </div>
+
+    <p-floatlabel variant="in" class="w-full">
+      <input pInputText id="input_c" autocomplete="off" class="w-full" />
+      <label for="input_c">¿Realiza actividades vinculadas con el medio/sector productivo?</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="in" class="w-full">
+      <input pInputText id="input_d" autocomplete="off" class="w-full" />
+      <label for="input_d">¿Se vincula a líneas de investigación?</label>
+    </p-floatlabel>
+  </div>
+
+  <!-- segunda columna: dos rectángulos blancos (dos columnas internas) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="preview-rect bg-white rounded-lg shadow p-4 min-h-[80px]">
+      <div class="preview-title">Título 1</div>
+      <div class="preview-sep" aria-hidden="true"></div>
+      <div class="preview-body mt-2">
+     </div>
+    </div>
+
+    <div class="preview-rect bg-white rounded-lg shadow p-4 min-h-[80px]">
+      <div class="preview-title">Título 2</div>
+      <div class="preview-sep" aria-hidden="true"></div>
+      <div class="preview-body mt-2">
+      </div>
+    </div>
+  </div>
+</div>

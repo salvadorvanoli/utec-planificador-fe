@@ -14,6 +14,6 @@ export const routes: Routes = [
     { path: 'course-catalog', component: CourseCatalog },
     { path: 'statistics-page', component: StatisticsPage },
     { path: 'chat-page', component: ChatPage },
-    { path: 'assign-page', component: AssignPage }
-
+    { path: 'assign-page', component: AssignPage },
+    { path: 'planner', component: Planner }
 ];

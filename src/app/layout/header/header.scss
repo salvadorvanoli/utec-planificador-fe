@@ -1,0 +1,53 @@
+/* header negro con logo, texto portal académico e ícono de perfil */
+.app-header-rect {
+  width: 100%;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* espacia logo y contenido derecho */
+  padding: 0.75rem 1.5rem;
+  box-sizing: border-box;
+  height: auto;
+  min-height: 60px;
+}
+
+/* logo UTEC */
+.header-logo {
+  height: 40px;
+  width: auto;
+  max-height: 50px;
+}
+
+/* contenedor derecho: texto + ícono */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* texto "ir al portal académico" */
+.portal-text {
+  color: #fff;
+  font-family: 'UTEC Text Light', Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+
+.portal-text:hover {
+  opacity: 0.8;
+}
+
+/* ícono de perfil */
+.profile-icon {
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: color 150ms ease, transform 150ms ease;
+}
+
+.profile-icon:hover {
+  color: #ddd;
+  transform: translateY(-1px);
+}

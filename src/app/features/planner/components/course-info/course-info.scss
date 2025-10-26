@@ -1,0 +1,73 @@
+/* ...existing code... */
+
+.select-col {
+  align-self: flex-start;
+  min-height: 0;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* evitar que el grid estire las filas */
+:host ::ng-deep .grid {
+  align-items: start;
+  grid-auto-rows: auto;
+}
+
+/* que el componente select no se estire al alto del contenedor */
+:host ::ng-deep .select-col app-select {
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+  align-self: flex-start !important;
+}
+
+/* forzar altura compacta dentro del app-select (PrimeNG internals) */
+:host ::ng-deep .select-col app-select .p-dropdown,
+:host ::ng-deep .select-col app-select .p-inputtext,
+:host ::ng-deep .select-col app-select .p-dropdown .p-dropdown-label {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  line-height: 36px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+/* prevenir que wrappers ancestros empujen la altura */
+:host ::ng-deep .select-col > * {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+/* Estilos para los rectángulos de preview con borde y título centrado */
+.preview-rect {
+  border: 1px solid #383737;
+  box-shadow: none; /* opcional: si no querés sombra adicional */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Título centrado arriba */
+.preview-title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.preview-sep {
+  width: 100%;
+  height: 2px;
+  background: #000;
+  margin: 0.25rem 0;
+}
+
+.preview-body {
+  flex: 1 1 auto;
+}

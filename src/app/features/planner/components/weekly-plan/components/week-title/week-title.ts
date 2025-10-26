@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { WeekPicker } from '../week-picker/week-picker';
 
 @Component({
   selector: 'app-week-title',
-  imports: [],
+  imports: [WeekPicker],
   templateUrl: './week-title.html',
   styleUrl: './week-title.scss'
 })

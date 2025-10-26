@@ -6,10 +6,10 @@ import { ContentPanel } from '@app/features/course-catalog/component/content-pan
 import { InfoType } from '@app/core/enums/info';
 import { inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
+import { Header } from '@app/layout/header/header';
 @Component({
   selector: 'app-course-catalog',
-  imports: [SectionHeader, FilterPanel, ContentPanel],
+  imports: [SectionHeader, FilterPanel, ContentPanel, Header],
   templateUrl: './course-catalog.html',
   styleUrl: './course-catalog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

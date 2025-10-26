@@ -1,0 +1,12 @@
+:host ::ng-deep input.p-inputtext,
+:host ::ng-deep .p-floatlabel .p-inputtext {
+  border: 1px solid #000 !important;
+  box-shadow: none !important; /* evita glow del tema */
+}
+
+:host ::ng-deep input.p-inputtext:focus,
+:host ::ng-deep .p-floatlabel .p-inputtext:focus {
+  border-color: #000 !important;
+  box-shadow: 0 0 0 0.125rem rgba(0,0,0,0.06) !important; /* si quieres un ligero halo negro */
+  outline: none !important;
+}
