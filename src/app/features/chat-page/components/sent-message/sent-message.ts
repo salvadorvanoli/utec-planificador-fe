@@ -8,7 +8,8 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 })
 export class SentMessage {
   readonly bot = input<boolean>(false);
-  readonly height = input<string>('48px');
+  readonly text = input<string>('');
+  readonly inProgress = input<boolean>(false);
 
   readonly borderRadius = computed(() =>
     this.bot()

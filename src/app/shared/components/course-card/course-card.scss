@@ -21,6 +21,21 @@
     outline: none;
 }
 
+.rectangle-9 {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rectangle-9:hover {
+  cursor: pointer;
+}
+
+.rectangle-9:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.18); 
+  border-radius: 6px;
+}
+
 .card-title {
   font-weight: 400;
   font-size: 25px;
@@ -51,6 +66,7 @@
 .pdf-icon {
   font-size: 40px; 
   line-height: 1;
+  color: #00A9E0 !important; 
 }
 
 :host {

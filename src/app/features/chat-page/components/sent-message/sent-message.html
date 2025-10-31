@@ -1,7 +1,15 @@
 <div
   class="sent-message"
-  [style.height]="height()"
   [style.border-radius]="borderRadius()"
-  style="padding: 8px; background: #FFFFFF; border: 2px solid #000000;"
+  style="padding: 12px 16px; background: #FFFFFF; border: 2px solid #000000; min-height: 48px; width: fit-content; max-width: 100%;"
 >
+  @if (inProgress()) {
+    <div class="typing-indicator">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  } @else {
+    <p style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">{{ text() }}</p>
+  }
 </div>

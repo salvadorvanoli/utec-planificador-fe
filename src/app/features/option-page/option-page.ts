@@ -5,6 +5,8 @@ import { OptionPanel } from '@app/features/option-page/components/option-panel/o
 import { inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
+type UserType = 'student' | 'teacher' | 'analyst';
+
 @Component({
   selector: 'app-option-page',
   imports: [SectionHeader, OptionPanel],
@@ -14,6 +16,7 @@ import { ActivatedRoute } from '@angular/router';
 export class OptionPage {
   readonly InfoType = InfoType;
   readonly mainMenu = signal(true);
+  readonly userType = signal<UserType>('teacher'); //Cambiar esto para probar distitnos users
   private readonly route = inject(ActivatedRoute);
   
   constructor() {

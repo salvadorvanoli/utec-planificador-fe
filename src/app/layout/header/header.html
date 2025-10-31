@@ -1,17 +1,41 @@
-<!-- header negro con logo, texto portal académico e ícono de perfil -->
-<div class="app-header-rect mb-8">
+ <div class="app-header-rect  ">
   <!-- logo UTEC a la izquierda -->
   <img
     src="assets/images/logos/LOGO_HEADER.svg"
     alt="UTEC Isologo"
     class="header-logo"
+    width="305"
+    height="218"
     loading="eager"
     decoding="async"
   />
 
-  <!-- lado derecho: texto portal + ícono perfil -->
-  <div class="header-right">
-    <span class="portal-text">Ir al portal académico</span>
-    <i class="pi pi-user profile-icon" aria-label="Perfil de usuario" title="Perfil"></i>
-  </div>
+  <!-- lado derecho: muestra botones si isHome() es true, sino texto + ícono -->
+  @if (isHome()) {
+    <div class="header-right">
+      <app-button
+          (click)="goToOptionMenu()"
+          label="Portal personal académico"
+          [color]="'white'"
+          textColor="black"
+          fontFamily="'UTEC Text Light', Arial, sans-serif"
+          fontWeight="500"
+          fontSize="0.8rem"
+        ></app-button>
+
+      <app-button
+          (click)="goToOptionMenu()"
+          label="Portal estudiante"
+          [color]="'blue'"
+          fontFamily="'UTEC Text Light', Arial, sans-serif"
+          fontWeight="800"
+          fontSize="0.8rem"
+        ></app-button>
+    </div>
+  } @else {
+    <div class="header-right">
+      <span (click)="goToHome()" class="portal-text">Ir al portal académico</span>
+      <i class="pi pi-user profile-icon" aria-label="Perfil de usuario" title="Perfil"></i>
+    </div>
+  }
 </div>

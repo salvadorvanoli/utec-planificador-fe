@@ -1,1 +1,11 @@
-<p>home works!</p>
+<app-header [isHome]="true"></app-header>
+
+<app-title-and-background></app-title-and-background>
+
+<app-titulo class="block mb-8 w-full sm:w-[460px] text-left" [color]="'blue'" [texto]="'Noticias'"></app-titulo>
+ 
+<div class="carousel-container w-4/5 mx-auto" role="region" aria-label="Noticias destacadas">
+  <app-carousel></app-carousel>
+</div>
+
+<app-footer></app-footer>

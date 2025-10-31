@@ -1,1 +1,41 @@
-<p>footer works!</p>
+
+<div class="app-footer mt-8" role="contentinfo" aria-label="Footer UTEC">
+  <div class="footer-center">
+    <img
+      [ngSrc]="logo"
+      width="180"
+      height="38"
+      alt="UTEC Isologo"
+      class="footer-logo"
+      decoding="async"
+      loading="eager"
+    />
+
+    <div class="footer-divider" aria-hidden="true"></div>
+
+    <div class="footer-text">
+      UTEC es la Universidad Tecnológica del Uruguay, una propuesta de educación terciaria
+      universitaria pública de perfil tecnológico, orientada a la investigación y la innovación.
+      Comprometida con los lineamientos estratégicos del país, abierta a las necesidades del
+      Uruguay productivo, que tiene entre sus objetivos centrales hacer más equitativo el acceso
+      a la oferta educativa en el interior del país.
+    </div>
+
+    <div class="footer-social">
+      <button class="social-icon" aria-label="Facebook" (click)="openSocialLink('facebook')">
+        <i class="pi pi-facebook"></i>
+      </button>
+      <button class="social-icon" aria-label="Twitter" (click)="openSocialLink('twitter')">
+        <i class="pi pi-twitter"></i>
+      </button>
+      <button class="social-icon" aria-label="Instagram" (click)="openSocialLink('instagram')">
+        <i class="pi pi-instagram"></i>
+      </button>
+      <button class="social-icon" aria-label="YouTube" (click)="openSocialLink('youtube')">
+        <i class="pi pi-youtube"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+ 

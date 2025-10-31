@@ -5,7 +5,7 @@ export const InfoType = {
   OPTION_MENU: { code: 'optionMenu', title: 'Menú principal', content: 'Navegue por las opciones disponibles' },
   PLANNER: { code: 'planner', title: 'Planificador', content: 'Modifica la planificación del curso actual' },
   DATA_PANEL: { code: 'dataPanel', title: 'Estadísticas del curso', content: 'Estadísticas de cursos' },
-  EDU_BOT: { code: 'eduBot', title: 'Edu Bot',content: 'Interactúe con el asistente educativo' }
+  EDU_BOT: { code: 'eduBot', title: 'Chat',content: 'Interactúe con el asistente educativo' }
 } as const;
 
 export type InfoTypeKey = keyof typeof InfoType;

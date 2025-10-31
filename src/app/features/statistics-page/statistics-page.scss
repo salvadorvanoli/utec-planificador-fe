@@ -1,0 +1,17 @@
+.statistics-page-container {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem 4rem 1rem;
+  
+  @media (min-width: 768px) {
+    padding: 3rem 2rem 5rem 2rem;
+  }
+  
+  app-report-panel {
+    display: block;
+    margin-top: 3rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

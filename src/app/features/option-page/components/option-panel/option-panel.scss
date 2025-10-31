@@ -1,3 +1,325 @@
-:host ::ng-deep app-color-block > div {
-  border-radius: 20px !important;
+.option-panel-container {
+  width: 100%;
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.option-panel-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+ 
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.menu-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #00A9E0 0%, #0088b8 100%);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 169, 224, 0.2);
+    border-color: #00A9E0;
+
+    &::before {
+      transform: scaleX(1);
+    }
+
+    .card-icon {
+       
+      color: #ffffff;
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .card-title {
+      color: #00A9E0;
+    }
+  }
+
+  &:active {
+    transform: translateY(-4px);
+  }
+}
+
+.card-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+
+  i {
+    font-size: 2.5rem;
+    color: #00A9E0;
+    transition: color 0.3s ease;
+  }
+}
+
+.card-title {
+  font-family: 'UTEC Gruesa 3.0', system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 0.75rem 0;
+  transition: color 0.3s ease;
+}
+
+.card-description {
+  font-family: 'UTEC Light 3.0', system-ui, sans-serif;
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin: 0;
+  line-height: 1.5;
+}
+
+ 
+.itr-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.itr-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, #00A9E0 0%, #0088b8 100%);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateX(8px);
+    box-shadow: 0 8px 20px rgba(0, 169, 224, 0.2);
+    border-color: #00A9E0;
+
+    &::before {
+      transform: scaleY(1);
+    }
+
+    .itr-icon {
+      background: #00A9E0;
+      
+      i {
+        color: #ffffff;
+        transform: scale(1.15);
+      }
+    }
+
+    .itr-title {
+      color: #00A9E0;
+    }
+  }
+
+  &:active {
+    transform: translateX(4px);
+  }
+}
+
+.itr-icon {
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+
+  i {
+    font-size: 2rem;
+    color: #00A9E0;
+    transition: all 0.3s ease;
+  }
+}
+
+.itr-content {
+  flex: 1;
+  text-align: left;
+}
+
+.itr-title {
+  font-family: 'UTEC Gruesa 3.0', system-ui, sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 0.5rem 0;
+  transition: color 0.3s ease;
+}
+
+.itr-subtitle {
+  font-family: 'UTEC Light 3.0', system-ui, sans-serif;
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Skeleton cards */
+.skeleton-card {
+  cursor: default;
+  pointer-events: none;
+  
+  &:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: transparent;
+    
+    &::before {
+      transform: scaleX(0);
+    }
+    
+    .card-icon {
+      transform: none;
+    }
+  }
+  
+  .card-icon {
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+ 
+.skeleton-itr-card {
+  cursor: default;
+  pointer-events: none;
+  
+  &:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: transparent;
+    
+    &::before {
+      transform: scaleY(0);
+    }
+    
+    .itr-icon {
+      background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+      transform: none;
+      
+      i {
+        color: #00A9E0;
+        transform: none;
+      }
+    }
+  }
+  
+  .itr-icon {
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+ 
+@media (max-width: 768px) {
+  .option-panel-container {
+    padding: 2rem 1rem;
+  }
+
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .menu-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .card-icon {
+    width: 70px;
+    height: 70px;
+
+    i {
+      font-size: 2rem;
+    }
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+  }
+
+  .itr-card {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .itr-icon {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+
+    i {
+      font-size: 1.75rem;
+    }
+  }
+
+  .itr-title {
+    font-size: 1.5rem;
+  }
+
+  .itr-subtitle {
+    font-size: 0.9rem;
+  }
 }

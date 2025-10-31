@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, inject, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
-import { Router } from '@angular/router'; 
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 
 type Color = 'blue' | 'black';
 
@@ -9,6 +10,11 @@ interface MenuOption {
   id: string;
   name: string;
   icon: string;
+}
+
+interface BreadcrumbConfig {
+  route: string;
+  breadcrumb: string[];
 }
 
 @Component({
@@ -26,31 +32,41 @@ interface MenuOption {
 })
 export class DropDown {
   readonly color = input<Color>('blue');
-  private readonly router = inject(Router); 
+  private readonly router = inject(Router);
 
-  private readonly _options = signal<MenuOption[]>([
-    { 
-      id: 'home', 
-      name: 'Home', 
-      icon: 'pi pi-home'
-    },
-    {
-      id: 'chart',
-      name: 'Chart',
-      icon: 'pi pi-chart-bar'
-    },
-    {
-      id: 'users',
-      name: 'Users',
-      icon: 'pi pi-users'
-    },
-    {
-      id: 'comments',
-      name: 'Comments',
-      icon: 'pi pi-comments'
-    }
-  ]);
+  private readonly routeToBreadcrumb: BreadcrumbConfig[] = [
+    { route: '/home', breadcrumb: ['home'] },
+    { route: '/option-page', breadcrumb: ['home', 'menu'] },
+    { route: '/course-catalog', breadcrumb: ['home', 'menu', 'catalog'] },
+    { route: '/planner', breadcrumb: ['home', 'menu', 'catalog', 'planner'] },
+    { route: '/statistics-page', breadcrumb: ['home', 'menu', 'catalog', 'statistics'] },
+    { route: '/chat-page', breadcrumb: ['home', 'menu', 'chat'] },
+    { route: '/assign-page', breadcrumb: ['home', 'menu', 'itr', 'assign'] },
+  ];
 
+  private readonly allOptions: MenuOption[] = [
+    { id: 'home', name: 'Home', icon: 'pi pi-home' },
+    { id: 'menu', name: 'Menu', icon: 'pi pi-bars' },
+    { id: 'catalog', name: 'Catalog', icon: 'pi pi-search' },
+    { id: 'planner', name: 'Planner', icon: 'pi pi-calendar' },
+    { id: 'chat', name: 'Chat', icon: 'pi pi-comment' },
+    { id: 'statistics', name: 'Statistics', icon: 'pi pi-chart-bar' },
+    { id: 'itr', name: 'ITR', icon: 'pi pi-map-marker' },
+    { id: 'assign', name: 'Assign', icon: 'pi pi-users' },
+  ];
+
+  private readonly idToRoute: Record<string, { path: string; queryParams?: any }> = {
+    home: { path: '/home' },
+    menu: { path: '/option-page', queryParams: { mainMenu: true } },
+    catalog: { path: '/course-catalog', queryParams: { docente: false, mode: 'info' } },
+    planner: { path: '/planner' },
+    statistics: { path: '/statistics-page' },
+    chat: { path: '/chat-page' },
+    itr: { path: '/option-page', queryParams: { mainMenu: false } },
+    assign: { path: '/assign-page' },
+  };
+
+  readonly _options = signal<MenuOption[]>([]);
   options = this._options;
   selectedId = signal('home');
   isDropdownOpen = signal(false);
@@ -59,19 +75,54 @@ export class DropDown {
     this.isDropdownOpen() ? 'pi pi-caret-down' : 'pi pi-caret-left'
   );
 
+  constructor() {
+    this.updateBreadcrumbFromRoute(this.router.url);
+
+    this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        this.updateBreadcrumbFromRoute(event.urlAfterRedirects);
+      });
+  }
+
+  private updateBreadcrumbFromRoute(url: string): void {
+    const [cleanUrl, queryString] = url.split('?');
+    const params = new URLSearchParams(queryString || '');
+
+    let config = this.routeToBreadcrumb.find((config) => config.route === cleanUrl);
+
+    if (cleanUrl === '/option-page' && params.get('mainMenu') === 'false') {
+      config = { route: '/option-page', breadcrumb: ['home', 'menu', 'itr'] };
+    }
+
+    if (config) {
+      const breadcrumbOptions = config.breadcrumb
+        .map((id) => this.allOptions.find((opt) => opt.id === id))
+        .filter((opt): opt is MenuOption => opt !== undefined);
+
+      this._options.set(breadcrumbOptions);
+
+      const lastId = config.breadcrumb[config.breadcrumb.length - 1];
+      this.selectedId.set(lastId);
+    } else {
+      this._options.set([this.allOptions[0]]);
+      this.selectedId.set('home');
+    }
+  }
+
   updateSelection(id: string) {
     if (this.selectedId() === id) {
       this.selectedId.set('');
       setTimeout(() => this.selectedId.set(id), 0);
     }
-    if (id === 'chart') {
-      this.router.navigate(['/statistics-page']);
-    } else if (id === 'home') {
-      this.router.navigate(['/option-page'], { queryParams: { mainMenu: true } });
-    } else if (id === 'comments') {
-      this.router.navigate(['/chat-page']);
-    } else if (id === 'users') {
-      this.router.navigate(['/course-catalog'], { queryParams: { alumno: true } });
+
+    const routeConfig = this.idToRoute[id];
+    if (routeConfig) {
+      if (routeConfig.queryParams) {
+        this.router.navigate([routeConfig.path], { queryParams: routeConfig.queryParams });
+      } else {
+        this.router.navigate([routeConfig.path]);
+      }
     }
   }
 
@@ -79,3 +130,5 @@ export class DropDown {
     this.isDropdownOpen.set(isOpen);
   }
 }
+
+

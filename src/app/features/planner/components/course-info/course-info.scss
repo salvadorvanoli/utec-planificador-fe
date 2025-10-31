@@ -1,5 +1,4 @@
-/* ...existing code... */
-
+ 
 .select-col {
   align-self: flex-start;
   min-height: 0;
@@ -9,13 +8,82 @@
   gap: 0.25rem;
 }
 
-/* evitar que el grid estire las filas */
+ 
+$border-color: #646060;
+$border-width: 1px;
+$text-color: #1a1a1a;  
+ 
+:host ::ng-deep .p-inputtext {
+  border: $border-width solid $border-color !important;
+  color: $text-color !important;
+}
+
+:host ::ng-deep .p-inputtext:enabled:hover {
+  border-color: $border-color !important;
+  color: $text-color !important;
+}
+
+:host ::ng-deep .p-inputtext:enabled:focus {
+  border-color: $border-color !important;
+  color: $text-color !important;
+  box-shadow: 0 0 0 0.2rem rgba(56, 55, 55, 0.25) !important;
+}
+
+ 
+:host ::ng-deep .p-floatlabel label {
+  color: rgba(26, 26, 26, 0.6) !important;
+}
+
+:host ::ng-deep .p-floatlabel:has(.p-inputtext:focus) label {
+  color: $text-color !important;
+}
+
+ 
+:host ::ng-deep app-select .p-select,
+:host ::ng-deep app-select .p-dropdown,
+:host ::ng-deep .p-select,
+:host ::ng-deep .p-dropdown {
+  border: $border-width solid $border-color !important;
+}
+
+:host ::ng-deep app-select .p-select:hover,
+:host ::ng-deep app-select .p-dropdown:hover,
+:host ::ng-deep .p-select:hover,
+:host ::ng-deep .p-dropdown:hover {
+  border-color: $border-color !important;
+}
+
+:host ::ng-deep app-select .p-select.p-focus,
+:host ::ng-deep app-select .p-dropdown.p-focus,
+:host ::ng-deep .p-select.p-focus,
+:host ::ng-deep .p-dropdown.p-focus {
+  border-color: $border-color !important;
+  box-shadow: 0 0 0 0.2rem rgba(56, 55, 55, 0.25) !important;
+}
+
+ 
+:host ::ng-deep app-select .p-select .p-select-label,
+:host ::ng-deep app-select .p-dropdown .p-dropdown-label,
+:host ::ng-deep .p-select .p-select-label,
+:host ::ng-deep .p-dropdown .p-dropdown-label {
+  color: $text-color !important;
+}
+
+ 
+:host ::ng-deep app-select .p-select .p-select-label.p-placeholder,
+:host ::ng-deep app-select .p-dropdown .p-dropdown-label.p-placeholder,
+:host ::ng-deep .p-select .p-select-label.p-placeholder,
+:host ::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+  color: rgba(26, 26, 26, 0.5) !important;
+}
+
+ 
 :host ::ng-deep .grid {
   align-items: start;
   grid-auto-rows: auto;
 }
 
-/* que el componente select no se estire al alto del contenedor */
+ 
 :host ::ng-deep .select-col app-select {
   display: block !important;
   height: auto !important;
@@ -23,7 +91,7 @@
   align-self: flex-start !important;
 }
 
-/* forzar altura compacta dentro del app-select (PrimeNG internals) */
+ 
 :host ::ng-deep .select-col app-select .p-dropdown,
 :host ::ng-deep .select-col app-select .p-inputtext,
 :host ::ng-deep .select-col app-select .p-dropdown .p-dropdown-label {
@@ -37,37 +105,72 @@
   align-items: center;
 }
 
-/* prevenir que wrappers ancestros empujen la altura */
+ 
 :host ::ng-deep .select-col > * {
   height: auto !important;
   min-height: 0 !important;
 }
 
-/* Estilos para los rectángulos de preview con borde y título centrado */
+ 
 .preview-rect {
-  border: 1px solid #383737;
-  box-shadow: none; /* opcional: si no querés sombra adicional */
+  border: $border-width solid $border-color;  
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: box-shadow 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
 }
 
-/* Título centrado arriba */
+ 
 .preview-title {
   text-align: center;
   font-weight: 600;
   font-size: 1rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: #1a1a1a;
 }
 
 .preview-sep {
   width: 100%;
   height: 2px;
-  background: #000;
-  margin: 0.25rem 0;
+  background: linear-gradient(90deg, transparent 0%, #383737 50%, transparent 100%);
+  margin: 0;
 }
 
 .preview-body {
   flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+ 
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.25rem;
+}
+
+ 
+.tag-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #a5e5fa 0%, #8ddbf7 100%);
+  color: white;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 169, 224, 0.2);
+  transition: all 0.2s ease;
+  cursor: default;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 169, 224, 0.3);
+  }
 }

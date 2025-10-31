@@ -1,5 +1,4 @@
 :host ::ng-deep {
-  // Estilos del botón principal
   .p-select {
     background-color: var(--dropdown-bg-color);
     padding-inline: 0.25rem;
@@ -7,7 +6,7 @@
     height: 3rem;
     min-width: 5rem;
     justify-content: center;
-    border: 2px solid var(--dropdown-border-color) !important;
+    border: 2px solid var(--dropdown-border-color, #00A9E0) !important;
 
     .p-select-label {
       display: none !important;
@@ -22,10 +21,8 @@
     }
   }
 
-  // Estilos del dropdown 
   .p-select-overlay, 
   .p-select-panel .p-select-overlay {
-    // Mueve las declaraciones arriba de las reglas anidadas para evitar la advertencia de Sass
     width: 60px !important;
     min-width: 60px !important;
     border-radius: 0 0 23px 23px !important;
@@ -35,18 +32,15 @@
     max-height: none !important; 
     height: auto !important;
     border: 1px solid #000000 !important;
-    box-shadow: 0px 0px 5px #0000009E !important; 
+    box-shadow: none !important; 
     --p-select-option-selected-background: var(--dropdown-overlay-bg) !important; 
     --p-select-option-focus-background: var(--dropdown-hover-color) !important; 
     --p-select-option-selected-focus-background: var(--dropdown-overlay-bg) !important;
 
-    &.p-connected-overlay {
-      transform: translateX(0) !important; 
-      left: 50% !important; 
-      margin-left: -30px !important; 
-    }
+    left: 6px !important;
+    right: 6px !important;
+    top: -1px !important;
     
-    // Contenedor de elementos 
     .p-select-items-wrapper {
       max-height: none !important;
       height: auto !important;
@@ -94,7 +88,6 @@
     box-shadow: none !important;
   }
 
-  // Item logo 
   .logo-item {
     display: flex !important;
     align-items: center !important;
@@ -109,7 +102,6 @@
     }
   }
 
-  // Imagen
   .logo-img {
     display: block !important;
     object-fit: contain !important;
@@ -124,14 +116,16 @@
     box-shadow: none !important;
   }
 
-  // Estilo para iconos PrimeNG
   .prime-icon {
     font-size: 28px !important;
     color: white !important;
+    
+    &.active-icon {
+      color: #00A9E0 !important;
+    }
   }
 }
 
-// Clase de accesibilidad
 .visually-hidden {
   position: absolute;
   width: 1px;

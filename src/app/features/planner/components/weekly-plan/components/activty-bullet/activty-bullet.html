@@ -7,7 +7,13 @@
 
   <!-- Columna derecha-->
   <div class="content">
-    <span class="title">{{ title() }}</span>
+    <div class="content-header">
+      <span class="title">{{ title() }}</span>
+      <div class="action-icons">
+        <i class="pi pi-pencil" title="Editar" role="button" aria-label="Editar actividad"></i>
+        <i class="pi pi-trash" title="Eliminar" role="button" aria-label="Eliminar actividad"></i>
+      </div>
+    </div>
     <span class="subtitle">{{ content() }}</span>
   </div>
 </div>

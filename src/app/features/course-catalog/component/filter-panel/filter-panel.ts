@@ -11,12 +11,12 @@ import { Selector } from '@app/shared/components/select/select'
 })
 
 export class FilterPanel {
-  readonly alumno = input<boolean>(false);
-  readonly alumnoState = signal<boolean>(false);
+  readonly docente = input<boolean>(false);
+  readonly docenteState = signal<boolean>(false);
 
   constructor() {
     effect(() => {
-      this.alumnoState.set(this.alumno());
+      this.docenteState.set(this.docente());
     });
   }
 }

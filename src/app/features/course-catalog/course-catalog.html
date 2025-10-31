@@ -1,15 +1,14 @@
-<app-header></app-header>
-
+ 
 <app-section-header
     text="Unidades curriculares"
-    [color]="alumno() ? 'blue' : 'black'"
+    [color]="'blue'"
     [showIcon]="true"
     [infoType]="InfoType.CURRICULAR_UNITS"
 />
 
 <div class="container">
-    <app-filter-panel [alumno]="alumno()"></app-filter-panel>
-    <app-content-panel></app-content-panel>  
+    <app-filter-panel [docente]="docente()"></app-filter-panel>
+    <app-content-panel [docente]="docente()"></app-content-panel>  
 </div>
 
  

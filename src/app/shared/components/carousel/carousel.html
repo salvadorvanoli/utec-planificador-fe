@@ -1,0 +1,25 @@
+@if (noticias().length === 0) {
+  <span>No hay noticias disponibles</span>
+} @else {
+  <p-carousel [value]="noticias()" [numVisible]="2" [numScroll]="1" [circular]="false" class="utec-carousel">
+    <ng-template let-item pTemplate="item">
+      <div class="border border-surface rounded-border m-2 p-4">
+        <div class="mb-4">
+          <div class="relative mx-auto">
+            <img 
+              [ngSrc]="item.image"
+              width="600"
+              height="300"
+              [alt]="item.title"
+              class="w-full rounded-border carousel-image"
+              decoding="async"
+              loading="lazy"
+            />
+          </div>
+        </div>
+        <div class="mb-2 font-bold text-lg carousel-title">{{ item.title }}</div>
+        <div class="carousel-subtitle text-sm text-gray-700">{{ item.subtitle }}</div>
+      </div>
+    </ng-template>
+  </p-carousel>
+}

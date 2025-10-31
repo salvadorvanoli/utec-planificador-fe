@@ -1,11 +1,14 @@
 :host ::ng-deep .p-paginator {
+    --p-paginator-nav-button-selected-background: #00A9E0 !important;
+   --p-paginator-nav-button-selected-color: rgb(255, 255, 255) !important;
+ 
   .p-paginator-page,
   .p-paginator-first,
   .p-paginator-prev,
   .p-paginator-next,
   .p-paginator-last {
     &:hover {
-      background: #00A9E0 !important;
+      background: #bee7f5 !important;
       color: #fff !important;
     }
   }
@@ -19,9 +22,10 @@
 :host ::ng-deep .p-paginator .p-paginator-page.p-highlight {
   color: #00A9E0; 
   background: #00A9E0; 
+  --p-paginator-nav-button-focus-ring-shadow: 0 0 0 0.2rem rgba(0, 169, 224, 0.5);
 }
 
-
+ 
 
 
 

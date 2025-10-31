@@ -9,11 +9,12 @@
     aria-label="Seleccionar opción"
     [dropdownIcon]="dropdownIcon()"
     class="w-full md:w-56"
+    (onShow)="setDropdownState(true)"
     (onHide)="setDropdownState(false)">
 
     <ng-template pTemplate="item" let-option>
       <div class="logo-item" role="option" (click)="updateSelection(option.id)">
-        <i [class]="option.icon" class="prime-icon"></i>
+        <i [class]="option.icon" class="prime-icon" [class.active-icon]="option.id === selectedId()"></i>
         <span class="visually-hidden">{{ option.name }}</span>
       </div>
     </ng-template>

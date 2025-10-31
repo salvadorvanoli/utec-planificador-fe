@@ -1,4 +1,8 @@
-<div class="grid grid-cols-1 sm:grid-cols-2 mb-6 gap-6 w-fit mx-auto">
+<div class="data-panel-wrapper">
+  <!-- Título para el primer par de gráficos -->
+  <h2 class="section-title">Análisis de Habilidades Intelectuales y Competencias</h2>
+  
+  <div class="data-panel-container grid grid-cols-1 sm:grid-cols-2 mb-6 gap-8 w-fit mx-auto">
     <!-- Card 1: Procesos cognitivos -->
     <app-chart-card
         [titulo]="'Procesos cognitivos'"
@@ -16,7 +20,12 @@
         [colors]="['#22C55E', '#F43F5E', '#FACC15']"
         [hoverColors]="['#4ADE80', '#FB7185', '#FDE047']"
     ></app-chart-card>
+  </div>
 
+  <!-- Título para el segundo par de gráficos -->
+  <h2 class="section-title">Modalidades de Ejecución y Recursos Utilizados</h2>
+  
+  <div class="data-panel-container grid grid-cols-1 sm:grid-cols-2 mb-6 gap-8 w-fit mx-auto">
     <!-- Card 3: Modalidad de las actividades -->
     <app-chart-card
         [titulo]="'Modalidad de las actividades'"
@@ -34,4 +43,5 @@
         [colors]="['#F43F5E', '#22C55E', '#00A9E0']"
         [hoverColors]="['#FB7185', '#4ADE80', '#38CFF5']"
     ></app-chart-card>
+  </div>
 </div>

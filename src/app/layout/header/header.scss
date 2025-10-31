@@ -1,35 +1,66 @@
-/* header negro con logo, texto portal académico e ícono de perfil */
 .app-header-rect {
+  position: relative;  
   width: 100%;
-  background-color: #000;
+ 
+  background: var(--header-bg, rgb(52, 58, 64));
   display: flex;
   align-items: center;
-  justify-content: space-between; /* espacia logo y contenido derecho */
+  justify-content: space-between; 
   padding: 0.75rem 1.5rem;
   box-sizing: border-box;
   height: auto;
   min-height: 60px;
 }
 
-/* logo UTEC */
-.header-logo {
-  height: 40px;
-  width: auto;
-  max-height: 50px;
+ 
+.app-header-rect::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--header-underline, transparent);
+  pointer-events: none;
+  transition: background 0.3s ease;
 }
 
-/* contenedor derecho: texto + ícono */
+ 
+.header-logo {
+  height: 90px;
+  width: auto;
+  max-height: 90px;
+  margin-left: 1.5rem;
+}
+
+ 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
+  margin-right: 2rem;
 }
 
-/* texto "ir al portal académico" */
+ 
+.header-right ::ng-deep app-button {
+  .p-button {
+    white-space: nowrap !important;  
+    min-width: 200px !important; 
+    padding: 0.6rem 1.5rem !important;  
+    font-weight: 700 !important;  
+  }
+  
+  .p-button-label {
+    font-weight: 700 !important;  
+    white-space: nowrap !important;
+  }
+}
+
+ 
 .portal-text {
   color: #fff;
   font-family: 'UTEC Text Light', Arial, sans-serif;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 300;
   cursor: pointer;
   transition: opacity 150ms ease;
@@ -39,10 +70,10 @@
   opacity: 0.8;
 }
 
-/* ícono de perfil */
+ 
 .profile-icon {
   color: #fff;
-  font-size: 1.25rem;
+  font-size: 2rem;
   cursor: pointer;
   transition: color 150ms ease, transform 150ms ease;
 }
@@ -50,4 +81,84 @@
 .profile-icon:hover {
   color: #ddd;
   transform: translateY(-1px);
+}
+
+ 
+@media (max-width: 768px) {
+  .app-header-rect {
+    padding: 0.5rem 1rem;
+    min-height: 50px;
+  }
+
+  .header-logo {
+    height: 50px;
+    max-height: 50px;
+    margin-left: 0.5rem;
+  }
+
+  .header-right {
+    gap: 1rem;
+  }
+
+  .portal-text {
+    font-size: 1rem;
+  }
+
+  .profile-icon {
+    font-size: 1.5rem;
+  }
+
+ 
+  .header-right ::ng-deep app-button {
+    font-size: 0.7rem !important;
+  }
+
+  .header-right ::ng-deep app-button .p-button {
+    padding: 0.3rem 0.7rem !important;
+    min-width: 150px !important;
+    font-size: 0.7rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header-rect {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .header-logo {
+    height: 40px;
+    max-height: 40px;
+    margin-left: 0;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .portal-text {
+    font-size: 0.875rem;
+  }
+
+  .profile-icon {
+    font-size: 1.25rem;
+  }
+
+ 
+  .header-right ::ng-deep app-button {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .header-right ::ng-deep app-button .p-button {
+    width: 100% !important;
+    min-width: auto !important;
+    padding: 0.4rem 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
 }

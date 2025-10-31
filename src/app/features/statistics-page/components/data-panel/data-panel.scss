@@ -1,0 +1,58 @@
+.data-panel-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem 1rem;
+}
+
+.section-title {
+    font-family: 'UTEC Gruesa 3.0', system-ui, sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #000000;
+    text-align: center;
+    margin: 2rem 0 1.5rem 0;
+    position: relative;
+    padding-bottom: 0.75rem;
+
+    &:first-child {
+        margin-top: 0.5rem;
+    }
+
+    &:nth-child(3) {
+        margin-top: 3rem;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #00A9E0 0%, #0088b8 100%);
+        border-radius: 2px;
+    }
+
+ 
+    @media (max-width: 768px) {
+        font-size: 1.5rem;
+        margin: 1.5rem 0 1rem 0;
+
+        &:first-child {
+            margin-top: 0.5rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        font-size: 1.25rem;
+    }
+}
+
+.data-panel-container {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CourseCard } from '../../../../shared/components/course-card/course-card';
 import { Searchbar } from '../../../../shared/components/searchbar/searchbar';
 import { Paginator } from '../../../../shared/components/paginator/paginator';
@@ -10,5 +10,5 @@ import { Paginator } from '../../../../shared/components/paginator/paginator';
   styleUrl: './content-panel.scss'
 })
 export class ContentPanel {
-
+  readonly docente = input<boolean>(false);
 }

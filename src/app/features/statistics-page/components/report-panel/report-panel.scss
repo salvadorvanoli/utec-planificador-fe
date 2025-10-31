@@ -1,3 +1,18 @@
+:host {
+  display: block;
+}
+
+app-color-block {
+  height: auto !important;
+  
+  ::ng-deep .color-container {
+    height: auto !important;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+  }
+}
+
 .edu-bot-title {
   color: #00A9E0;
   font-family: 'UTEC Gruesa 3.0', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -14,4 +29,18 @@
   font-size: 2rem;
   text-align: left;
   width: 100%;
+}
+
+ 
+ 
+:host ::ng-deep app-button {
+  height: 48px;  
+  display: block;
+}
+
+ 
+:host ::ng-deep app-button .p-button {
+  height: 48px !important;
+  display: flex;
+  align-items: center;
 }

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AutoComplete } from 'primeng/autocomplete';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
 
 interface AutoCompleteCompleteEvent {
     originalEvent: Event;
@@ -11,7 +13,7 @@ interface AutoCompleteCompleteEvent {
     selector: 'app-searchbar',
     templateUrl: './searchbar.html',
     styleUrl: './searchbar.scss',
-    imports: [AutoComplete, FormsModule],
+    imports: [AutoComplete, FormsModule, IconField, InputIcon],
     standalone: true,
 })
 export class Searchbar {

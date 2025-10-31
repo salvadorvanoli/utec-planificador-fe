@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ActivitySection } from './activity-section';
+import { TitleAndBackground } from './title-and-background';
 
-describe('ActivitySection', () => {
-  let component: ActivitySection;
-  let fixture: ComponentFixture<ActivitySection>;
+describe('TitleAndBackground', () => {
+  let component: TitleAndBackground;
+  let fixture: ComponentFixture<TitleAndBackground>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ActivitySection]
+      imports: [TitleAndBackground]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ActivitySection);
+    fixture = TestBed.createComponent(TitleAndBackground);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

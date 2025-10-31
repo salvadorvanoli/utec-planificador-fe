@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { InfoButton } from './components/info-button/info-button';
 import { DropDown } from './components/drop-down/drop-down';
 import { type InfoTypeValue } from '@app/core/enums/info';
-
+import { BreadcrumbComponent } from '@app/shared/components/breadcrumb/breadcrumb';
 type Color = 'blue' | 'black';
 
 @Component({

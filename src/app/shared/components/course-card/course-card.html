@@ -1,6 +1,6 @@
-<div class="rectangle-9 flex gap-5" (click)="navigateToPlanner()">
+<div class="rectangle-9 flex gap-5" (click)="handleCardClick()">
   @if (isLoading()) {
-    <!-- Skeletons que ocupan el 100% de los divs -->
+    <!-- Skeletons -->
     <!-- Columna izquierda -->
     <div class="flex flex-col gap-3 w-8/10">
       <div class="flex gap-4">
@@ -17,7 +17,9 @@
     <!-- Columna derecha -->
     <div class="flex w-2/10 justify-center items-center">
       @if (assignState() == false) {
-        <p-skeleton width="24px" height="24px" shape="circle"></p-skeleton>
+        @if (shouldShowPdfIcon()) {
+          <p-skeleton width="24px" height="24px" shape="circle"></p-skeleton>
+        }
       } @else {
         <p-skeleton width="20px" height="20px"></p-skeleton>
       }
@@ -40,7 +42,9 @@
     <!-- Columna derecha -->
     <div class="flex w-2/10 justify-center items-center">
       @if (assignState() == false) {
-        <i class="pi pi-file-pdf text-red-600 pdf-icon" aria-label="PDF"></i>
+        @if (shouldShowPdfIcon()) {
+          <i class="pi pi-file-pdf text-00A9E0-600 pdf-icon" aria-label="PDF"></i>
+        }
       } @else {
         <p-checkbox [(ngModel)]="checked" [binary]="true" />
       }
