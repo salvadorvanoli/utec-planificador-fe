@@ -10,23 +10,57 @@ import { environment } from '../../../environments/environment';
 export class PositionService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/user`;
+  private readonly STORAGE_KEY = 'selected_context';
 
   readonly userPositions = signal<UserPositionsResponse | null>(null);
-  readonly selectedContext = signal<SelectedContext | null>(null);
+  readonly selectedContext = signal<SelectedContext | null>(this.loadContextFromStorage());
   readonly availableITRs = signal<RegionalTechnologicalInstitute[]>([]);
   readonly availableCampuses = signal<Campus[]>([]);
   readonly availableRoles = signal<string[]>([]);
 
+  private loadContextFromStorage(): SelectedContext | null {
+    try {
+      const stored = sessionStorage.getItem(this.STORAGE_KEY);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (error) {
+      console.error('[PositionService] Error loading context from storage:', error);
+    }
+    return null;
+  }
+
+  private saveContextToStorage(context: SelectedContext | null): void {
+    try {
+      if (context) {
+        sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(context));
+      } else {
+        sessionStorage.removeItem(this.STORAGE_KEY);
+      }
+    } catch (error) {
+      console.error('[PositionService] Error saving context to storage:', error);
+    }
+  }
+
   getUserPositions(): Observable<UserPositionsResponse> {
-    console.log('[PositionService] Fetching user positions from:', `${this.apiUrl}/positions`);
+    const storedContext = this.selectedContext();
+
     return this.http.get<UserPositionsResponse>(`${this.apiUrl}/positions`, {
       withCredentials: true
     }).pipe(
       tap(response => {
-        console.log('[PositionService] Response received:', response);
         this.userPositions.set(response);
         this.extractITRs(response);
-        console.log('[PositionService] Available ITRs:', this.availableITRs());
+
+        if (storedContext) {
+          if (storedContext.itr) {
+            this.selectITR(storedContext.itr, false);
+          }
+
+          if (storedContext.campus) {
+            this.selectCampus(storedContext.campus, false);
+          }
+        }
       })
     );
   }
@@ -44,13 +78,14 @@ export class PositionService {
     });
 
     this.availableITRs.set(Array.from(itrMap.values()));
-    console.log('[PositionService] Extracted ITRs:', Array.from(itrMap.values()));
   }
 
-  selectITR(itr: RegionalTechnologicalInstitute): void {
-    console.log('[PositionService] Selecting ITR:', itr);
+  selectITR(itr: RegionalTechnologicalInstitute, save: boolean = true): void {
     const positions = this.userPositions();
-    if (!positions) return;
+
+    if (!positions) {
+      return;
+    }
 
     const campusMap = new Map<number, Campus>();
 
@@ -66,17 +101,19 @@ export class PositionService {
     });
 
     this.availableCampuses.set(Array.from(campusMap.values()));
-    console.log('[PositionService] Available campuses for ITR:', Array.from(campusMap.values()));
 
-    if (this.selectedContext()) {
-      this.selectedContext.update(ctx => ctx ? { ...ctx, itr } : null);
-    } else {
-      this.selectedContext.set({ itr, campus: null as any, roles: [] });
+    const newContext = this.selectedContext()
+      ? { ...this.selectedContext()!, itr }
+      : { itr, campus: null as any, roles: [] };
+
+    this.selectedContext.set(newContext);
+
+    if (save) {
+      this.saveContextToStorage(newContext);
     }
   }
 
-  selectCampus(campus: Campus): void {
-    console.log('[PositionService] Selecting Campus:', campus);
+  selectCampus(campus: Campus, save: boolean = true): void {
     const positions = this.userPositions();
     const context = this.selectedContext();
     if (!positions || !context) return;
@@ -94,34 +131,35 @@ export class PositionService {
     });
 
     this.availableRoles.set(roles);
-    console.log('[PositionService] Available roles for campus:', roles);
-    this.selectedContext.update(ctx =>
-      ctx ? { ...ctx, campus, roles } : null
-    );
+
+    const newContext = { ...context, campus, roles };
+    this.selectedContext.set(newContext);
+
+    if (save) {
+      this.saveContextToStorage(newContext);
+    }
   }
 
   clearSelection(): void {
     this.selectedContext.set(null);
     this.availableCampuses.set([]);
     this.availableRoles.set([]);
+    this.saveContextToStorage(null);
   }
 
   clearCampusSelection(): void {
     this.availableCampuses.set([]);
     this.availableRoles.set([]);
-    if (this.selectedContext()) {
-      this.selectedContext.update(ctx =>
-        ctx ? { ...ctx, campus: null as any, roles: [] } : null
-      );
-    }
+    this.selectedContext.set(null);
+    this.saveContextToStorage(null);
   }
 
   clearRolesSelection(): void {
     this.availableRoles.set([]);
     if (this.selectedContext()) {
-      this.selectedContext.update(ctx =>
-        ctx ? { ...ctx, roles: [] } : null
-      );
+      const newContext = { ...this.selectedContext()!, roles: [] };
+      this.selectedContext.set(newContext);
+      this.saveContextToStorage(newContext);
     }
   }
 }

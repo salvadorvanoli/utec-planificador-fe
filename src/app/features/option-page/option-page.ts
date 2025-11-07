@@ -16,38 +16,50 @@ type SelectionStep = 'itr' | 'campus' | 'main-menu';
 })
 export class OptionPage implements OnInit {
   readonly InfoType = InfoType;
-  readonly step = signal<SelectionStep>('itr');
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   readonly positionService = inject(PositionService);
+  readonly step = signal<SelectionStep>(this.getInitialStep());
 
-  ngOnInit(): void {
-    console.log('[OptionPage] Component initialized');
-    this.route.queryParams.subscribe(query => {
-      console.log('[OptionPage] Query params:', query);
-      if (query['step'] === 'campus') {
-        console.log('[OptionPage] Setting step to campus');
-        this.step.set('campus');
-      } else if (query['step'] === 'main-menu' || query['mainMenu'] === 'true') {
-        console.log('[OptionPage] Setting step to main-menu');
-        this.step.set('main-menu');
-      } else {
-        console.log('[OptionPage] Loading positions');
-        this.loadPositions();
-      }
-    });
+  private getInitialStep(): SelectionStep {
+    const context = this.positionService.selectedContext();
+    if (context?.itr && context?.campus && context?.roles.length > 0) {
+      return 'main-menu';
+    } else if (context?.itr) {
+      return 'campus';
+    }
+    return 'itr';
   }
 
-  private loadPositions(): void {
+  ngOnInit(): void {
     this.positionService.getUserPositions().subscribe({
       next: () => {
-        console.log('[OptionPage] Positions loaded, setting step to itr');
-        this.step.set('itr');
+        this.route.queryParams.subscribe(query => {
+          if (query['step'] === 'campus') {
+            this.step.set('campus');
+          } else if (query['step'] === 'main-menu' || query['mainMenu'] === 'true') {
+            this.step.set('main-menu');
+          } else if (!query['step']) {
+            this.determineStepFromContext();
+          }
+        });
       },
       error: (error) => {
         console.error('[OptionPage] Error loading user positions:', error);
         this.router.navigate(['/home']);
       }
     });
+  }
+
+  private determineStepFromContext(): void {
+    const context = this.positionService.selectedContext();
+
+    if (context?.itr && context?.campus && context?.roles.length > 0) {
+      this.step.set('main-menu');
+    } else if (context?.itr) {
+      this.step.set('campus');
+    } else {
+      this.step.set('itr');
+    }
   }
 }

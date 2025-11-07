@@ -34,12 +34,13 @@ export class AuthService {
       next: () => {
         this.isAuthenticated.set(false);
         this.currentUser.set(null);
+        sessionStorage.clear();
         this.router.navigate(['/home']);
       },
       error: () => {
-        // Aunque falle, limpiamos el estado local
         this.isAuthenticated.set(false);
         this.currentUser.set(null);
+        sessionStorage.clear();
         this.router.navigate(['/home']);
       }
     });
