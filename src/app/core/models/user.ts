@@ -8,15 +8,15 @@ export interface User {
   id: number;
   utecEmail: string;
   personalData: PersonalData;
-  authProvider: string; 
+  authProvider: string;
   enabled: boolean;
   createdAt: string;
   updatedAt: string;
   lastLoginAt?: string;
-  positions?: Position[];
+  positions?: UserPosition[];
 }
 
-export interface Position {
+export interface UserPosition {
   id: number;
   role: string;
   isActive: boolean;

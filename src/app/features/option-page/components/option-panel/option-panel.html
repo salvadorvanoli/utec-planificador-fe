@@ -1,23 +1,105 @@
 <div class="option-panel-container">
   <div class="option-panel-wrapper">
-    @if (mainMenu()) {
-      <!-- Menú principal con grid de cards -->
-      <div class="menu-grid">
+    @if (step() === 'itr') {
+      <div class="selection-grid">
+        <h2 class="selection-title">Selecciona tu Instituto Tecnológico Regional</h2>
+
         @if (isLoading()) {
-          <!-- Skeletons de carga -->
           @for (item of [1, 2, 3]; track item) {
-            <div class="menu-card skeleton-card">
-              <div class="card-icon">
-                <p-skeleton shape="circle" size="4rem"></p-skeleton>
-              </div>
-              <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
-              <p-skeleton width="100%" height="1rem"></p-skeleton>
+            <div class="selection-card skeleton-card">
+              <p-skeleton shape="circle" size="4rem"></p-skeleton>
+              <p-skeleton width="70%" height="1.5rem"></p-skeleton>
             </div>
           }
         } @else {
-          @if (userType() === 'teacher') {
-            <!-- Cards para profesores -->
+          @if (positionService.availableITRs().length === 0) {
+            <div class="empty-state">
+              <div class="empty-icon">
+                <i class="pi pi-inbox"></i>
+              </div>
+              <h3 class="empty-title">No tienes posiciones asignadas</h3>
+              <p class="empty-description">
+                Actualmente no estás asignado a ningún Instituto Tecnológico Regional.
+                Por favor, contacta al administrador del sistema para que te asigne una posición.
+              </p>
+              <button class="back-button" (click)="goToHome()">
+                <i class="pi pi-home"></i>
+                Volver al inicio
+              </button>
+            </div>
+          } @else {
+            @for (itr of positionService.availableITRs(); track itr.id) {
+              <div class="selection-card" (click)="handleITRSelection(itr)">
+                <div class="card-icon">
+                  <i class="pi pi-building"></i>
+                </div>
+                <h3 class="card-title">{{ itr.name }}</h3>
+              </div>
+            }
+          }
+        }
+      </div>
+    }
 
+    @if (step() === 'campus') {
+      <div class="selection-grid">
+        <button class="back-navigation" (click)="goBackToITR()">
+          <i class="pi pi-arrow-left"></i>
+          Volver a selección de ITR
+        </button>
+
+        <h2 class="selection-title">Selecciona tu Campus</h2>
+
+        @if (isLoading()) {
+          @for (item of [1, 2]; track item) {
+            <div class="selection-card skeleton-card">
+              <p-skeleton shape="circle" size="4rem"></p-skeleton>
+              <p-skeleton width="70%" height="1.5rem"></p-skeleton>
+            </div>
+          }
+        } @else {
+          @for (campus of positionService.availableCampuses(); track campus.id) {
+            <div class="selection-card" (click)="handleCampusSelection(campus)">
+              <div class="card-icon">
+                <i class="pi pi-map-marker"></i>
+              </div>
+              <h3 class="card-title">{{ campus.name }}</h3>
+            </div>
+          }
+        }
+      </div>
+    }
+
+    @if (step() === 'main-menu') {
+      <div class="main-menu-container">
+        <button class="back-navigation" (click)="goBackToCampus()">
+          <i class="pi pi-arrow-left"></i>
+          Volver a selección de Campus
+        </button>
+
+        <div class="context-info">
+          <div class="context-item">
+            <i class="pi pi-building"></i>
+            <span>{{ positionService.selectedContext()?.itr?.name }}</span>
+          </div>
+          <div class="context-separator">→</div>
+          <div class="context-item">
+            <i class="pi pi-map-marker"></i>
+            <span>{{ positionService.selectedContext()?.campus?.name }}</span>
+          </div>
+        </div>
+
+        <div class="menu-grid">
+          @if (isLoading()) {
+            @for (item of [1, 2, 3]; track item) {
+              <div class="menu-card skeleton-card">
+                <p-skeleton shape="circle" size="4rem"></p-skeleton>
+                <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="1rem"></p-skeleton>
+              </div>
+            }
+          } @else {
+          @if (hasTeacherRole()) {
             <app-option-card
               icon="pi pi-calendar"
               title="Planificador"
@@ -40,30 +122,12 @@
             ></app-option-card>
           }
 
-          @if (userType() === 'student') {
-            <!-- Card para estudiantes -->
-            <app-option-card
-              icon="pi pi-book"
-              title="Información de Cursos"
-              description="Consulta información sobre tus cursos"
-              (click)="handleButtonClick('info-cursos')"
-            ></app-option-card>
-          }
-
-          @if (userType() === 'analyst') {
-            <!-- Cards para analistas -->
+          @if (hasCoordinatorRole()) {
             <app-option-card
               icon="pi pi-users"
               title="Asignar Cursos"
               description="Asigna docentes a los cursos"
               (click)="handleButtonClick('asignar-cursos')"
-            ></app-option-card>
-
-            <app-option-card
-              icon="pi pi-plus-circle"
-              title="Crear Cursos"
-              description="Configura nuevos cursos académicos"
-              (click)="handleButtonClick('crear-cursos')"
             ></app-option-card>
 
             <app-option-card
@@ -73,65 +137,17 @@
               (click)="handleButtonClick('estadistico')"
             ></app-option-card>
           }
+
+          @if (hasAnalystRole()) {
+            <app-option-card
+              icon="pi pi-book"
+              title="Información de Cursos"
+              description="Consulta información sobre los cursos"
+              (click)="handleButtonClick('info-cursos')"
+            ></app-option-card>
+          }
         }
       </div>
-    } @else {
-      <!-- Menú ITR con cards horizontales -->
-      <div class="itr-grid">
-        @if (isLoading()) {
-          <!-- Skeletons de carga para ITR -->
-          @for (item of [1, 2, 3, 4]; track item) {
-            <div class="itr-card skeleton-itr-card">
-              <div class="itr-icon">
-                <p-skeleton shape="circle" size="4rem"></p-skeleton>
-              </div>
-              <div class="itr-content">
-                <p-skeleton width="60%" height="1.75rem" styleClass="mb-2"></p-skeleton>
-                <p-skeleton width="80%" height="1rem"></p-skeleton>
-              </div>
-            </div>
-          }
-        } @else {
-          <div class="itr-card" (click)="handleItrClick('suroeste')">
-            <div class="itr-icon">
-              <i class="pi pi-building"></i>
-            </div>
-            <div class="itr-content">
-              <h3 class="itr-title">Suroeste</h3>
-              <p class="itr-subtitle">Instituto Tecnológico Regional</p>
-            </div>
-          </div>
-
-          <div class="itr-card" (click)="handleItrClick('centro-sur')">
-            <div class="itr-icon">
-              <i class="pi pi-building"></i>
-            </div>
-            <div class="itr-content">
-              <h3 class="itr-title">Centro-sur</h3>
-              <p class="itr-subtitle">Instituto Tecnológico Regional</p>
-            </div>
-          </div>
-
-          <div class="itr-card" (click)="handleItrClick('este')">
-            <div class="itr-icon">
-              <i class="pi pi-building"></i>
-            </div>
-            <div class="itr-content">
-              <h3 class="itr-title">Este</h3>
-              <p class="itr-subtitle">Instituto Tecnológico Regional</p>
-            </div>
-          </div>
-
-          <div class="itr-card" (click)="handleItrClick('norte')">
-            <div class="itr-icon">
-              <i class="pi pi-building"></i>
-            </div>
-            <div class="itr-content">
-              <h3 class="itr-title">Norte</h3>
-              <p class="itr-subtitle">Instituto Tecnológico Regional</p>
-            </div>
-          </div>
-        }
       </div>
     }
   </div>

@@ -11,14 +11,19 @@ import { Planner } from './features/planner/planner';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  // Redirect root to home
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 
-  // Home
   { path: 'home', component: Home },
 
-  // Login
   { path: 'login', component: Login },
+
+  {
+    path: 'student',
+    component: MainLayout,
+    children: [
+      { path: 'courses', component: CourseCatalog }
+    ]
+  },
 
   {
     path: '',

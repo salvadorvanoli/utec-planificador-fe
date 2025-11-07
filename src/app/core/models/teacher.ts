@@ -1,6 +1,6 @@
-import { Position } from './user';
+import { UserPosition } from './user';
 import { Course } from './course';
 
-export interface Teacher extends Position {
+export interface Teacher extends UserPosition {
   courses?: Course[];
 }

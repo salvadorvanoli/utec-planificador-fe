@@ -56,8 +56,7 @@ export class Login {
     this.authService.login(credentials).subscribe({
       next: () => {
         this.isLoading.set(false);
-        // Redirigir al menú de opciones después del login exitoso
-        this.router.navigate(['/option-page'], { queryParams: { mainMenu: true } });
+        this.router.navigate(['/option-page']);
       },
       error: (error: { status: number; error?: { message?: string } }) => {
         this.isLoading.set(false);

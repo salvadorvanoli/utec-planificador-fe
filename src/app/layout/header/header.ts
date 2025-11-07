@@ -42,12 +42,15 @@ export class Header {
   }
 
   goToOptionMenu(): void {
-    // Si está autenticado, ir directo al portal, si no, redirigir a login
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/option-page'], { queryParams: { mainMenu: true } });
+      this.router.navigate(['/option-page']);
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  goToStudentPortal(): void {
+    this.router.navigate(['/student/courses']);
   }
 
   logout(): void {
