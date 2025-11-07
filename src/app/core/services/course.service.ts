@@ -1,0 +1,144 @@
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { Course } from '../models';
+
+export interface CourseRequest {
+  shift: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  partialGradingSystem: string;
+  hoursPerDeliveryFormat: Record<string, number>;
+  isRelatedToInvestigation: boolean;
+  involvesActivitiesWithProductiveSector: boolean;
+  sustainableDevelopmentGoals: string[];
+  universalDesignLearningPrinciples: string[];
+  curricularUnitId: number;
+}
+
+export interface CourseResponse extends Course {}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CourseService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:8080/api/v1/courses';
+
+  /**
+   * Creates a new course with a default weekly planning (week 1) starting on the course start date
+   * @param request Course creation data
+   * @returns Observable with the created course
+   */
+  createCourse(request: CourseRequest): Observable<CourseResponse> {
+    return this.http.post<CourseResponse>(this.apiUrl, request);
+  }
+
+  /**
+   * Retrieves a course by its ID
+   * @param id Course ID
+   * @returns Observable with the course data
+   */
+  getCourseById(id: number): Observable<CourseResponse> {
+    console.log(`[CourseService] GET course by ID: ${id}`);
+    return this.http.get<CourseResponse>(`${this.apiUrl}/${id}`).pipe(
+      tap(response => console.log('[CourseService] Response:', response))
+    );
+  }
+
+  /**
+   * Updates an existing course by its ID
+   * @param id Course ID
+   * @param request Course update data
+   * @returns Observable with the updated course
+   */
+  updateCourse(id: number, request: CourseRequest): Observable<CourseResponse> {
+    return this.http.put<CourseResponse>(`${this.apiUrl}/${id}`, request);
+  }
+
+  /**
+   * Deletes a course by its ID
+   * @param id Course ID
+   * @returns Observable that completes when the course is deleted
+   */
+  deleteCourse(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  /**
+   * Adds a Sustainable Development Goal (SDG) to a course
+   * @param courseId Course ID
+   * @param goal SDG value (enum value)
+   * @returns Observable with the updated course
+   */
+  addSustainableDevelopmentGoal(courseId: number, goal: string): Observable<CourseResponse> {
+    return this.http.post<CourseResponse>(
+      `${this.apiUrl}/${courseId}/sustainable-development-goals/${goal}`,
+      {}
+    );
+  }
+
+  /**
+   * Removes a Sustainable Development Goal (SDG) from a course
+   * @param courseId Course ID
+   * @param goal SDG value (enum value)
+   * @returns Observable with the updated course
+   */
+  deleteSustainableDevelopmentGoal(courseId: number, goal: string): Observable<CourseResponse> {
+    return this.http.delete<CourseResponse>(
+      `${this.apiUrl}/${courseId}/sustainable-development-goals/${goal}`
+    );
+  }
+
+  /**
+   * Adds a Universal Design for Learning (UDL) principle to a course
+   * @param courseId Course ID
+   * @param principle UDL principle value (enum value)
+   * @returns Observable with the updated course
+   */
+  addUniversalDesignLearningPrinciple(courseId: number, principle: string): Observable<CourseResponse> {
+    return this.http.post<CourseResponse>(
+      `${this.apiUrl}/${courseId}/universal-design-learning-principles/${principle}`,
+      {}
+    );
+  }
+
+  /**
+   * Removes a Universal Design for Learning (UDL) principle from a course
+   * @param courseId Course ID
+   * @param principle UDL principle value (enum value)
+   * @returns Observable with the updated course
+   */
+  deleteUniversalDesignLearningPrinciple(courseId: number, principle: string): Observable<CourseResponse> {
+    return this.http.delete<CourseResponse>(
+      `${this.apiUrl}/${courseId}/universal-design-learning-principles/${principle}`
+    );
+  }
+
+  /**
+   * Updates the partial grading system (SCP) of a course
+   * @param courseId Course ID
+   * @param partialGradingSystem New partial grading system value
+   * @returns Observable with the updated course
+   */
+  updatePartialGradingSystem(courseId: number, partialGradingSystem: string): Observable<CourseResponse> {
+    return this.http.patch<CourseResponse>(
+      `${this.apiUrl}/${courseId}/partial-grading-system`,
+      { partialGradingSystem }
+    );
+  }
+
+  /**
+   * Updates the hours per delivery format of a course
+   * @param courseId Course ID
+   * @param hoursPerDeliveryFormat Map of delivery format to hours
+   * @returns Observable with the updated course
+   */
+  updateHoursPerDeliveryFormat(courseId: number, hoursPerDeliveryFormat: Record<string, number>): Observable<CourseResponse> {
+    return this.http.patch<CourseResponse>(
+      `${this.apiUrl}/${courseId}/hours-per-delivery-format`,
+      { hoursPerDeliveryFormat }
+    );
+  }
+}

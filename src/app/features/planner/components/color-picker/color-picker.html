@@ -1,0 +1,16 @@
+<div class="flex gap-3 flex-wrap">
+  @for (color of colorOptions; track color.hex) {
+    <button
+      type="button"
+      class="color-circle"
+      [style.background-color]="color.hex"
+      [class.selected]="selectedColor() === color.hex"
+      (click)="selectColor(color.hex)"
+      [title]="color.name"
+    >
+      @if (selectedColor() === color.hex) {
+        <i class="pi pi-check" style="color: white; font-size: 1rem;"></i>
+      }
+    </button>
+  }
+</div>

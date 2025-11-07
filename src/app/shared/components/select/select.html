@@ -1,1 +1,8 @@
-<p-select [options]="items" [(ngModel)]="selectedItem" optionLabel="name" [placeholder]="placeholder()" class="w-full md:w-56" />
+<p-select 
+  [options]="items()" 
+  [ngModel]="selectedItem()"
+  (ngModelChange)="onItemChange($event)"
+  optionLabel="name" 
+  [placeholder]="placeholder()" 
+  class="w-full md:w-56" 
+/>

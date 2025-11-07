@@ -1,16 +1,31 @@
 <div class="w-full weekly-header">
   <div class="flex items-center justify-between gap-4 w-full">
     <div class="flex items-center gap-4">
-      <p class="weekly-title">Semana 1</p>
+      <p class="weekly-title">Semana {{ weekNumber() }}</p>
 
-      <app-week-picker></app-week-picker>
+      <app-week-picker 
+        [startDate]="startDate()"
+        [endDate]="endDate()"
+        (onWeekChange)="handleDateRangeChange($event)"
+      ></app-week-picker>
     </div>
 
     <div class="pagination-icons flex items-center gap-2" role="group" aria-label="Paginación semana">
-      <button class="icon-btn" aria-label="Semana anterior" title="Anterior">
+      <button 
+        class="icon-btn" 
+        aria-label="Semana anterior" 
+        title="Anterior"
+        (click)="handleWeekChange(weekNumber() - 1)"
+        [disabled]="weekNumber() <= 1"
+      >
         <i class="pi pi-chevron-left" aria-hidden="true"></i>
       </button>
-      <button class="icon-btn" aria-label="Semana siguiente" title="Siguiente">
+      <button 
+        class="icon-btn" 
+        aria-label="Semana siguiente" 
+        title="Siguiente"
+        (click)="handleWeekChange(weekNumber() + 1)"
+      >
         <i class="pi pi-chevron-right" aria-hidden="true"></i>
       </button>
     </div>

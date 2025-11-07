@@ -1,0 +1,147 @@
+$border-color: #646060;
+$border-width: 1px;
+
+.preview-rect {
+  border: $border-width solid $border-color;  
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.3s ease;
+  position: relative;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    
+    .add-button {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+.preview-header {
+  position: relative;
+}
+
+.preview-title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: #1a1a1a;
+}
+
+.add-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00A9E0 0%, #0089b8 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 169, 224, 0.3);
+  
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 169, 224, 0.4);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  i {
+    font-size: 0.875rem;
+  }
+}
+
+.preview-sep {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #383737 50%, transparent 100%);
+  margin: 0;
+}
+
+.preview-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.25rem;
+}
+
+.tag-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #a5e5fa 0%, #8ddbf7 100%);
+  color: white;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 169, 224, 0.2);
+  transition: all 0.2s ease;
+  cursor: default;
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 169, 224, 0.3);
+    
+    .remove-tag-button {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+.remove-tag-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  padding: 0;
+  margin-left: auto;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    transform: scale(0.9);
+  }
+  
+  i {
+    font-size: 0.75rem;
+  }
+}
+
+.dialog-content {
+  padding: 1rem 0;
+}

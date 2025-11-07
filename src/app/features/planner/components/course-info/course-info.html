@@ -1,3 +1,5 @@
+<p-toast />
+
 <div class="row w-8/10 items-center mx-auto">
   @if (isLoading()) {
     <p-skeleton width="100%" height="3rem"></p-skeleton>
@@ -6,10 +8,10 @@
       <input
         pInputText
         id="course_description"
-        [ngModel]="description()"
-        (ngModelChange)="description.set($event)"
+        [value]="description()"
         autocomplete="off"
         class="w-full"
+        readonly
       />
       <label for="course_description">Descripción</label>
     </p-floatlabel>
@@ -67,17 +69,39 @@
     <div class="flex flex-col gap-3 left-column">
     <div>
       <label for="select_campo_a" class="block text-sm font-medium mb-1">SCP</label>
-      <app-select id="select_campo_a" class="w-full"></app-select>
+      <app-select 
+        id="select_campo_a" 
+        class="w-full"
+        [options]="scpOptions()"
+        [selectedValue]="partialGradingSystem()"
+        (onSelectionChange)="onScpChange($event)"
+      />
     </div>
 
     <div class="grid grid-cols-2 gap-2">
       <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="input_b_left" autocomplete="off" class="w-full" />
+        <input 
+          pInputText 
+          id="input_b_left" 
+          [(ngModel)]="virtualHours"
+          (blur)="onHoursChange()"
+          autocomplete="off" 
+          class="w-full"
+          type="number"
+        />
         <label for="input_b_left">Horas virtuales</label>
       </p-floatlabel>
 
       <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="input_b_right" autocomplete="off" class="w-full" />
+        <input 
+          pInputText 
+          id="input_b_right" 
+          [(ngModel)]="inPersonHours"
+          (blur)="onHoursChange()"
+          autocomplete="off" 
+          class="w-full"
+          type="number"
+        />
         <label for="input_b_right">Horas presenciales</label>
       </p-floatlabel>
     </div>
@@ -95,33 +119,21 @@
 
   <!-- segunda columna: dos rectángulos blancos (dos columnas internas) -->
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 right-column-grid">
-    <div class="preview-rect bg-white rounded-lg p-4">
-      <div class="preview-header">
-        <div class="preview-title">ODS vinculados</div>
-        <div class="preview-sep" aria-hidden="true"></div>
-      </div>
-      <div class="preview-body mt-3">
-        <div class="tags-container">
-          <span class="tag-item">ODS 4: Educación de calidad</span>
-          <span class="tag-item">ODS 9: Industria, innovación</span>
-          <span class="tag-item">ODS 17: Alianzas</span>
-        </div>
-      </div>
-    </div>
+    <app-tags-box 
+      [title]="'ODS vinculados'" 
+      [tags]="odsTags()"
+      [enumOptions]="odsOptions()"
+      (onRemoveTag)="removeOdsTag($event)"
+      (onAddTag)="addOdsTag($event)"
+    />
 
-    <div class="preview-rect bg-white rounded-lg p-4">
-      <div class="preview-header">
-        <div class="preview-title">Principios del diseño universal del aprendizaje</div>
-        <div class="preview-sep" aria-hidden="true"></div>
-      </div>
-      <div class="preview-body mt-3">
-        <div class="tags-container">
-          <span class="tag-item">Múltiples formas de representación</span>
-          <span class="tag-item">Múltiples formas de acción</span>
-          <span class="tag-item">Múltiples formas de implicación</span>
-        </div>
-      </div>
-    </div>
+    <app-tags-box 
+      [title]="'Principios del diseño universal del aprendizaje'" 
+      [tags]="principlesTags()"
+      [enumOptions]="principlesOptions()"
+      (onRemoveTag)="removePrincipleTag($event)"
+      (onAddTag)="addPrincipleTag($event)"
+    />
   </div>
   }
 </div>

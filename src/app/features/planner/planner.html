@@ -5,8 +5,14 @@
     [infoType]="InfoType.PLANNER"
 />
 
-<app-course-info></app-course-info>
+<app-course-info 
+  [courseData]="courseData()" 
+  [isLoading]="isLoadingCourse()"
+  (onCourseUpdated)="handleCourseUpdate($event)"
+></app-course-info>
 
 <app-titulo class="block mb-8 w-full sm:w-[460px] text-left" [color]="'blue'" [texto]="'Planificación semanal'"></app-titulo>
   
-<app-weekly-plan></app-weekly-plan>
+@if (courseData()) {
+  <app-weekly-plan [courseId]="courseData()!.id"></app-weekly-plan>
+}

@@ -1,20 +1,19 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-content-card',
   templateUrl: './content-card.html',
-  styleUrls: ['./content-card.scss'],
+  styleUrl: './content-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[style.--color]': 'color()',
-    '[style.--duration]': 'animateDuration() + \"ms\"' 
+    '[style.--activity-bg]': 'color()',
+    '[class.selected]': 'isSelected()',
+    'style': 'cursor: pointer;'
   }
 })
 export class ContentCard {
-  color = input<string>('#3b82f6'); // valor por defecto azul
-  titulo = input<string>('Investigación inicial');
-  descripcion = input<string>('Descripción por defecto');
-
-  // duración en ms (opcional, se puede pasar desde el padre)
-  animateDuration = input<number>(800);
+  readonly color = input<string>('#ffffff');
+  readonly titulo = input<string>('Título por defecto');
+  readonly descripcion = input<string>('Descripción por defecto');
+  readonly isSelected = input<boolean>(false);
 }
