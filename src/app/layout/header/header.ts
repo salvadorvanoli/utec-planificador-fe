@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input, computed } from '@angular/core';
 import { ButtonComponent } from '@app/shared/components/button/button';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
+import { AuthService } from '@app/core/services';
 
 @Component({
   selector: 'app-header',
@@ -22,7 +23,8 @@ import { Router } from '@angular/router';
 })
 export class Header {
   readonly isHome = input<boolean>(false);
-  private readonly router = inject(Router); 
+  private readonly router = inject(Router);
+  readonly authService = inject(AuthService);
 
   readonly headerBg = computed(() => (this.isHome() ? 'transparent' : 'rgb(52, 58, 64)'));
 
@@ -32,15 +34,24 @@ export class Header {
   readonly headerWidth = computed(() => (this.isHome() ? '100%' : 'auto'));
   readonly headerZ = computed(() => (this.isHome() ? '30' : '20'));
   readonly headerMarginBottom = computed(() => (this.isHome() ? '0px' : '2rem'));
-  
+
   readonly headerUnderline = computed(() => (this.isHome() ? '#00A9E0' : 'transparent'));
-  
+
   goToHome(): void {
     this.router.navigate(['/home']);
   }
 
   goToOptionMenu(): void {
-    this.router.navigate(['/option-page'], { queryParams: { mainMenu: true } });
+    // Si está autenticado, ir directo al portal, si no, redirigir a login
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/option-page'], { queryParams: { mainMenu: true } });
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 
 }

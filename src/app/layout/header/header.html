@@ -34,8 +34,15 @@
     </div>
   } @else {
     <div class="header-right">
-      <span (click)="goToHome()" class="portal-text">Ir al portal académico</span>
-      <i class="pi pi-user profile-icon" aria-label="Perfil de usuario" title="Perfil"></i>
+      @if (authService.isAuthenticated()) {
+        <span class="user-name">{{ authService.currentUser()?.fullName }}</span>
+        <i class="pi pi-user profile-icon" aria-label="Perfil de usuario" title="Perfil"></i>
+        <button (click)="logout()" class="logout-button" title="Cerrar sesión">
+          <i class="pi pi-sign-out"></i>
+        </button>
+      } @else {
+        <span (click)="goToHome()" class="portal-text">Ir al portal académico</span>
+      }
     </div>
   }
 </div>

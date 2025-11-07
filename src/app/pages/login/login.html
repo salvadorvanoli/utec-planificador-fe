@@ -1,0 +1,91 @@
+<app-header [isHome]="false"></app-header>
+
+<div class="login-container">
+  <div class="login-card">
+    <!-- Info icon (top right) -->
+    <div class="info-button-wrapper">
+      <app-info-button
+        content="Ingresa tus credenciales para iniciar sesión"
+        color="black"
+      />
+    </div>
+
+    <h1 class="login-title">Iniciar sesión</h1>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email field -->
+      <div class="form-group">
+        <label for="email" class="form-label">Correo UTEC</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Correo UTEC"
+          class="form-input"
+          [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          autocomplete="email"
+        />
+        @if (getEmailError()) {
+          <span class="error-message">{{ getEmailError() }}</span>
+        }
+      </div>
+
+      <!-- Password field -->
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <div class="password-wrapper">
+          <input
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Contraseña"
+            class="form-input"
+            [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+            aria-label="Mostrar/Ocultar contraseña"
+          >
+            <i [class]="showPassword() ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+          </button>
+        </div>
+        @if (getPasswordError()) {
+          <span class="error-message">{{ getPasswordError() }}</span>
+        }
+      </div>
+
+      <!-- Forgot password link -->
+      <div class="forgot-password-container">
+        <a href="#" class="forgot-password-link">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <!-- Error message from server -->
+      @if (errorMessage()) {
+        <div class="server-error">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- Submit button -->
+      <button
+        type="submit"
+        class="submit-button"
+        [disabled]="isLoading()"
+      >
+        @if (isLoading()) {
+          <i class="pi pi-spin pi-spinner"></i>
+          <span>Iniciando sesión...</span>
+        } @else {
+          <span>Iniciar sesión</span>
+        }
+      </button>
+    </form>
+  </div>
+</div>
+
+<app-footer></app-footer>
+

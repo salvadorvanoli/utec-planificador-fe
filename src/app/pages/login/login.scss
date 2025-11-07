@@ -1,0 +1,242 @@
+.login-container {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+}
+
+.login-card {
+  position: relative;
+  background-color: #000000;
+  border-radius: 1.5rem;
+  padding: 3rem 2.5rem;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.info-button-wrapper {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 10;
+
+  // Override del color para que sea blanco sobre fondo negro
+  ::ng-deep {
+    .info-button-container button {
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+    }
+
+    svg path {
+      fill: #000000 !important;
+    }
+
+    .p-tooltip {
+      background-color: #ffffff !important;
+      color: #000000 !important;
+
+      .p-tooltip-arrow {
+        border-top-color: #ffffff !important;
+      }
+    }
+  }
+}
+
+.login-title {
+  color: #ffffff;
+  font-family: 'UTEC Text Heavy', Arial, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  color: #ffffff;
+  font-family: 'UTEC Text Light', Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  display: none; // Labels ocultas pero presentes para accesibilidad
+}
+
+.form-input {
+  background-color: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 2rem;
+  padding: 1rem 1.5rem;
+  font-family: 'UTEC Text Light', Arial, sans-serif;
+  font-size: 1rem;
+  color: #000000;
+  transition: all 0.3s ease;
+  outline: none;
+
+  &::placeholder {
+    color: #666666;
+    font-family: 'UTEC Text Light', Arial, sans-serif;
+  }
+
+  &:focus {
+    border-color: #00A9E0;
+    box-shadow: 0 0 0 3px rgba(0, 169, 224, 0.1);
+  }
+
+  &.error {
+    border-color: #E61610;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(230, 22, 16, 0.1);
+    }
+  }
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .form-input {
+    flex: 1;
+    padding-right: 3rem;
+  }
+}
+
+.toggle-password {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666666;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #000000;
+  }
+
+  i {
+    font-size: 1.2rem;
+  }
+}
+
+.error-message {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  font-family: 'UTEC Text Light', Arial, sans-serif;
+  margin-top: 0.25rem;
+  padding-left: 1rem;
+}
+
+.forgot-password-container {
+  text-align: center;
+  margin-top: -0.5rem;
+}
+
+.forgot-password-link {
+  color: #ffffff;
+  font-family: 'UTEC Text Light', Arial, sans-serif;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #00A9E0;
+    text-decoration: underline;
+  }
+}
+
+.server-error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: rgba(230, 22, 16, 0.1);
+  border: 1px solid #E61610;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  color: #ff6b6b;
+  font-family: 'UTEC Text Light', Arial, sans-serif;
+  font-size: 0.9rem;
+
+  i {
+    font-size: 1.2rem;
+    color: #E61610;
+  }
+}
+
+.submit-button {
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 2rem;
+  padding: 1rem 2rem;
+  font-family: 'UTEC Text Heavy', Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &:hover:not(:disabled) {
+    background-color: #00A9E0;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 169, 224, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  i {
+    font-size: 1.1rem;
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .login-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .login-title {
+    font-size: 2rem;
+  }
+
+  .info-button-wrapper {
+    top: 1rem;
+    right: 1rem;
+  }
+}
+
