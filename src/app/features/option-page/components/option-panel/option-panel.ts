@@ -4,6 +4,7 @@ import { OptionCardComponent } from '../option-card/option-card';
 import { Skeleton } from 'primeng/skeleton';
 import { PositionService } from '@app/core/services';
 import { RegionalTechnologicalInstitute, Campus } from '@app/core/models';
+import { Role } from '@app/core/enums/role';
 
 type SelectionStep = 'itr' | 'campus' | 'main-menu';
 
@@ -21,15 +22,15 @@ export class OptionPanel {
   readonly positionService = inject(PositionService);
 
   readonly hasTeacherRole = computed(() =>
-    this.positionService.availableRoles().includes('TEACHER')
+    this.positionService.availableRoles().includes(Role.TEACHER)
   );
 
   readonly hasCoordinatorRole = computed(() =>
-    this.positionService.availableRoles().includes('COORDINATOR')
+    this.positionService.availableRoles().includes(Role.COORDINATOR)
   );
 
   readonly hasAnalystRole = computed(() =>
-    this.positionService.availableRoles().includes('ANALYST')
+    this.positionService.availableRoles().includes(Role.ANALYST)
   );
 
   handleITRSelection(itr: RegionalTechnologicalInstitute): void {

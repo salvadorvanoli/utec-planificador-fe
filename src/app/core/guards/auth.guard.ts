@@ -7,10 +7,6 @@ export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isAuthenticated()) {
-    return true;
-  }
-
   return authService.checkAuthStatus().pipe(
     map((isAuthenticated) => {
       if (isAuthenticated) {
@@ -25,4 +21,6 @@ export const authGuard: CanActivateFn = () => {
     })
   );
 };
+
+export * from './context.guard';
 
