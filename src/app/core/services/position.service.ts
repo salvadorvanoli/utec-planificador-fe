@@ -162,5 +162,14 @@ export class PositionService {
       this.saveContextToStorage(newContext);
     }
   }
+
+  clearAllState(): void {
+    this.userPositions.set(null);
+    this.selectedContext.set(null);
+    this.availableITRs.set([]);
+    this.availableCampuses.set([]);
+    this.availableRoles.set([]);
+    sessionStorage.removeItem(this.STORAGE_KEY);
+  }
 }
 

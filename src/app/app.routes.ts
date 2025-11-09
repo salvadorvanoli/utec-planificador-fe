@@ -8,7 +8,7 @@ import { StatisticsPage } from './features/statistics-page/statistics-page';
 import { ChatPage } from './features/chat-page/chat-page';
 import { AssignPage } from './features/assign-page/assign-page';
 import { Planner } from './features/planner/planner';
-import { authGuard } from './core/guards/auth.guard';
+import { authGuard, contextGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -31,11 +31,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'option-page', component: OptionPage },
-      { path: 'course-catalog', component: CourseCatalog },
-      { path: 'statistics-page', component: StatisticsPage },
-      { path: 'chat-page', component: ChatPage },
-      { path: 'assign-page', component: AssignPage },
-      { path: 'planner/:courseId', component: Planner },
+      { path: 'course-catalog', component: CourseCatalog, canActivate: [contextGuard] },
+      { path: 'statistics-page', component: StatisticsPage, canActivate: [contextGuard] },
+      { path: 'chat-page', component: ChatPage, canActivate: [contextGuard] },
+      { path: 'assign-page', component: AssignPage, canActivate: [contextGuard] },
+      { path: 'planner/:courseId', component: Planner, canActivate: [contextGuard] },
     ]
   },
 

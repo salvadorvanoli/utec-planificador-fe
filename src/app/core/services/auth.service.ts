@@ -1,9 +1,10 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, catchError, of, map } from 'rxjs';
 import { AuthResponse, LoginRequest } from '../models';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { PositionService } from './position.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly injector = inject(Injector);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   readonly isAuthenticated = signal<boolean>(false);
@@ -27,20 +29,27 @@ export class AuthService {
     );
   }
 
+  private clearAllState(): void {
+    this.isAuthenticated.set(false);
+    this.currentUser.set(null);
+
+    const positionService = this.injector.get(PositionService);
+    positionService.clearAllState();
+
+    localStorage.clear();
+    sessionStorage.clear();
+  }
+
   logout(): void {
     this.http.post(`${this.apiUrl}/logout`, {}, {
       withCredentials: true
     }).subscribe({
       next: () => {
-        this.isAuthenticated.set(false);
-        this.currentUser.set(null);
-        sessionStorage.clear();
+        this.clearAllState();
         this.router.navigate(['/home']);
       },
       error: () => {
-        this.isAuthenticated.set(false);
-        this.currentUser.set(null);
-        sessionStorage.clear();
+        this.clearAllState();
         this.router.navigate(['/home']);
       }
     });
@@ -56,8 +65,7 @@ export class AuthService {
       }),
       map(() => true),
       catchError(() => {
-        this.isAuthenticated.set(false);
-        this.currentUser.set(null);
+        this.clearAllState();
         return of(false);
       })
     );
