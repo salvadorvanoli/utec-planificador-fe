@@ -25,6 +25,8 @@ export class WeeklyPlan {
   
   // Input del courseId desde el padre
   courseId = input.required<number>();
+  courseStartDate = input.required<string>();
+  courseEndDate = input.required<string>();
   
   // Señales de estado
   isLoading = signal(true);
@@ -43,6 +45,11 @@ export class WeeklyPlan {
   // Computed para las referencias bibliográficas
   bibliographicReferences = computed(() => {
     return this.weeklyPlanning()?.bibliographicReferences || [];
+  });
+  
+  // Computed para obtener el weeklyPlanningId
+  weeklyPlanningId = computed(() => {
+    return this.weeklyPlanning()?.id || 0;
   });
 
   constructor() {
@@ -179,6 +186,48 @@ export class WeeklyPlan {
   selectContent(content: ProgrammaticContent): void {
     console.log('[WeeklyPlan] Content selected:', content);
     this.selectedContent.set(content);
+  }
+  
+  // Método para manejar cuando se crea un nuevo contenido programático
+  handleContentCreated(): void {
+    console.log('[WeeklyPlan] Content created/updated, reloading programmatic contents');
+    this.loadWeeklyPlanning(this.currentWeekNumber());
+  }
+  
+  // Método para manejar la eliminación de un contenido programático
+  handleContentDeleted(contentId: number): void {
+    console.log('[WeeklyPlan] Delete content requested:', contentId);
+    
+    // Confirmar antes de eliminar
+    if (confirm('¿Estás seguro de que deseas eliminar este contenido programático? Se eliminarán también todas sus actividades.')) {
+      this.programmaticContentService.deleteProgrammaticContent(contentId).subscribe({
+        next: () => {
+          console.log('[WeeklyPlan] Content deleted successfully:', contentId);
+          
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Contenido programático eliminado correctamente'
+          });
+          
+          // Si el contenido eliminado era el seleccionado, limpiar la selección
+          if (this.selectedContent()?.id === contentId) {
+            this.selectedContent.set(null);
+          }
+          
+          // Recargar la planificación
+          this.loadWeeklyPlanning(this.currentWeekNumber());
+        },
+        error: (error) => {
+          console.error('[WeeklyPlan] Error deleting content:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo eliminar el contenido programático'
+          });
+        }
+      });
+    }
   }
   
   // Método para manejar cuando se crea una nueva actividad

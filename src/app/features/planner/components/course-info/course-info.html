@@ -67,17 +67,6 @@
     </div>
   } @else {
     <div class="flex flex-col gap-3 left-column">
-    <div>
-      <label for="select_campo_a" class="block text-sm font-medium mb-1">SCP</label>
-      <app-select 
-        id="select_campo_a" 
-        class="w-full"
-        [options]="scpOptions()"
-        [selectedValue]="partialGradingSystem()"
-        (onSelectionChange)="onScpChange($event)"
-      />
-    </div>
-
     <div class="grid grid-cols-2 gap-2">
       <p-floatlabel variant="in" class="w-full">
         <input 
@@ -107,13 +96,38 @@
     </div>
 
     <div>
-      <label for="select_actividades_medio" class="block text-sm font-medium mb-1">¿Realiza actividades vinculadas con el medio/sector productivo?</label>
-      <app-select id="select_actividades_medio" class="w-full" [placeholder]="'Seleccionar'"></app-select>
+      <app-select 
+        id="select_campo_a" 
+        class="w-full"
+        [label]="'SCP'"
+        [options]="scpOptions()"
+        [selectedValue]="partialGradingSystem()"
+        (onSelectionChange)="onScpChange($event)"
+      />
     </div>
 
     <div>
-      <label for="select_investigacion" class="block text-sm font-medium mb-1">¿Se vincula a líneas de investigación?</label>
-      <app-select id="select_investigacion" class="w-full" [placeholder]="'Seleccionar'"></app-select>
+      <app-select 
+        id="select_actividades_medio" 
+        class="w-full" 
+        [label]="'¿Realiza actividades vinculadas con el medio productivo?'"
+        [placeholder]="'Seleccionar'"
+        [options]="yesNoOptions()"
+        [selectedValue]="selectedProductiveSector()"
+        (onSelectionChange)="onProductiveSectorChange($event)">
+      </app-select>
+    </div>
+
+    <div>
+      <app-select 
+        id="select_investigacion" 
+        class="w-full" 
+        [label]="'¿Se vincula a líneas de investigación?'"
+        [placeholder]="'Seleccionar'"
+        [options]="yesNoOptions()"
+        [selectedValue]="selectedInvestigation()"
+        (onSelectionChange)="onInvestigationChange($event)">
+      </app-select>
     </div>
   </div>
 

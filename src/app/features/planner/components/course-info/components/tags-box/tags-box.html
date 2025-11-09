@@ -39,6 +39,8 @@
   [style]="{ width: '400px' }"
   [draggable]="false"
   [resizable]="false"
+  appendTo="body"
+  [baseZIndex]="10000"
 >
   <ng-template #header>
     <h3 class="text-lg font-semibold">Agregar {{ title() }}</h3>

@@ -54,7 +54,10 @@ export class CourseService {
    * @returns Observable with the updated course
    */
   updateCourse(id: number, request: CourseRequest): Observable<CourseResponse> {
-    return this.http.put<CourseResponse>(`${this.apiUrl}/${id}`, request);
+    console.log(`[CourseService] PUT update course ${id}:`, request);
+    return this.http.put<CourseResponse>(`${this.apiUrl}/${id}`, request).pipe(
+      tap(response => console.log('[CourseService] Response:', response))
+    );
   }
 
   /**

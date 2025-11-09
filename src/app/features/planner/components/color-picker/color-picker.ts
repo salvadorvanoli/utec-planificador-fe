@@ -16,11 +16,14 @@ export class ColorPicker {
   // Input para el color seleccionado por defecto
   selectedColor = input<string>('#E53935');
   
+  // Input para determinar si es para actividad o contenido
+  activity = input<boolean>(true);
+  
   // Output para emitir cuando cambie el color
   onColorChange = output<string>();
   
-  // Color options
-  colorOptions: ColorOption[] = [
+  // Colores para actividades (intensos)
+  activityColors: ColorOption[] = [
     { name: 'Rojo intenso', hex: '#E53935' },
     { name: 'Azul eléctrico', hex: '#2979FF' },
     { name: 'Verde lima', hex: '#76FF03' },
@@ -30,6 +33,23 @@ export class ColorPicker {
     { name: 'Turquesa fuerte', hex: '#00B8D4' },
     { name: 'Violeta intenso', hex: '#8E24AA' }
   ];
+  
+  // Colores para contenidos (pasteles)
+  contentColors: ColorOption[] = [
+    { name: 'Rosa suave', hex: '#F8BBD0' },
+    { name: 'Celeste pastel', hex: '#B3E5FC' },
+    { name: 'Verde menta', hex: '#C8E6C9' },
+    { name: 'Durazno claro', hex: '#FFDAB9' },
+    { name: 'Amarillo crema', hex: '#FFF9C4' },
+    { name: 'Lavanda suave', hex: '#E1BEE7' },
+    { name: 'Turquesa claro', hex: '#B2EBF2' },
+    { name: 'Lila pastel', hex: '#D1C4E9' }
+  ];
+  
+  // Computed para obtener los colores según el tipo
+  get colorOptions(): ColorOption[] {
+    return this.activity() ? this.activityColors : this.contentColors;
+  }
 
   selectColor(hex: string): void {
     this.onColorChange.emit(hex);

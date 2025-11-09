@@ -43,6 +43,29 @@
   transform: translateY(-4px);
   transition: opacity 160ms ease, transform 160ms ease, visibility 160ms;
   pointer-events: none;
+  
+  i {
+    cursor: pointer;
+    font-size: 1rem;
+    color: #6b7280;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: color 150ms ease, transform 150ms ease, background-color 150ms ease;
+    
+    &:hover {
+      transform: scale(1.15);
+    }
+    
+    &.pi-pencil:hover {
+      color: #00A9E0;
+      background: rgba(0, 169, 224, 0.1);
+    }
+    
+    &.pi-trash:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+  }
 }
 
 .activity-card:hover .icons,

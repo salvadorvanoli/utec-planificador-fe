@@ -9,6 +9,7 @@ $border-width: 1px;
   flex-direction: column;
   transition: box-shadow 0.3s ease;
   position: relative;
+  height: 268px;
   
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
@@ -76,6 +77,24 @@ $border-width: 1px;
 .preview-body {
   flex: 1 1 auto;
   overflow-y: auto;
+  overflow-x: hidden;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+  }
 }
 
 .tags-container {
@@ -144,4 +163,24 @@ $border-width: 1px;
 
 .dialog-content {
   padding: 1rem 0;
+}
+
+::ng-deep {
+  .p-dialog {
+    .p-select-overlay {
+      z-index: 99999 !important;
+    }
+    
+    .p-select-panel {
+      pointer-events: auto !important;
+    }
+    
+    .p-select-list {
+      pointer-events: auto !important;
+    }
+    
+    .p-select-option {
+      pointer-events: auto !important;
+    }
+  }
 }

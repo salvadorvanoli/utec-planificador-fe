@@ -1,7 +1,6 @@
 import { Component, OnInit, input, output, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Select } from 'primeng/select';
-import { IftaLabelModule } from 'primeng/iftalabel';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 interface Item {
     name: string;
@@ -16,28 +15,30 @@ export interface EnumOption {
 type Color = 'blue' | 'black';
 
 @Component({
-    selector: 'app-select',
-    templateUrl: './select.html',
-    styleUrl: './select.scss',
-    standalone: true,
-    imports: [FormsModule, Select, IftaLabelModule],
-    host: {
-    '[style.--select-dropdown-bg]': 'color() === "blue" ? "#00A9E0" : "#000000"'
+  selector: 'app-multiselect',
+  imports: [FormsModule, MultiSelectModule],
+  templateUrl: './multiselect.html',
+  styleUrl: './multiselect.scss',
+  standalone: true,
+  host: {
+    '[style.--multiselect-dropdown-bg]': 'color() === "blue" ? "#00A9E0" : "#000000"'
   }
 })
-export class Selector implements OnInit {
+export class Multiselect implements OnInit {
     readonly color = input<Color>('blue');
     readonly placeholder = input<string>('Seleccionar');
-    readonly label = input<string>(''); // Label opcional
     
+    // Input para recibir opciones del backend
     readonly options = input<EnumOption[]>([]);
     
-    readonly selectedValue = input<string>('');
+    // Input para recibir los valores seleccionados
+    readonly selectedValues = input<string[]>([]);
     
-    readonly onSelectionChange = output<string>();
+    // Output para emitir cambios en la selección
+    readonly onSelectionChange = output<string[]>();
     
     items = signal<Item[]>([]);
-    selectedItem = signal<Item | undefined>(undefined);
+    selectedItems = signal<Item[]>([]);
 
     constructor() {
         // Effect para convertir las opciones del backend al formato interno
@@ -63,27 +64,33 @@ export class Selector implements OnInit {
             }
         });
         
-        // Effect para actualizar el item seleccionado cuando cambie selectedValue
+        // Effect para actualizar los items seleccionados cuando cambien selectedValues
         effect(() => {
-            const value = this.selectedValue();
+            const values = this.selectedValues();
             const currentItems = this.items();
             
-            if (value && currentItems.length > 0) {
-                const item = currentItems.find(i => i.code === value);
-                if (item) {
-                    this.selectedItem.set(item);
-                }
+            if (values && values.length > 0 && currentItems.length > 0) {
+                const selected = currentItems.filter(item => 
+                    values.includes(item.code)
+                );
+                this.selectedItems.set(selected);
+            } else {
+                this.selectedItems.set([]);
             }
         });
     }
 
     ngOnInit() {
+        // Ya no es necesario inicializar items aquí, se hace en el effect
     }
 
-    onItemChange(item: Item | undefined): void {
-        this.selectedItem.set(item);
-        if (item) {
-            this.onSelectionChange.emit(item.code);
+    onItemsChange(items: Item[]): void {
+        this.selectedItems.set(items);
+        if (items && items.length > 0) {
+            const codes = items.map(item => item.code);
+            this.onSelectionChange.emit(codes);
+        } else {
+            this.onSelectionChange.emit([]);
         }
     }
 }

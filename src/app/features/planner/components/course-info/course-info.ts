@@ -49,6 +49,21 @@ export class CourseInfo implements OnInit {
   scpOptions = signal<EnumResponse[]>([]);
   odsOptions = signal<EnumResponse[]>([]);
   principlesOptions = signal<EnumResponse[]>([]);
+  
+  // Opciones de Sí/No para los selects
+  yesNoOptions = signal<EnumResponse[]>([
+    { value: 'true', displayValue: 'Sí' },
+    { value: 'false', displayValue: 'No' }
+  ]);
+  
+  // Valores seleccionados para investigación y sector productivo
+  selectedInvestigation = computed(() => 
+    this.courseData()?.isRelatedToInvestigation ? 'true' : 'false'
+  );
+  
+  selectedProductiveSector = computed(() => 
+    this.courseData()?.involvesActivitiesWithProductiveSector ? 'true' : 'false'
+  );
 
   odsTags = computed(() => {
     const course = this.courseData();
@@ -110,8 +125,9 @@ export class CourseInfo implements OnInit {
   // Métodos para manejar tags
   removeOdsTag(tag: string): void {
     const courseId = this.courseData()?.id;
-    if (!courseId) {
-      console.error('No course ID available');
+    const courseData = this.courseData();
+    if (!courseId || !courseData) {
+      console.error('No course data available');
       return;
     }
 
@@ -122,8 +138,26 @@ export class CourseInfo implements OnInit {
       return;
     }
 
-    // Llamar al servicio para eliminar del backend
-    this.courseService.deleteSustainableDevelopmentGoal(courseId, option.value).subscribe({
+    // Filtrar el ODS de la lista
+    const updatedGoals = courseData.sustainableDevelopmentGoals.filter(g => g !== option.value);
+
+    // Construir el request completo
+    const request = {
+      shift: courseData.shift,
+      description: courseData.description,
+      startDate: courseData.startDate,
+      endDate: courseData.endDate,
+      partialGradingSystem: courseData.partialGradingSystem,
+      hoursPerDeliveryFormat: courseData.hoursPerDeliveryFormat,
+      isRelatedToInvestigation: courseData.isRelatedToInvestigation,
+      involvesActivitiesWithProductiveSector: courseData.involvesActivitiesWithProductiveSector,
+      sustainableDevelopmentGoals: updatedGoals,
+      universalDesignLearningPrinciples: courseData.universalDesignLearningPrinciples,
+      curricularUnitId: courseData.curricularUnit.id
+    };
+
+    // Llamar al servicio PUT para actualizar
+    this.courseService.updateCourse(courseId, request).subscribe({
       next: (updatedCourse) => {
         this.onCourseUpdated.emit(updatedCourse);
         this.messageService.add({
@@ -147,8 +181,9 @@ export class CourseInfo implements OnInit {
 
   removePrincipleTag(tag: string): void {
     const courseId = this.courseData()?.id;
-    if (!courseId) {
-      console.error('No course ID available');
+    const courseData = this.courseData();
+    if (!courseId || !courseData) {
+      console.error('No course data available');
       return;
     }
 
@@ -159,8 +194,26 @@ export class CourseInfo implements OnInit {
       return;
     }
 
-    // Llamar al servicio para eliminar del backend
-    this.courseService.deleteUniversalDesignLearningPrinciple(courseId, option.value).subscribe({
+    // Filtrar el principio de la lista
+    const updatedPrinciples = courseData.universalDesignLearningPrinciples.filter(p => p !== option.value);
+
+    // Construir el request completo
+    const request = {
+      shift: courseData.shift,
+      description: courseData.description,
+      startDate: courseData.startDate,
+      endDate: courseData.endDate,
+      partialGradingSystem: courseData.partialGradingSystem,
+      hoursPerDeliveryFormat: courseData.hoursPerDeliveryFormat,
+      isRelatedToInvestigation: courseData.isRelatedToInvestigation,
+      involvesActivitiesWithProductiveSector: courseData.involvesActivitiesWithProductiveSector,
+      sustainableDevelopmentGoals: courseData.sustainableDevelopmentGoals,
+      universalDesignLearningPrinciples: updatedPrinciples,
+      curricularUnitId: courseData.curricularUnit.id
+    };
+
+    // Llamar al servicio PUT para actualizar
+    this.courseService.updateCourse(courseId, request).subscribe({
       next: (updatedCourse) => {
         this.onCourseUpdated.emit(updatedCourse);
         this.messageService.add({
@@ -333,6 +386,102 @@ export class CourseInfo implements OnInit {
           severity: 'error',
           summary: 'Error',
           detail: 'No se pudieron actualizar las horas',
+          life: 3000
+        });
+      }
+    });
+  }
+  
+  // Método para manejar cambio de investigación
+  onInvestigationChange(value: string): void {
+    const courseId = this.courseData()?.id;
+    const courseData = this.courseData();
+    if (!courseId || !courseData) {
+      console.error('No course data available');
+      return;
+    }
+
+    const isRelatedToInvestigation = value === 'true';
+    
+    // Construir el request completo
+    const request = {
+      shift: courseData.shift,
+      description: courseData.description,
+      startDate: courseData.startDate,
+      endDate: courseData.endDate,
+      partialGradingSystem: courseData.partialGradingSystem,
+      hoursPerDeliveryFormat: courseData.hoursPerDeliveryFormat,
+      isRelatedToInvestigation: isRelatedToInvestigation,
+      involvesActivitiesWithProductiveSector: courseData.involvesActivitiesWithProductiveSector,
+      sustainableDevelopmentGoals: courseData.sustainableDevelopmentGoals,
+      universalDesignLearningPrinciples: courseData.universalDesignLearningPrinciples,
+      curricularUnitId: courseData.curricularUnit.id
+    };
+
+    this.courseService.updateCourse(courseId, request).subscribe({
+      next: (updatedCourse) => {
+        this.onCourseUpdated.emit(updatedCourse);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Actualizado',
+          detail: `Vinculación a líneas de investigación: ${isRelatedToInvestigation ? 'Sí' : 'No'}`,
+          life: 3000
+        });
+      },
+      error: (err) => {
+        console.error('Error updating investigation status:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo actualizar la vinculación a líneas de investigación',
+          life: 3000
+        });
+      }
+    });
+  }
+  
+  // Método para manejar cambio de actividades con sector productivo
+  onProductiveSectorChange(value: string): void {
+    const courseId = this.courseData()?.id;
+    const courseData = this.courseData();
+    if (!courseId || !courseData) {
+      console.error('No course data available');
+      return;
+    }
+
+    const involvesActivitiesWithProductiveSector = value === 'true';
+    
+    // Construir el request completo
+    const request = {
+      shift: courseData.shift,
+      description: courseData.description,
+      startDate: courseData.startDate,
+      endDate: courseData.endDate,
+      partialGradingSystem: courseData.partialGradingSystem,
+      hoursPerDeliveryFormat: courseData.hoursPerDeliveryFormat,
+      isRelatedToInvestigation: courseData.isRelatedToInvestigation,
+      involvesActivitiesWithProductiveSector: involvesActivitiesWithProductiveSector,
+      sustainableDevelopmentGoals: courseData.sustainableDevelopmentGoals,
+      universalDesignLearningPrinciples: courseData.universalDesignLearningPrinciples,
+      curricularUnitId: courseData.curricularUnit.id
+    };
+
+    this.courseService.updateCourse(courseId, request).subscribe({
+      next: (updatedCourse) => {
+        this.onCourseUpdated.emit(updatedCourse);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Actualizado',
+          detail: `Actividades vinculadas con el medio/sector productivo: ${involvesActivitiesWithProductiveSector ? 'Sí' : 'No'}`,
+          life: 3000
+        });
+      },
+      error: (err) => {
+        console.error('Error updating productive sector status:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo actualizar la vinculación con el sector productivo',
           life: 3000
         });
       }

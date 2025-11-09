@@ -1,0 +1,8 @@
+<p-multiselect 
+    [options]="items()" 
+    [(ngModel)]="selectedItems" 
+    (ngModelChange)="onItemsChange($event)"
+    optionLabel="name" 
+    [placeholder]="placeholder()" 
+    [maxSelectedLabels]="3" 
+    class="w-full" />

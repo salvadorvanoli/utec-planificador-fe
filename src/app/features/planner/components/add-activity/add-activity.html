@@ -20,8 +20,8 @@
     <!-- Objetivo del aprendizaje -->
     <div class="row w-full mt-4">
       <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="in_label_obj" [(ngModel)]="objective" autocomplete="off" class="w-full" />
-        <label for="in_label_obj">Objetivo del aprendizaje</label>
+        <input pInputText id="in_label_desc" [(ngModel)]="description" autocomplete="off" class="w-full" />
+        <label for="in_label_desc">Descripción de la actividad</label>
       </p-floatlabel>
     </div>
 
@@ -30,6 +30,7 @@
       <label class="block text-sm font-medium mb-2">Color de la actividad</label>
       <app-color-picker 
         [selectedColor]="selectedColor()" 
+        [activity]="true"
         (onColorChange)="onColorChange($event)">
       </app-color-picker>
     </div>
@@ -38,49 +39,49 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full items-start auto-rows-auto">
         <div class="select-col">
           <label class="block text-sm font-medium mb-1">Procesos cognitivos</label>
-          <app-select 
+          <app-multiselect 
             [options]="cognitiveProcesses()"
-            (onSelectionChange)="onCognitiveProcessChange($event)">
-          </app-select>
+            [selectedValues]="selectedCognitiveProcesses()"
+            [placeholder]="'Seleccionar procesos'"
+            (onSelectionChange)="selectedCognitiveProcesses.set($event)">
+          </app-multiselect>
         </div>
         <div class="select-col">
           <label class="block text-sm font-medium mb-1">Competencias trasversales</label>
-          <app-select 
+          <app-multiselect 
             [options]="transversalCompetencies()"
-            (onSelectionChange)="onTransversalCompetencyChange($event)">
-          </app-select>
+            [selectedValues]="selectedTransversalCompetencies()"
+            [placeholder]="'Seleccionar competencias'"
+            (onSelectionChange)="selectedTransversalCompetencies.set($event)">
+          </app-multiselect>
         </div>
         <div class="select-col">
           <label class="block text-sm font-medium mb-1">Estrategias de enseñanza</label>
-          <app-select 
+          <app-multiselect 
             [options]="teachingStrategies()"
-            (onSelectionChange)="onTeachingStrategyChange($event)">
-          </app-select>
+            [selectedValues]="selectedTeachingStrategies()"
+            [placeholder]="'Seleccionar estrategias'"
+            (onSelectionChange)="selectedTeachingStrategies.set($event)">
+          </app-multiselect>
         </div>
         <div class="select-col">
           <label class="block text-sm font-medium mb-1">Recursos</label>
-          <app-select 
+          <app-multiselect 
             [options]="learningResources()"
-            (onSelectionChange)="onLearningResourceChange($event)">
-          </app-select>
+            [selectedValues]="selectedLearningResources()"
+            [placeholder]="'Seleccionar recursos'"
+            (onSelectionChange)="selectedLearningResources.set($event)">
+          </app-multiselect>
         </div>
       </div>
     </div>
-    <div class="row w-full mt-4">
-      <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="in_label_desc" [(ngModel)]="description" autocomplete="off" class="w-full" />
-        <label for="in_label_desc">Descripción de la actividad</label>
-      </p-floatlabel>
-    </div>
+    
 
     <div class="row mt-4">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full items-start auto-rows-auto">
         <div class="select-col">
           <div class="flex flex-col gap-2">
-            <p-floatlabel variant="in">
-              <input pInputText id="in_label_first_a" [(ngModel)]="link" autocomplete="off" class="w-full" />
-              <label for="in_label_first_a">Link de la actividad</label>
-            </p-floatlabel>
+           
 
             <p-floatlabel variant="in">
               <input pInputText id="in_label_first_b" [(ngModel)]="durationInMinutes" type="number" autocomplete="off" class="w-full" />

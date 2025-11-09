@@ -1,0 +1,61 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visibleChange.emit($event)"
+  modal="true"
+  [header]="isEditMode() ? 'Editar Contenido Programático' : 'Agregar Contenido Programático'"
+  styleClass="w-9/10"
+  [draggable]="false"
+  [resizable]="false"
+  appendTo="body"
+  [baseZIndex]="20000">
+  <div class="p-4">
+    <!-- Título -->
+    <div class="row w-full">
+      <p-floatlabel variant="in" class="w-full">
+        <input pInputText id="in_label_title" [(ngModel)]="title" autocomplete="off" class="w-full" />
+        <label for="in_label_title">Título del contenido</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Descripción -->
+    <div class="row w-full mt-4">
+      <p-floatlabel variant="in" class="w-full">
+        <input pInputText id="in_label_content" [(ngModel)]="content" autocomplete="off" class="w-full" />
+        <label for="in_label_content">Descripción del contenido</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Color picker -->
+    <div class="row w-full mt-4">
+      <label class="block text-sm font-medium mb-2">Color del contenido</label>
+      <app-color-picker 
+        [selectedColor]="selectedColor()" 
+        [activity]="false"
+        (onColorChange)="onColorChange($event)">
+      </app-color-picker>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-end">
+      <app-button
+        label="Cancelar"
+        [color]="'red'"
+        fontFamily="'UTEC Text Light', Arial, sans-serif"
+        fontWeight="300"
+        fontSize="1rem"
+        (click)="visibleChange.emit(false)"
+        >
+      </app-button>
+      <app-button
+        label="Guardar"
+        [color]="'blue'"
+        fontFamily="'UTEC Text Light', Arial, sans-serif"
+        fontWeight="300"
+        fontSize="1rem"
+        (click)="saveContent()"
+        >
+      </app-button>
+    </div>
+  </ng-template>
+</p-dialog>

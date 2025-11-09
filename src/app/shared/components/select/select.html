@@ -1,8 +1,24 @@
-<p-select 
-  [options]="items()" 
-  [ngModel]="selectedItem()"
-  (ngModelChange)="onItemChange($event)"
-  optionLabel="name" 
-  [placeholder]="placeholder()" 
-  class="w-full md:w-56" 
-/>
+@if (label()) {
+  <p-iftalabel>  
+    <p-select 
+      [options]="items()" 
+      [ngModel]="selectedItem()"
+      (ngModelChange)="onItemChange($event)"
+      optionLabel="name" 
+      [placeholder]="placeholder()" 
+      class="w-full md:w-56"
+      appendTo="body"
+    />
+    <label for="dd-city">{{ label() }}</label>
+  </p-iftalabel>
+} @else {
+  <p-select 
+    [options]="items()" 
+    [ngModel]="selectedItem()"
+    (ngModelChange)="onItemChange($event)"
+    optionLabel="name" 
+    [placeholder]="placeholder()" 
+    class="w-full md:w-56"
+    appendTo="body"
+  />
+}

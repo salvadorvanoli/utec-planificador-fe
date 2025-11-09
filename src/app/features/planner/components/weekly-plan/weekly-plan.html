@@ -12,6 +12,8 @@
           [weekNumber]="currentWeekNumber()"
           [startDate]="weekStartDate()"
           [endDate]="weekEndDate()"
+          [courseStartDate]="courseStartDate()"
+          [courseEndDate]="courseEndDate()"
           (onWeekChange)="changeWeek($event)"
           (onDateRangeChange)="handleDateRangeChange($event)"
         ></app-week-title>
@@ -24,7 +26,10 @@
             class="w-full"
             [contents]="programmaticContents()"
             [selectedContentId]="selectedContent()?.id || null"
+            [weeklyPlanningId]="weeklyPlanningId()"
             (onContentSelect)="selectContent($event)"
+            (onContentCreated)="handleContentCreated()"
+            (onContentDeleted)="handleContentDeleted($event)"
           ></app-content-section>
 
           <!-- Sección de actividades -->

@@ -106,7 +106,28 @@ $text-color: #1a1a1a;
 }
 
  
+ 
 :host ::ng-deep .select-col > * {
   height: auto !important;
   min-height: 0 !important;
+}
+
+:host ::ng-deep app-select .p-select .p-select-label,
+:host ::ng-deep app-select .p-select .p-iftalabel label,
+:host ::ng-deep .p-select .p-select-label,
+:host ::ng-deep .p-iftalabel label {
+  font-size: 1rem !important;
+  font-family: inherit !important;
+}
+
+:host ::ng-deep .p-select-overlay .p-select-option,
+:host ::ng-deep .p-select-panel .p-select-option,
+:host ::ng-deep .p-select-option-label {
+  font-size: 1rem !important;
+  font-family: inherit !important;
+}
+
+:host ::ng-deep app-select .p-select .p-select-label.p-placeholder,
+:host ::ng-deep .p-select .p-select-label.p-placeholder {
+  font-size: 1rem !important;
 }

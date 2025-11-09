@@ -25,7 +25,10 @@ export class ProgrammaticContentService {
    * @returns Observable with the created programmatic content
    */
   createProgrammaticContent(request: ProgrammaticContentRequest): Observable<ProgrammaticContentResponse> {
-    return this.http.post<ProgrammaticContentResponse>(this.apiUrl, request);
+    console.log('[ProgrammaticContentService] POST create programmatic content:', request);
+    return this.http.post<ProgrammaticContentResponse>(this.apiUrl, request).pipe(
+      tap(response => console.log('[ProgrammaticContentService] Response:', response))
+    );
   }
 
   /**
@@ -47,7 +50,10 @@ export class ProgrammaticContentService {
    * @returns Observable with the updated programmatic content
    */
   updateProgrammaticContent(id: number, request: ProgrammaticContentRequest): Observable<ProgrammaticContentResponse> {
-    return this.http.put<ProgrammaticContentResponse>(`${this.apiUrl}/${id}`, request);
+    console.log(`[ProgrammaticContentService] PUT update programmatic content ${id}:`, request);
+    return this.http.put<ProgrammaticContentResponse>(`${this.apiUrl}/${id}`, request).pipe(
+      tap(response => console.log('[ProgrammaticContentService] Response:', response))
+    );
   }
 
   /**
@@ -56,6 +62,9 @@ export class ProgrammaticContentService {
    * @returns Observable that completes when the programmatic content is deleted
    */
   deleteProgrammaticContent(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    console.log(`[ProgrammaticContentService] DELETE programmatic content ${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => console.log('[ProgrammaticContentService] Deleted successfully'))
+    );
   }
 }
