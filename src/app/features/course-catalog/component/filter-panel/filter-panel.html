@@ -12,13 +12,13 @@
                     </app-select>
                 </div>
             } @else {
-                <!-- Vista alumno: muestra ITR y Docente -->
+                <!-- Vista alumno: muestra Sede y Docente -->
                 <div class="flex w-[320px] h-[36px]">
                     <app-select 
                         class="flex-1" 
-                        [placeholder]="'ITR'"
-                        [options]="rtiOptions()"
-                        (onSelectionChange)="onRtiChange($event)">
+                        [placeholder]="'Sede'"
+                        [options]="campusOptions()"
+                        (onSelectionChange)="onCampusChange($event)">
                     </app-select>
                 </div>
                 <div class="flex w-[320px] h-[36px]">

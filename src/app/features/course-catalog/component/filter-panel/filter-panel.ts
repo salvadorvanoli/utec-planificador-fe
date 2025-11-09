@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, effect, Component, signal, input, inject, OnInit } from '@angular/core';
 import { ColorBlock } from '@app/shared/components/color-block/color-block';
 import { Selector, EnumOption } from '@app/shared/components/select/select'
-import { PositionService, RegionalTechnologicalInstituteService, UserService } from '@app/core/services';
-import { PeriodResponse, RegionalTechnologicalInstitute, UserBasicResponse } from '@app/core/models';
+import { PositionService, CampusService, UserService } from '@app/core/services';
+import { PeriodResponse, Campus, UserBasicResponse } from '@app/core/models';
 
 @Component({
   selector: 'app-filter-panel',
@@ -14,7 +14,7 @@ import { PeriodResponse, RegionalTechnologicalInstitute, UserBasicResponse } fro
 
 export class FilterPanel implements OnInit {
   private readonly positionService = inject(PositionService);
-  private readonly rtiService = inject(RegionalTechnologicalInstituteService);
+  private readonly campusService = inject(CampusService);
   private readonly userService = inject(UserService);
 
   readonly docente = input<boolean>(false);
@@ -25,10 +25,10 @@ export class FilterPanel implements OnInit {
   readonly selectedPeriod = signal<string | null>(null);
   readonly isLoadingPeriods = signal<boolean>(false);
 
-  readonly rtis = signal<RegionalTechnologicalInstitute[]>([]);
-  readonly rtiOptions = signal<EnumOption[]>([]);
-  readonly selectedRtiId = signal<number | null>(null);
-  readonly isLoadingRtis = signal<boolean>(false);
+  readonly campuses = signal<Campus[]>([]);
+  readonly campusOptions = signal<EnumOption[]>([]);
+  readonly selectedCampusId = signal<number | null>(null);
+  readonly isLoadingCampuses = signal<boolean>(false);
 
   readonly teachers = signal<UserBasicResponse[]>([]);
   readonly teacherOptions = signal<EnumOption[]>([]);
@@ -51,9 +51,9 @@ export class FilterPanel implements OnInit {
     });
 
     effect(() => {
-      const rtiId = this.selectedRtiId();
-      if (!this.docente() && rtiId !== null) {
-        this.loadTeachers(rtiId);
+      const campusId = this.selectedCampusId();
+      if (!this.docente() && campusId !== null) {
+        this.loadTeachers(campusId);
       }
     }, { allowSignalWrites: true });
   }
@@ -65,7 +65,7 @@ export class FilterPanel implements OnInit {
     }
 
     if (!this.docente()) {
-      this.loadRtis();
+      this.loadCampuses();
       this.loadTeachers();
     }
   }
@@ -98,33 +98,33 @@ export class FilterPanel implements OnInit {
     console.log('Period selected:', period);
   }
 
-  private loadRtis(teacherId?: number): void {
-    this.isLoadingRtis.set(true);
+  private loadCampuses(teacherId?: number): void {
+    this.isLoadingCampuses.set(true);
     
-    this.rtiService.getRegionalTechnologicalInstitutes(teacherId).subscribe({
-      next: (rtis) => {
-        this.rtis.set(rtis);
-        this.rtiOptions.set(
-          rtis.map(rti => ({
-            value: rti.id.toString(),
-            displayValue: rti.name
+    this.campusService.getCampuses(teacherId).subscribe({
+      next: (campuses) => {
+        this.campuses.set(campuses);
+        this.campusOptions.set(
+          campuses.map(campus => ({
+            value: campus.id.toString(),
+            displayValue: campus.name
           }))
         );
-        this.isLoadingRtis.set(false);
+        this.isLoadingCampuses.set(false);
       },
       error: (error) => {
-        console.error('Error loading RTIs:', error);
-        this.rtis.set([]);
-        this.rtiOptions.set([]);
-        this.isLoadingRtis.set(false);
+        console.error('Error loading campuses:', error);
+        this.campuses.set([]);
+        this.campusOptions.set([]);
+        this.isLoadingCampuses.set(false);
       }
     });
   }
 
-  private loadTeachers(rtiId?: number): void {
+  private loadTeachers(campusId?: number): void {
     this.isLoadingTeachers.set(true);
     
-    this.userService.getTeachers(rtiId).subscribe({
+    this.userService.getTeachers(campusId).subscribe({
       next: (teachers) => {
         this.teachers.set(teachers);
         this.teacherOptions.set(
@@ -144,10 +144,10 @@ export class FilterPanel implements OnInit {
     });
   }
 
-  onRtiChange(rtiId: string): void {
-    const id = parseInt(rtiId, 10);
-    this.selectedRtiId.set(id);
-    console.log('RTI selected:', id);
+  onCampusChange(campusId: string): void {
+    const id = parseInt(campusId, 10);
+    this.selectedCampusId.set(id);
+    console.log('Campus selected:', id);
     
     this.loadTeachers(id);
   }
@@ -157,6 +157,6 @@ export class FilterPanel implements OnInit {
     this.selectedTeacherId.set(id);
     console.log('Teacher selected:', id);
     
-    this.loadRtis(id);
+    this.loadCampuses(id);
   }
 }

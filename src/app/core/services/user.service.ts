@@ -11,25 +11,25 @@ export class UserService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/user`;
 
-  getTeachers(rtiId?: number): Observable<UserBasicResponse[]> {
+  getTeachers(campusId?: number): Observable<UserBasicResponse[]> {
     let params = new HttpParams();
     
-    if (rtiId !== undefined && rtiId !== null) {
-      params = params.set('rtiId', rtiId.toString());
+    if (campusId !== undefined && campusId !== null) {
+      params = params.set('campusId', campusId.toString());
     }
 
     return this.http.get<UserBasicResponse[]>(`${this.apiUrl}/teachers`, { params });
   }
 
-  getUsers(role?: string, rtiId?: number): Observable<UserBasicResponse[]> {
+  getUsers(role?: string, campusId?: number): Observable<UserBasicResponse[]> {
     let params = new HttpParams();
     
     if (role !== undefined && role !== null) {
       params = params.set('role', role);
     }
     
-    if (rtiId !== undefined && rtiId !== null) {
-      params = params.set('rtiId', rtiId.toString());
+    if (campusId !== undefined && campusId !== null) {
+      params = params.set('campusId', campusId.toString());
     }
 
     return this.http.get<UserBasicResponse[]>(this.apiUrl, { 
