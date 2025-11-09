@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { UserPositionsResponse, SelectedContext, RegionalTechnologicalInstitute, Campus } from '../models';
+import { UserPositionsResponse, SelectedContext, RegionalTechnologicalInstitute, Campus, PeriodResponse } from '../models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -63,6 +63,15 @@ export class PositionService {
         }
       })
     );
+  }
+
+  getUserPeriodsByCampus(campusId: number): Observable<PeriodResponse[]> {
+    const params = new HttpParams().set('campusId', campusId.toString());
+
+    return this.http.get<PeriodResponse[]>(`${this.apiUrl}/periods`, {
+      params,
+      withCredentials: true
+    });
   }
 
   private extractITRs(positions: UserPositionsResponse): void {

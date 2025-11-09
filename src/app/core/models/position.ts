@@ -31,3 +31,6 @@ export interface SelectedContext {
   roles: string[];
 }
 
+export interface PeriodResponse {
+  period: string;
+}

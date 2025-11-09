@@ -4,7 +4,12 @@
             @if (docente()) {
                 <!-- Vista docente: muestra Periodo -->
                 <div class="flex w-[320px] h-[36px]">
-                    <app-select class="flex-1" [placeholder]="'Periodo'"></app-select>
+                    <app-select 
+                        class="flex-1" 
+                        [placeholder]="'Periodo'"
+                        [options]="periodsOptions()"
+                        (onSelectionChange)="onPeriodChange($event)">
+                    </app-select>
                 </div>
             } @else {
                 <!-- Vista alumno: muestra ITR y Docente -->
