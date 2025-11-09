@@ -124,7 +124,7 @@ export class FilterPanel implements OnInit {
   private loadTeachers(rtiId?: number): void {
     this.isLoadingTeachers.set(true);
     
-    this.userService.getUsers('TEACHER', rtiId).subscribe({
+    this.userService.getTeachers(rtiId).subscribe({
       next: (teachers) => {
         this.teachers.set(teachers);
         this.teacherOptions.set(
