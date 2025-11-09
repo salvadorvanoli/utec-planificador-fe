@@ -1,11 +1,7 @@
-import { Campus } from "./campus";
 import { RegionalTechnologicalInstitute } from "./regional-technological-institute";
 
-export interface Position {
+export interface Campus {
   id: number;
-  type: string;
-  role: string;
+  name: string;
   regionalTechnologicalInstitute: RegionalTechnologicalInstitute;
-  campuses: Campus[];
-  isActive: boolean;
 }

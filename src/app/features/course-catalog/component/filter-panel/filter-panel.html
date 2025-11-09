@@ -14,10 +14,20 @@
             } @else {
                 <!-- Vista alumno: muestra ITR y Docente -->
                 <div class="flex w-[320px] h-[36px]">
-                    <app-select class="flex-1" [placeholder]="'ITR'"></app-select>
+                    <app-select 
+                        class="flex-1" 
+                        [placeholder]="'ITR'"
+                        [options]="rtiOptions()"
+                        (onSelectionChange)="onRtiChange($event)">
+                    </app-select>
                 </div>
                 <div class="flex w-[320px] h-[36px]">
-                    <app-select class="flex-1" [placeholder]="'Docente'"></app-select>
+                    <app-select 
+                        class="flex-1" 
+                        [placeholder]="'Docente'"
+                        [options]="teacherOptions()"
+                        (onSelectionChange)="onTeacherChange($event)">
+                    </app-select>
                 </div>
             }
         </div>

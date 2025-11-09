@@ -5,3 +5,5 @@ export * from './position.service';
 export * from './weekly-planning.service';
 export * from './activity.service';
 export * from './programmatic-content.service';
+export * from './regional-technological-institute.service';
+export * from './user.service';

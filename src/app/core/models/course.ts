@@ -20,3 +20,7 @@ export interface Course {
   weeklyPlannings?: WeeklyPlanning[];
   modifications?: Modification[];
 }
+
+export interface PeriodResponse {
+  period: string;
+}
