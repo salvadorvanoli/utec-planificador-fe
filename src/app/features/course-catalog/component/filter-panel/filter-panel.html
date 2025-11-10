@@ -30,6 +30,17 @@
                     </app-select>
                 </div>
             }
+            
+            @if (hasActiveFilters()) {
+                <div class="flex w-[320px] h-[36px] mt-2">
+                    <app-button
+                        class="w-full"
+                        [label]="'Limpiar filtros'"
+                        [color]="'red'"
+                        (onClick)="clearFilters()">
+                    </app-button>
+                </div>
+            }
         </div>
     </app-color-block>
 </div>

@@ -5,7 +5,8 @@ import { SectionHeader } from '../../layout/section-header/section-header';
 import { InfoType } from '@app/core/enums/info';
 import { Titulo } from '@app/shared/components/titulo/titulo';
 import { CourseInfo } from './components/course-info/course-info';
-import { CourseService, CourseResponse } from '@app/core/services';
+import { CourseService } from '@app/core/services';
+import { Course } from '@app/core/models';
 
 @Component({
   selector: 'app-planner',
@@ -19,7 +20,7 @@ export class Planner implements OnInit {
   
   readonly InfoType = InfoType;
   
-  courseData = signal<CourseResponse | null>(null);
+  courseData = signal<Course | null>(null);
   isLoadingCourse = signal(true);
 
   ngOnInit(): void {
@@ -45,7 +46,7 @@ export class Planner implements OnInit {
     });
   }
 
-  handleCourseUpdate(updatedCourse: CourseResponse): void {
+  handleCourseUpdate(updatedCourse: Course): void {
     this.courseData.set(updatedCourse);
   }
 }

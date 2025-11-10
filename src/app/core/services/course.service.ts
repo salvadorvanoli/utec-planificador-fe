@@ -1,23 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { Course, PeriodResponse } from '../models';
-
-export interface CourseRequest {
-  shift: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  partialGradingSystem: string;
-  hoursPerDeliveryFormat: Record<string, number>;
-  isRelatedToInvestigation: boolean;
-  involvesActivitiesWithProductiveSector: boolean;
-  sustainableDevelopmentGoals: string[];
-  universalDesignLearningPrinciples: string[];
-  curricularUnitId: number;
-}
-
-export interface CourseResponse extends Course {}
+import { Course, CourseRequest, PageResponse, PeriodResponse } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -31,8 +15,8 @@ export class CourseService {
    * @param request Course creation data
    * @returns Observable with the created course
    */
-  createCourse(request: CourseRequest): Observable<CourseResponse> {
-    return this.http.post<CourseResponse>(this.apiUrl, request);
+  createCourse(request: CourseRequest): Observable<Course> {
+    return this.http.post<Course>(this.apiUrl, request);
   }
 
   /**
@@ -40,9 +24,9 @@ export class CourseService {
    * @param id Course ID
    * @returns Observable with the course data
    */
-  getCourseById(id: number): Observable<CourseResponse> {
+  getCourseById(id: number): Observable<Course> {
     console.log(`[CourseService] GET course by ID: ${id}`);
-    return this.http.get<CourseResponse>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<Course>(`${this.apiUrl}/${id}`).pipe(
       tap(response => console.log('[CourseService] Response:', response))
     );
   }
@@ -53,8 +37,8 @@ export class CourseService {
    * @param request Course update data
    * @returns Observable with the updated course
    */
-  updateCourse(id: number, request: CourseRequest): Observable<CourseResponse> {
-    return this.http.put<CourseResponse>(`${this.apiUrl}/${id}`, request);
+  updateCourse(id: number, request: CourseRequest): Observable<Course> {
+    return this.http.put<Course>(`${this.apiUrl}/${id}`, request);
   }
 
   /**
@@ -72,8 +56,8 @@ export class CourseService {
    * @param goal SDG value (enum value)
    * @returns Observable with the updated course
    */
-  addSustainableDevelopmentGoal(courseId: number, goal: string): Observable<CourseResponse> {
-    return this.http.post<CourseResponse>(
+  addSustainableDevelopmentGoal(courseId: number, goal: string): Observable<Course> {
+    return this.http.post<Course>(
       `${this.apiUrl}/${courseId}/sustainable-development-goals/${goal}`,
       {}
     );
@@ -85,8 +69,8 @@ export class CourseService {
    * @param goal SDG value (enum value)
    * @returns Observable with the updated course
    */
-  deleteSustainableDevelopmentGoal(courseId: number, goal: string): Observable<CourseResponse> {
-    return this.http.delete<CourseResponse>(
+  deleteSustainableDevelopmentGoal(courseId: number, goal: string): Observable<Course> {
+    return this.http.delete<Course>(
       `${this.apiUrl}/${courseId}/sustainable-development-goals/${goal}`
     );
   }
@@ -97,8 +81,8 @@ export class CourseService {
    * @param principle UDL principle value (enum value)
    * @returns Observable with the updated course
    */
-  addUniversalDesignLearningPrinciple(courseId: number, principle: string): Observable<CourseResponse> {
-    return this.http.post<CourseResponse>(
+  addUniversalDesignLearningPrinciple(courseId: number, principle: string): Observable<Course> {
+    return this.http.post<Course>(
       `${this.apiUrl}/${courseId}/universal-design-learning-principles/${principle}`,
       {}
     );
@@ -110,8 +94,8 @@ export class CourseService {
    * @param principle UDL principle value (enum value)
    * @returns Observable with the updated course
    */
-  deleteUniversalDesignLearningPrinciple(courseId: number, principle: string): Observable<CourseResponse> {
-    return this.http.delete<CourseResponse>(
+  deleteUniversalDesignLearningPrinciple(courseId: number, principle: string): Observable<Course> {
+    return this.http.delete<Course>(
       `${this.apiUrl}/${courseId}/universal-design-learning-principles/${principle}`
     );
   }
@@ -122,8 +106,8 @@ export class CourseService {
    * @param partialGradingSystem New partial grading system value
    * @returns Observable with the updated course
    */
-  updatePartialGradingSystem(courseId: number, partialGradingSystem: string): Observable<CourseResponse> {
-    return this.http.patch<CourseResponse>(
+  updatePartialGradingSystem(courseId: number, partialGradingSystem: string): Observable<Course> {
+    return this.http.patch<Course>(
       `${this.apiUrl}/${courseId}/partial-grading-system`,
       { partialGradingSystem }
     );
@@ -135,8 +119,8 @@ export class CourseService {
    * @param hoursPerDeliveryFormat Map of delivery format to hours
    * @returns Observable with the updated course
    */
-  updateHoursPerDeliveryFormat(courseId: number, hoursPerDeliveryFormat: Record<string, number>): Observable<CourseResponse> {
-    return this.http.patch<CourseResponse>(
+  updateHoursPerDeliveryFormat(courseId: number, hoursPerDeliveryFormat: Record<string, number>): Observable<Course> {
+    return this.http.patch<Course>(
       `${this.apiUrl}/${courseId}/hours-per-delivery-format`,
       { hoursPerDeliveryFormat }
     );
@@ -149,5 +133,35 @@ export class CourseService {
       params,
       withCredentials: true
     });
+  }
+
+  getCourses(
+    userId?: number,
+    campusId?: number,
+    period?: string,
+    page: number = 0,
+    size: number = 10
+  ): Observable<PageResponse<Course>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    if (userId !== undefined && userId !== null) {
+      params = params.set('userId', userId.toString());
+    }
+
+    if (campusId !== undefined && campusId !== null) {
+      params = params.set('campusId', campusId.toString());
+    }
+
+    if (period !== undefined && period !== null && period.trim() !== '') {
+      params = params.set('period', period);
+    }
+
+    console.log('[CourseService] GET courses with params:', { userId, campusId, period, page, size });
+
+    return this.http.get<PageResponse<Course>>(this.apiUrl, { params }).pipe(
+      tap(response => console.log('[CourseService] Courses response:', response))
+    );
   }
 }

@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, effect, Component, signal, input, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, effect, Component, signal, input, inject, OnInit, computed } from '@angular/core';
 import { ColorBlock } from '@app/shared/components/color-block/color-block';
 import { Selector, EnumOption } from '@app/shared/components/select/select'
-import { PositionService, CampusService, UserService, CourseService } from '@app/core/services';
+import { ButtonComponent } from '@app/shared/components/button/button';
+import { PositionService, CampusService, UserService, CourseService, FilterStateService } from '@app/core/services';
 import { PeriodResponse, Campus, UserBasicResponse } from '@app/core/models';
 
 @Component({
   selector: 'app-filter-panel',
-  imports: [ColorBlock, Selector],
+  imports: [ColorBlock, Selector, ButtonComponent],
   templateUrl: './filter-panel.html',
   styleUrl: './filter-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -17,6 +18,7 @@ export class FilterPanel implements OnInit {
   private readonly campusService = inject(CampusService);
   private readonly userService = inject(UserService);
   private readonly courseService = inject(CourseService);
+  private readonly filterStateService = inject(FilterStateService);
 
   readonly docente = input<boolean>(false);
   readonly docenteState = signal<boolean>(false);
@@ -35,6 +37,8 @@ export class FilterPanel implements OnInit {
   readonly teacherOptions = signal<EnumOption[]>([]);
   readonly selectedTeacherId = signal<number | null>(null);
   readonly isLoadingTeachers = signal<boolean>(false);
+
+  readonly hasActiveFilters = computed(() => this.filterStateService.hasActiveFilters());
 
   constructor() {
     effect(() => {
@@ -96,6 +100,7 @@ export class FilterPanel implements OnInit {
 
   onPeriodChange(period: string): void {
     this.selectedPeriod.set(period);
+    this.filterStateService.setPeriod(period);
     console.log('Period selected:', period);
   }
 
@@ -148,6 +153,7 @@ export class FilterPanel implements OnInit {
   onCampusChange(campusId: string): void {
     const id = parseInt(campusId, 10);
     this.selectedCampusId.set(id);
+    this.filterStateService.setCampusId(id);
     console.log('Campus selected:', id);
     
     this.loadTeachers(id);
@@ -156,8 +162,19 @@ export class FilterPanel implements OnInit {
   onTeacherChange(teacherId: string): void {
     const id = parseInt(teacherId, 10);
     this.selectedTeacherId.set(id);
+    this.filterStateService.setUserId(id);
     console.log('Teacher selected:', id);
     
     this.loadCampuses(id);
+  }
+
+  clearFilters(): void {
+    this.filterStateService.clearFilters();
+    
+    this.selectedPeriod.set(null);
+    this.selectedCampusId.set(null);
+    this.selectedTeacherId.set(null);
+    
+    console.log('[FilterPanel] Filters cleared');
   }
 }
