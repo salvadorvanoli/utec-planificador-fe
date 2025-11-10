@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { Course } from '../models';
+import { Course, PeriodResponse } from '../models';
 
 export interface CourseRequest {
   shift: string;
@@ -140,5 +140,14 @@ export class CourseService {
       `${this.apiUrl}/${courseId}/hours-per-delivery-format`,
       { hoursPerDeliveryFormat }
     );
+  }
+
+  getPeriodsByCampus(campusId: number): Observable<PeriodResponse[]> {
+    const params = new HttpParams().set('campusId', campusId.toString());
+
+    return this.http.get<PeriodResponse[]>(`${this.apiUrl}/periods`, {
+      params,
+      withCredentials: true
+    });
   }
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, effect, Component, signal, input, inject, OnInit } from '@angular/core';
 import { ColorBlock } from '@app/shared/components/color-block/color-block';
 import { Selector, EnumOption } from '@app/shared/components/select/select'
-import { PositionService, CampusService, UserService } from '@app/core/services';
+import { PositionService, CampusService, UserService, CourseService } from '@app/core/services';
 import { PeriodResponse, Campus, UserBasicResponse } from '@app/core/models';
 
 @Component({
@@ -16,6 +16,7 @@ export class FilterPanel implements OnInit {
   private readonly positionService = inject(PositionService);
   private readonly campusService = inject(CampusService);
   private readonly userService = inject(UserService);
+  private readonly courseService = inject(CourseService);
 
   readonly docente = input<boolean>(false);
   readonly docenteState = signal<boolean>(false);
@@ -73,7 +74,7 @@ export class FilterPanel implements OnInit {
   private loadPeriods(campusId: number): void {
     this.isLoadingPeriods.set(true);
     
-    this.positionService.getUserPeriodsByCampus(campusId).subscribe({
+    this.courseService.getPeriodsByCampus(campusId).subscribe({
       next: (periods) => {
         this.periods.set(periods);
         this.periodsOptions.set(

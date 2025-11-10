@@ -65,15 +65,6 @@ export class PositionService {
     );
   }
 
-  getUserPeriodsByCampus(campusId: number): Observable<PeriodResponse[]> {
-    const params = new HttpParams().set('campusId', campusId.toString());
-
-    return this.http.get<PeriodResponse[]>(`${this.apiUrl}/periods`, {
-      params,
-      withCredentials: true
-    });
-  }
-
   private extractITRs(positions: UserPositionsResponse): void {
     const itrMap = new Map<number, RegionalTechnologicalInstitute>();
 
