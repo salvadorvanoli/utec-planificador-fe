@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment';
 })
 export class PositionService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/user`;
+  private readonly apiUrl = `${environment.apiUrl}/users`;
   private readonly STORAGE_KEY = 'selected_context';
 
   readonly userPositions = signal<UserPositionsResponse | null>(null);

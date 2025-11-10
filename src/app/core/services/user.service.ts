@@ -9,7 +9,7 @@ import { UserBasicResponse } from '../models';
 })
 export class UserService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/user`;
+  private readonly apiUrl = `${environment.apiUrl}/users`;
 
   getTeachers(campusId?: number): Observable<UserBasicResponse[]> {
     let params = new HttpParams();
