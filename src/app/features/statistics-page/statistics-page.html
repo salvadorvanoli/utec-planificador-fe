@@ -5,7 +5,19 @@
 />
 
 <div class="statistics-page-container">
-  <app-data-panel></app-data-panel>
-
-  <app-report-panel></app-report-panel>
+  @if (isLoadingCourse()) {
+    <div class="flex flex-col items-center justify-center py-12 text-gray-500">
+      <i class="pi pi-spin pi-spinner text-6xl mb-4"></i>
+      <p class="text-xl font-semibold">Cargando estadísticas del curso...</p>
+    </div>
+  } @else if (!courseData()) {
+    <div class="flex flex-col items-center justify-center py-12 text-gray-500">
+      <i class="pi pi-exclamation-triangle text-6xl mb-4"></i>
+      <p class="text-xl font-semibold">No se encontró el curso</p>
+      <p class="text-sm">Por favor, verifica el ID del curso</p>
+    </div>
+  } @else {
+    <app-data-panel></app-data-panel>
+    <app-report-panel></app-report-panel>
+  }
 </div>

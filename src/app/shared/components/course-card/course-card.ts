@@ -95,11 +95,21 @@ export class CourseCard {
 
   handleCardClick(): void {
     const mode = this.navigationMode();
+    const courseData = this.course();
+    
+    if (!courseData?.id) {
+      console.warn('[CourseCard] No course ID available for navigation');
+      return;
+    }
     
     if (mode === 'planner') {
-      this.router.navigate(['/planner']);
+      this.router.navigate(['/planner', courseData.id]);
     } else if (mode === 'statistics') {
-      this.router.navigate(['/statistics-page']);
+      this.router.navigate(['/statistics-page', courseData.id]);
+    } else if (mode === 'info') {
+      // TODO: Future implementation for 'info' mode can be added here
+    } else {
+      // TODO: Handle 'none' mode or do nothing
     }
   }
 

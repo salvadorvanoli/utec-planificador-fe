@@ -32,7 +32,7 @@ export const routes: Routes = [
     children: [
       { path: 'option-page', component: OptionPage },
       { path: 'course-catalog', component: CourseCatalog, canActivate: [contextGuard] },
-      { path: 'statistics-page', component: StatisticsPage, canActivate: [contextGuard] },
+      { path: 'statistics-page/:courseId', component: StatisticsPage, canActivate: [contextGuard] },
       { path: 'chat-page', component: ChatPage, canActivate: [contextGuard] },
       { path: 'assign-page', component: AssignPage, canActivate: [contextGuard] },
       { path: 'planner/:courseId', component: Planner, canActivate: [contextGuard] },
