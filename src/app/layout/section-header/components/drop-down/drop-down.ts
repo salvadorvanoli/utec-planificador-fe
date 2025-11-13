@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
+import { PositionService } from '@app/core/services';
+import { extractContextFromUrl, buildContextQueryParams } from '@app/shared/utils/context-encoder';
 
 type Color = 'blue' | 'black';
 
@@ -33,6 +35,7 @@ interface BreadcrumbConfig {
 export class DropDown {
   readonly color = input<Color>('blue');
   private readonly router = inject(Router);
+  private readonly positionService = inject(PositionService);
 
   private readonly routeToBreadcrumb: BreadcrumbConfig[] = [
     { route: '/home', breadcrumb: ['home'] },
@@ -57,12 +60,12 @@ export class DropDown {
 
   private readonly idToRoute: Record<string, { path: string; queryParams?: any }> = {
     home: { path: '/home' },
-    menu: { path: '/option-page', queryParams: { mainMenu: true } },
+    menu: { path: '/option-page', queryParams: { step: 'main-menu' } },
     catalog: { path: '/course-catalog', queryParams: { docente: false, mode: 'info' } },
     planner: { path: '/planner' },
     statistics: { path: '/statistics-page' },
     chat: { path: '/chat-page' },
-    itr: { path: '/option-page', queryParams: { mainMenu: false } },
+    itr: { path: '/option-page', queryParams: { step: 'campus' } },
     assign: { path: '/assign-page' },
   };
 
@@ -70,12 +73,14 @@ export class DropDown {
   options = this._options;
   selectedId = signal('home');
   isDropdownOpen = signal(false);
-  
-  dropdownIcon = computed(() => 
+
+  dropdownIcon = computed(() =>
     this.isDropdownOpen() ? 'pi pi-caret-down' : 'pi pi-caret-left'
   );
 
   constructor() {
+    this.ensureContextFromUrl();
+
     this.updateBreadcrumbFromRoute(this.router.url);
 
     this.router.events
@@ -83,16 +88,67 @@ export class DropDown {
       .subscribe((event) => {
         this.updateBreadcrumbFromRoute(event.urlAfterRedirects);
       });
+
+    effect(() => {
+      this.positionService.selectedContext();
+      this.updateBreadcrumbFromRoute(this.router.url);
+    });
+
+    effect(() => {
+      const positions = this.positionService.userPositions();
+      if (positions && !this.positionService.selectedContext()) {
+        this.ensureContextFromUrl();
+      }
+    });
+  }
+
+  private ensureContextFromUrl(): void {
+    if (!this.positionService.selectedContext()) {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const queryParams: Record<string, string> = {};
+        params.forEach((value, key) => queryParams[key] = value);
+
+        const contextParams = extractContextFromUrl(queryParams);
+
+        if (queryParams['ctx'] && !contextParams) {
+          console.warn('[DropDown] Invalid context token in URL');
+          return;
+        }
+
+        if (contextParams?.itrId && contextParams?.campusId && contextParams.campusId !== -1) {
+          const positions = this.positionService.userPositions();
+
+          if (positions) {
+            const context = this.positionService.buildContextFromUrlParams(contextParams.itrId, contextParams.campusId);
+
+            if (context) {
+              this.positionService.selectedContext.set(context);
+              this.positionService.availableRoles.set(context.roles);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('[DropDown] Error ensuring context from URL:', error);
+      }
+    }
   }
 
   private updateBreadcrumbFromRoute(url: string): void {
-    const [cleanUrl, queryString] = url.split('?');
-    const params = new URLSearchParams(queryString || '');
+    const [cleanUrl] = url.split('?');
 
     let config = this.routeToBreadcrumb.find((config) => config.route === cleanUrl);
 
-    if (cleanUrl === '/option-page' && params.get('mainMenu') === 'false') {
-      config = { route: '/option-page', breadcrumb: ['home', 'menu', 'itr'] };
+    if (cleanUrl === '/option-page') {
+      const context = this.positionService.selectedContext();
+
+      if (context?.campus && context?.itr) {
+        config = { route: '/option-page', breadcrumb: ['home', 'menu'] };
+      } else if (context?.itr && !context?.campus) {
+        config = { route: '/option-page', breadcrumb: ['home', 'menu', 'itr'] };
+      } else {
+        config = { route: '/option-page', breadcrumb: ['home', 'menu'] };
+      }
     }
 
     if (config) {
@@ -118,9 +174,61 @@ export class DropDown {
 
     const routeConfig = this.idToRoute[id];
     if (routeConfig) {
+      try {
+        const currentParams = new URLSearchParams(window.location.search);
+        const queryParams: Record<string, string> = {};
+        currentParams.forEach((value, key) => queryParams[key] = value);
+        const contextParams = extractContextFromUrl(queryParams);
+
+      const protectedRoutes = ['/course-catalog', '/planner', '/statistics-page', '/chat-page', '/assign-page'];
+
+      if (routeConfig.path === '/option-page') {
+        if (id === 'menu' && contextParams?.itrId && contextParams?.campusId) {
+          const encodedParams = buildContextQueryParams({
+            itrId: contextParams.itrId,
+            campusId: contextParams.campusId,
+            step: 'main-menu'
+          });
+          this.router.navigate([routeConfig.path], { queryParams: encodedParams });
+          return;
+        } else if (id === 'itr' && contextParams?.itrId) {
+          const encodedParams = buildContextQueryParams({
+            itrId: contextParams.itrId,
+            campusId: -1,
+            step: 'campus'
+          });
+          this.router.navigate([routeConfig.path], { queryParams: encodedParams });
+          return;
+        } else {
+          this.router.navigate([routeConfig.path], {
+            queryParams: routeConfig.queryParams
+          });
+          return;
+        }
+      }
+
+      if (protectedRoutes.includes(routeConfig.path)) {
+        if (contextParams?.itrId && contextParams?.campusId) {
+          const encodedParams = buildContextQueryParams({
+            itrId: contextParams.itrId,
+            campusId: contextParams.campusId
+          });
+          const mergedParams = {
+            ...routeConfig.queryParams,
+            ...encodedParams
+          };
+          this.router.navigate([routeConfig.path], { queryParams: mergedParams });
+          return;
+        }
+      }
+
       if (routeConfig.queryParams) {
         this.router.navigate([routeConfig.path], { queryParams: routeConfig.queryParams });
       } else {
+        this.router.navigate([routeConfig.path]);
+      }
+      } catch (error) {
+        console.error('[DropDown] Error in updateSelection:', error);
         this.router.navigate([routeConfig.path]);
       }
     }
@@ -130,5 +238,4 @@ export class DropDown {
     this.isDropdownOpen.set(isOpen);
   }
 }
-
 

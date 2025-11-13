@@ -5,6 +5,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { PositionService } from '@app/core/services';
 import { RegionalTechnologicalInstitute, Campus } from '@app/core/models';
 import { Role } from '@app/core/enums/role';
+import { buildContextQueryParams } from '@app/shared/utils/context-encoder';
 
 type SelectionStep = 'itr' | 'campus' | 'main-menu';
 
@@ -35,34 +36,55 @@ export class OptionPanel {
 
   handleITRSelection(itr: RegionalTechnologicalInstitute): void {
     this.positionService.selectITR(itr);
-    this.router.navigate(['/option-page'], {
-      queryParams: { step: 'campus' }
+    const queryParams = buildContextQueryParams({
+      itrId: itr.id,
+      campusId: -1,
+      step: 'campus'
     });
+    this.router.navigate(['/option-page'], { queryParams });
   }
 
   handleCampusSelection(campus: Campus): void {
     this.positionService.selectCampus(campus);
-    this.router.navigate(['/option-page'], {
-      queryParams: { step: 'main-menu' }
-    });
+    const context = this.positionService.selectedContext();
+    if (context) {
+      const queryParams = buildContextQueryParams({
+        itrId: context.itr.id,
+        campusId: campus.id,
+        step: 'main-menu'
+      });
+      this.router.navigate(['/option-page'], { queryParams });
+    }
   }
 
   handleButtonClick(action: string): void {
+    const context = this.positionService.selectedContext();
+    if (!context) return;
+
+    const contextParams = buildContextQueryParams({
+      itrId: context.itr.id,
+      campusId: context.campus.id
+    });
+
     if (action === 'planificador') {
       this.router.navigate(['/course-catalog'], {
-        queryParams: { docente: true, mode: 'planner' }
+        queryParams: { ...contextParams, docente: true, mode: 'planner' }
       });
     } else if (action === 'estadistico') {
       this.router.navigate(['/course-catalog'], {
-        queryParams: { docente: this.hasTeacherRole(), mode: 'statistics' }
+        queryParams: { ...contextParams, docente: this.hasTeacherRole(), mode: 'statistics' }
       });
     } else if (action === 'asignar-cursos') {
-      this.router.navigate(['/assign-page']);
+      this.router.navigate(['/assign-page'], {
+        queryParams: contextParams
+      });
     } else if (action === 'chat') {
-      this.router.navigate(['/chat-page']);
+      this.router.navigate(['/chat-page'], {
+        queryParams: contextParams
+      });
     } else if (action === 'info-cursos') {
       this.router.navigate(['/course-catalog'], {
-        queryParams: { docente: false, mode: 'info' }
+        queryParams: { ...contextParams, docente: false, mode: 'info' }
       });
     }
   }
@@ -77,9 +99,18 @@ export class OptionPanel {
   }
 
   goBackToCampus(): void {
+    const context = this.positionService.selectedContext();
     this.positionService.clearRolesSelection();
-    this.router.navigate(['/option-page'], {
-      queryParams: { step: 'campus' }
-    });
+    if (context) {
+      const queryParams = buildContextQueryParams({
+        itrId: context.itr.id,
+        campusId: -1,
+        step: 'campus'
+      });
+      this.router.navigate(['/option-page'], { queryParams });
+    } else {
+      this.router.navigate(['/option-page']);
+    }
   }
 }
+
