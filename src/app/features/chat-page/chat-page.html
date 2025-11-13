@@ -7,9 +7,16 @@
 <div class="chat-page-container">
   <div class="chat-page-center mx-auto">
     <app-color-block [color]="'black'" class="chat-page-color-block">
-      <app-chat-header></app-chat-header>
-      <app-chat-body></app-chat-body>
-      <app-chat-input></app-chat-input>
+      <app-chat-header
+        (showSuggestions)="onShowSuggestions($event)"
+      ></app-chat-header>
+      <app-chat-body
+        [messages]="messages()"
+      ></app-chat-body>
+      <app-chat-input
+        [isSending]="isSending()"
+        (sendMessage)="onSendMessage($event)"
+      ></app-chat-input>
     </app-color-block>
   </div>
 </div>

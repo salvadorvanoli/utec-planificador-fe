@@ -1,3 +1,4 @@
+export * from './ai-agent';
 export * from './auth';
 export * from './campus';
 export * from './context';

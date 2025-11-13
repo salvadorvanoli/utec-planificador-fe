@@ -1,13 +1,40 @@
-<div class="flex flex-col w-full">
-  <div class="flex flex-row justify-between items-center w-full flex-wrap gap-y-2">
-    <div class="edu-bot-title ml-4">
+<div class="chat-header-container">
+  <div class="chat-header-content">
+    <div class="edu-bot-title">
       EDU BOT
     </div>
-    <div class="chat-header-icons flex flex-row gap-4 mr-4">
-      <i class="pi pi-file-plus text-xl"></i>
-      <i class="pi pi-sync text-xl"></i>
-      <i class="pi pi-window-maximize text-xl"></i>
+    <div class="chat-header-controls">
+      <div class="select-wrapper">
+        <p-select
+          [options]="courseOptions"
+          [(ngModel)]="selectedCourse"
+          (onChange)="onCourseChange($event.value)"
+          placeholder="Seleccionar curso"
+          optionLabel="label"
+          [filter]="true"
+          [showClear]="true"
+          [loading]="isLoadingCourses()"
+          styleClass="chat-select"
+        />
+      </div>
+      <div class="chat-header-icons">
+        <i
+          class="pi pi-lightbulb cursor-pointer hover:text-blue-500 transition-colors"
+          [class.opacity-50]="!selectedCourse()"
+          [class.cursor-not-allowed]="!selectedCourse()"
+          (click)="selectedCourse() && requestSuggestions()"
+          pTooltip="Obtener sugerencias pedagógicas para el curso seleccionado"
+          tooltipPosition="bottom"
+        ></i>
+        <i
+          class="pi pi-trash cursor-pointer hover:text-blue-500 transition-colors"
+          [class.spin-animation]="isClearing()"
+          (click)="!isClearing() && clearSession()"
+          pTooltip="Limpiar conversación y reiniciar sesión de chat"
+          tooltipPosition="bottom"
+        ></i>
+      </div>
     </div>
   </div>
-  <div class="horizontal-line-3 mt-1"></div>
+  <div class="horizontal-line-3"></div>
 </div>
