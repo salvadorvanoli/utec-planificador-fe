@@ -1,17 +1,26 @@
-<div class="flex flex-row w-full mt-4 sm:mt-6 px-4 sm:px-6 md:px-8 lg:px-12 pb-4 sm:pb-6">
-  <div class="flex flex-row w-full items-center gap-2 sm:gap-3">
-    <div class="flex-1">
+<div class="chat-input-container">
+  <div class="chat-input-wrapper">
+    <div class="textarea-wrapper">
       <textarea
-        pInputTextarea
-        class="chat-input-textarea w-full"
+        #textareaRef
+        [(ngModel)]="message"
+        (keydown)="onKeyDown($event)"
+        (input)="onInput()"
+        class="chat-input-textarea"
         rows="2"
         aria-label="Escribe tu mensaje"
         placeholder="Escribe tu mensaje..."
+        [disabled]="isSending()"
       ></textarea>
     </div>
-    <div class="flex items-center justify-end gap-2 sm:gap-3">
-      <i class="pi pi-microphone chat-input-icon" aria-label="Grabar audio"></i>
-      <i class="pi pi-send chat-input-icon" aria-label="Enviar mensaje"></i>
+    <div class="send-button-wrapper">
+      <i
+        class="pi pi-send chat-input-icon"
+        [class.opacity-50]="!message().trim() || isSending()"
+        [class.cursor-not-allowed]="!message().trim() || isSending()"
+        (click)="onSendClick()"
+        aria-label="Enviar mensaje"
+      ></i>
     </div>
   </div>
 </div>

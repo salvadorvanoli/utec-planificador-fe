@@ -4,10 +4,44 @@
     </div>
 
     <div class="flex flex-col gap-5 w-full">
-      <app-course-card [assign]="false" [docente]="docente()"></app-course-card>
-      <app-course-card [assign]="false" [docente]="docente()"></app-course-card>
-      <app-course-card [assign]="false" [docente]="docente()"></app-course-card>
+      @if (isLoading()) {
+        @for (item of [1, 2, 3]; track item) {
+          <div class="flex gap-4 p-5 bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="flex items-center justify-center w-2/10">
+              <p-skeleton width="100%" height="120px" borderRadius="8px"></p-skeleton>
+            </div>
+            
+            <div class="flex flex-col gap-3 w-8/10 justify-center">
+              <div class="flex gap-4">
+                <p-skeleton width="40%" height="24px"></p-skeleton>
+                <p-skeleton width="30%" height="20px"></p-skeleton>
+              </div>
+              
+              <p-skeleton width="35%" height="18px"></p-skeleton>
+            </div>
+          </div>
+        }
+      } @else if (courses().length === 0) {
+        <div class="flex flex-col items-center justify-center py-12 text-gray-500">
+          <i class="pi pi-inbox text-6xl mb-4"></i>
+          <p class="text-xl font-semibold mb-2">No se encontraron cursos</p>
+          <p class="text-sm">Intenta ajustar los filtros para ver más resultados</p>
+        </div>
+      } @else {
+        @for (course of courses(); track course.id) {
+          <app-course-card 
+            [assign]="false" 
+            [docente]="docente()" 
+            [course]="course">
+          </app-course-card>
+        }
+      }
     </div>
 
-    <app-paginator></app-paginator>
+    <app-paginator 
+      [totalRecords]="totalRecords()"
+      [rows]="pageSize()"
+      [first]="currentPage() * pageSize()"
+      (onPageChange)="onPageChange($event)">
+    </app-paginator>
 </div>

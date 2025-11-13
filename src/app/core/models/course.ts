@@ -20,3 +20,36 @@ export interface Course {
   weeklyPlannings?: WeeklyPlanning[];
   modifications?: Modification[];
 }
+
+export interface CourseResponse {
+  id: number;
+  shift: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  partialGradingSystem: string;
+  hoursPerDeliveryFormat: Record<string, number>;
+  isRelatedToInvestigation: boolean;
+  involvesActivitiesWithProductiveSector: boolean;
+  sustainableDevelopmentGoals: string[];
+  universalDesignLearningPrinciples: string[];
+  curricularUnitId: number;
+}
+
+export interface CourseRequest {
+  shift: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  partialGradingSystem: string;
+  hoursPerDeliveryFormat: Record<string, number>;
+  isRelatedToInvestigation: boolean;
+  involvesActivitiesWithProductiveSector: boolean;
+  sustainableDevelopmentGoals: string[];
+  universalDesignLearningPrinciples: string[];
+  curricularUnitId: number;
+}
+
+export interface PeriodResponse {
+  period: string;
+}

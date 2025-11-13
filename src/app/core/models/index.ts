@@ -1,9 +1,14 @@
+export * from './ai-agent';
 export * from './auth';
+export * from './campus';
+export * from './context';
 export * from './course';
 export * from './curricular-unit';
 export * from './modification';
+export * from './pagination';
 export * from './position';
+export * from './regional-technological-institute';
 export * from './teacher';
 export * from './term';
-export type { User, PersonalData, UserPosition } from './user';
+export * from './user';
 export * from './weekly-planning';

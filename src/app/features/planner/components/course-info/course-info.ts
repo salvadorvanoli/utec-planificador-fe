@@ -4,10 +4,11 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { Skeleton } from 'primeng/skeleton';
 import { Selector } from '@app/shared/components/select/select';
-import { CourseResponse, EnumService, EnumResponse, CourseService } from '@app/core/services';
+import { EnumService, EnumResponse, CourseService } from '@app/core/services';
 import { TagsBox } from './components/tags-box/tags-box';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
+import { Course } from '@app/core/models';
 
 @Component({
   selector: 'app-course-info',
@@ -23,10 +24,10 @@ export class CourseInfo implements OnInit {
   private readonly messageService = inject(MessageService);
   
   // Inputs
-  courseData = input<CourseResponse | null>(null);
+  courseData = input<Course | null>(null);
   isLoading = input<boolean>(true);
   
-  onCourseUpdated = output<CourseResponse>();
+  onCourseUpdated = output<Course>();
 
   description = computed(() => this.courseData()?.description || '');
   shift = computed(() => this.courseData()?.shift || '');
@@ -70,7 +71,7 @@ export class CourseInfo implements OnInit {
     if (!course || !course.sustainableDevelopmentGoals) return [];
     
     return course.sustainableDevelopmentGoals
-      .map(value => {
+      .map((value: string) => {
         const option = this.odsOptions().find(opt => opt.value === value);
         return option?.displayValue || value;
       });
@@ -81,7 +82,7 @@ export class CourseInfo implements OnInit {
     if (!course || !course.universalDesignLearningPrinciples) return [];
     
     return course.universalDesignLearningPrinciples
-      .map(value => {
+      .map((value: string) => {
         const option = this.principlesOptions().find(opt => opt.value === value);
         return option?.displayValue || value;
       });

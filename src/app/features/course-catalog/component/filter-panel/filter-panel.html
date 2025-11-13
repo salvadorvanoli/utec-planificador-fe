@@ -1,22 +1,44 @@
 <div class="flex" style="width: 400px; height: 367px;">
     <app-color-block [color]="docente() ? 'blue' : 'blue'">
-        <div class="flex flex-col gap-5 w-full items-center justify-center pl-2.5">
-            <div class="flex w-[320px] h-[36px] mt-5">
-                <app-select class="flex-1" [placeholder]="'Departamento'"></app-select>
-            </div>
-            <div class="flex w-[320px] h-[36px]">
-                <app-select class="flex-1" [placeholder]="'ITR'"></app-select>
-            </div>
+        <div class="flex flex-col gap-5 w-full items-center justify-center pl-2.5 pt-5">
             @if (docente()) {
                 <!-- Vista docente: muestra Periodo -->
                 <div class="flex w-[320px] h-[36px]">
-                    <app-select class="flex-1" [placeholder]="'Periodo'"></app-select>
+                    <app-select 
+                        class="flex-1" 
+                        [placeholder]="'Periodo'"
+                        [options]="periodsOptions()"
+                        (onSelectionChange)="onPeriodChange($event)">
+                    </app-select>
+                </div>
+            } @else {
+                <!-- Vista alumno: muestra Sede y Docente -->
+                <div class="flex w-[320px] h-[36px]">
+                    <app-select 
+                        class="flex-1" 
+                        [placeholder]="'Sede'"
+                        [options]="campusOptions()"
+                        (onSelectionChange)="onCampusChange($event)">
+                    </app-select>
+                </div>
+                <div class="flex w-[320px] h-[36px]">
+                    <app-select 
+                        class="flex-1" 
+                        [placeholder]="'Docente'"
+                        [options]="teacherOptions()"
+                        (onSelectionChange)="onTeacherChange($event)">
+                    </app-select>
                 </div>
             }
-            @if (!docente()) {
-                <!-- Vista alumno: muestra Docente -->
-                <div class="flex w-[320px] h-[36px]">
-                    <app-select class="flex-1" [placeholder]="'Docente'"></app-select>
+            
+            @if (hasActiveFilters()) {
+                <div class="flex w-[320px] h-[36px] mt-2">
+                    <app-button
+                        class="w-full"
+                        [label]="'Limpiar filtros'"
+                        [color]="'red'"
+                        (onClick)="clearFilters()">
+                    </app-button>
                 </div>
             }
         </div>

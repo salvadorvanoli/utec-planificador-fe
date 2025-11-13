@@ -9,58 +9,21 @@ import { environment } from '../../../environments/environment';
 })
 export class PositionService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/user`;
-  private readonly STORAGE_KEY = 'selected_context';
+  private readonly apiUrl = `${environment.apiUrl}/users`;
 
   readonly userPositions = signal<UserPositionsResponse | null>(null);
-  readonly selectedContext = signal<SelectedContext | null>(this.loadContextFromStorage());
+  readonly selectedContext = signal<SelectedContext | null>(null);
   readonly availableITRs = signal<RegionalTechnologicalInstitute[]>([]);
   readonly availableCampuses = signal<Campus[]>([]);
   readonly availableRoles = signal<string[]>([]);
 
-  private loadContextFromStorage(): SelectedContext | null {
-    try {
-      const stored = sessionStorage.getItem(this.STORAGE_KEY);
-      if (stored) {
-        return JSON.parse(stored);
-      }
-    } catch (error) {
-      console.error('[PositionService] Error loading context from storage:', error);
-    }
-    return null;
-  }
-
-  private saveContextToStorage(context: SelectedContext | null): void {
-    try {
-      if (context) {
-        sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(context));
-      } else {
-        sessionStorage.removeItem(this.STORAGE_KEY);
-      }
-    } catch (error) {
-      console.error('[PositionService] Error saving context to storage:', error);
-    }
-  }
-
   getUserPositions(): Observable<UserPositionsResponse> {
-    const storedContext = this.selectedContext();
-
     return this.http.get<UserPositionsResponse>(`${this.apiUrl}/positions`, {
       withCredentials: true
     }).pipe(
       tap(response => {
         this.userPositions.set(response);
         this.extractITRs(response);
-
-        if (storedContext) {
-          if (storedContext.itr) {
-            this.selectITR(storedContext.itr, false);
-          }
-
-          if (storedContext.campus) {
-            this.selectCampus(storedContext.campus, false);
-          }
-        }
       })
     );
   }
@@ -80,7 +43,7 @@ export class PositionService {
     this.availableITRs.set(Array.from(itrMap.values()));
   }
 
-  selectITR(itr: RegionalTechnologicalInstitute, save: boolean = true): void {
+  selectITR(itr: RegionalTechnologicalInstitute): void {
     const positions = this.userPositions();
 
     if (!positions) {
@@ -107,13 +70,9 @@ export class PositionService {
       : { itr, campus: null as any, roles: [] };
 
     this.selectedContext.set(newContext);
-
-    if (save) {
-      this.saveContextToStorage(newContext);
-    }
   }
 
-  selectCampus(campus: Campus, save: boolean = true): void {
+  selectCampus(campus: Campus): void {
     const positions = this.userPositions();
     const context = this.selectedContext();
     if (!positions || !context) return;
@@ -134,24 +93,18 @@ export class PositionService {
 
     const newContext = { ...context, campus, roles };
     this.selectedContext.set(newContext);
-
-    if (save) {
-      this.saveContextToStorage(newContext);
-    }
   }
 
   clearSelection(): void {
     this.selectedContext.set(null);
     this.availableCampuses.set([]);
     this.availableRoles.set([]);
-    this.saveContextToStorage(null);
   }
 
   clearCampusSelection(): void {
     this.availableCampuses.set([]);
     this.availableRoles.set([]);
     this.selectedContext.set(null);
-    this.saveContextToStorage(null);
   }
 
   clearRolesSelection(): void {
@@ -159,7 +112,6 @@ export class PositionService {
     if (this.selectedContext()) {
       const newContext = { ...this.selectedContext()!, roles: [] };
       this.selectedContext.set(newContext);
-      this.saveContextToStorage(newContext);
     }
   }
 
@@ -169,7 +121,85 @@ export class PositionService {
     this.availableITRs.set([]);
     this.availableCampuses.set([]);
     this.availableRoles.set([]);
-    sessionStorage.removeItem(this.STORAGE_KEY);
+  }
+
+  buildContextFromUrlParams(itrId: number, campusId: number): SelectedContext | null {
+    const positions = this.userPositions();
+    if (!positions) return null;
+
+    const itr = positions.positions.find(
+      position => position.isActive && position.regionalTechnologicalInstitute.id === itrId
+    )?.regionalTechnologicalInstitute;
+
+    if (!itr) return null;
+
+    const campus = positions.positions
+      .filter(position =>
+        position.isActive &&
+        position.regionalTechnologicalInstitute.id === itrId
+      )
+      .flatMap(position => position.campuses)
+      .find(c => c.id === campusId);
+
+    if (!campus) return null;
+
+    const roles: string[] = [];
+    positions.positions.forEach(position => {
+      if (position.isActive &&
+          position.regionalTechnologicalInstitute.id === itrId &&
+          position.campuses.some(c => c.id === campusId)) {
+        if (!roles.includes(position.role)) {
+          roles.push(position.role);
+        }
+      }
+    });
+
+    this.populateAvailableCampuses(itrId);
+
+    return { itr, campus, roles };
+  }
+
+  // Método helper para popular availableCampuses basándose en un itrId
+  private populateAvailableCampuses(itrId: number): void {
+    const positions = this.userPositions();
+    if (!positions) return;
+
+    const campusMap = new Map<number, Campus>();
+
+    positions.positions.forEach(position => {
+      if (position.isActive &&
+          position.regionalTechnologicalInstitute.id === itrId) {
+        position.campuses.forEach(campus => {
+          if (!campusMap.has(campus.id)) {
+            campusMap.set(campus.id, campus);
+          }
+        });
+      }
+    });
+
+    this.availableCampuses.set(Array.from(campusMap.values()));
+  }
+
+  validateContext(itrId: number, campusId: number): boolean {
+    const positions = this.userPositions();
+    if (!positions) return false;
+
+    const matchingItr = positions.positions.find(
+      position => position.isActive &&
+                  position.regionalTechnologicalInstitute.id === itrId
+    )?.regionalTechnologicalInstitute;
+
+    if (!matchingItr) return false;
+
+    const matchingCampus = positions.positions
+      .filter(position =>
+        position.isActive &&
+        position.regionalTechnologicalInstitute.id === itrId
+      )
+      .flatMap(position => position.campuses)
+      .find(campus => campus.id === campusId);
+
+    return !!matchingCampus;
   }
 }
 
