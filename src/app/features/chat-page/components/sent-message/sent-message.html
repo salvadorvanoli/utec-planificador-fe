@@ -1,7 +1,10 @@
 <div
   class="sent-message"
+  [class.bot-message]="bot()"
+  [class.user-message]="!bot()"
+  [class.is-typing]="isTyping()"
   [style.border-radius]="borderRadius()"
-  style="padding: 12px 16px; background: #FFFFFF; border: 2px solid #000000; min-height: 48px; width: fit-content; max-width: 100%;"
+  (click)="onMessageClick($event)"
 >
   @if (inProgress()) {
     <div class="typing-indicator">
@@ -10,20 +13,6 @@
       <span class="dot"></span>
     </div>
   } @else {
-    <div style="margin: 0; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; line-height: 1.6;">
-      @for (line of formattedLines(); track $index) {
-        @if (line.type === 'title') {
-          <div style="font-weight: bold; font-size: 1.1em; margin-top: 8px; margin-bottom: 4px; color: #00A9E0; word-break: break-word; overflow-wrap: break-word;">{{ line.content }}</div>
-        } @else if (line.type === 'section') {
-          <div style="font-weight: 600; margin-top: 12px; margin-bottom: 6px; color: #333; word-break: break-word; overflow-wrap: break-word;">{{ line.content }}</div>
-        } @else if (line.type === 'bullet') {
-          <div style="margin-left: 16px; margin-top: 4px; word-break: break-word; overflow-wrap: break-word;">• {{ line.content }}</div>
-        } @else if (line.type === 'empty') {
-          <div style="height: 8px;"></div>
-        } @else {
-          <div style="margin-top: 2px; word-break: break-word; overflow-wrap: break-word;">{{ line.content }}</div>
-        }
-      }
-    </div>
+    <div class="markdown-content" [innerHTML]="htmlContent()"></div>
   }
 </div>

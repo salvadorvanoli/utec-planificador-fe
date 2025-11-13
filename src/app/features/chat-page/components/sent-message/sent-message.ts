@@ -1,9 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-
-interface FormattedLine {
-  type: 'title' | 'section' | 'bullet' | 'text' | 'empty';
-  content: string;
-}
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, input, signal, effect, OnDestroy, inject } from '@angular/core';
+import { marked } from 'marked';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-sent-message',
@@ -11,10 +8,20 @@ interface FormattedLine {
   styleUrl: './sent-message.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SentMessage {
+export class SentMessage implements OnDestroy {
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   readonly bot = input<boolean>(false);
   readonly text = input<string>('');
   readonly inProgress = input<boolean>(false);
+
+  readonly displayedText = signal<string>('');
+  readonly isTyping = signal<boolean>(false);
+
+  private typingInterval: any = null;
+  private lastProcessedText = '';
+  private fullTextToShow = '';
 
   readonly borderRadius = computed(() =>
     this.bot()
@@ -22,32 +29,91 @@ export class SentMessage {
       : '15px 15px 0px 15px'
   );
 
-  readonly formattedLines = computed(() => {
-    const text = this.text();
-    if (!text) return [];
+  readonly htmlContent = computed((): SafeHtml => {
+    const content = this.displayedText() || this.text();
+    if (!content) return '';
 
-    const lines = text.split('\n');
-    const formatted: FormattedLine[] = [];
+    try {
+      marked.setOptions({
+        breaks: true,
+        gfm: true
+      });
 
-    for (const line of lines) {
-      const trimmed = line.trim();
-
-      if (!trimmed) {
-        formatted.push({ type: 'empty', content: '' });
-      } else if (trimmed.startsWith('📊') || trimmed.startsWith('🎯')) {
-        formatted.push({ type: 'title', content: trimmed });
-      } else if (trimmed.startsWith('📋') || trimmed.startsWith('💡') ||
-                 trimmed.startsWith('📈') || trimmed.startsWith('🔍')) {
-        formatted.push({ type: 'section', content: trimmed });
-      } else if (trimmed.match(/^\d+\)/)) {
-        formatted.push({ type: 'bullet', content: trimmed });
-      } else if (trimmed.startsWith('-') || trimmed.startsWith('•')) {
-        formatted.push({ type: 'bullet', content: trimmed.substring(1).trim() });
-      } else {
-        formatted.push({ type: 'text', content: line });
-      }
+      const html = marked.parse(content) as string;
+      return this.sanitizer.sanitize(1, html) || '';
+    } catch (error) {
+      console.error('Error parsing markdown:', error);
+      return content;
     }
-
-    return formatted;
   });
+
+  constructor() {
+    effect(() => {
+      const text = this.text();
+      const isBot = this.bot();
+      const inProg = this.inProgress();
+
+      if (isBot && text && !inProg && text !== this.lastProcessedText) {
+        this.lastProcessedText = text;
+        this.startTypingEffect(text);
+      } else if (!isBot) {
+        this.displayedText.set(text);
+        this.lastProcessedText = text;
+        this.cdr.markForCheck();
+      } else if (inProg) {
+        this.displayedText.set('');
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.clearTypingInterval();
+  }
+
+  onMessageClick(event?: Event): void {
+    if (this.isTyping() && this.fullTextToShow) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+
+      this.clearTypingInterval();
+      this.displayedText.set(this.fullTextToShow);
+      this.isTyping.set(false);
+      this.fullTextToShow = '';
+      this.cdr.markForCheck();
+    }
+  }
+
+  private startTypingEffect(fullText: string): void {
+    this.clearTypingInterval();
+    this.isTyping.set(true);
+    this.displayedText.set('');
+    this.fullTextToShow = fullText;
+    this.cdr.markForCheck();
+
+    let currentIndex = 0;
+    const speed = 0.1;
+
+    this.typingInterval = setInterval(() => {
+      if (currentIndex < fullText.length) {
+        this.displayedText.update(current => current + fullText[currentIndex]);
+        currentIndex++;
+        this.cdr.markForCheck();
+      } else {
+        this.clearTypingInterval();
+        this.isTyping.set(false);
+        this.fullTextToShow = '';
+        this.cdr.markForCheck();
+      }
+    }, speed);
+  }
+
+  private clearTypingInterval(): void {
+    if (this.typingInterval) {
+      clearInterval(this.typingInterval);
+      this.typingInterval = null;
+    }
+  }
 }
+
