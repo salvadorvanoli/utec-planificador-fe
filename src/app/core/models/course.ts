@@ -53,3 +53,24 @@ export interface CourseRequest {
 export interface PeriodResponse {
   period: string;
 }
+
+export interface CoursePdfData {
+  description: string;
+  startDate: string;
+  endDate: string;
+  shift: string;
+  involvesActivitiesWithProductiveSector: boolean;
+  partialGradingSystem: string;
+  isRelatedToInvestigation: boolean;
+  hoursPerDeliveryFormat: Record<string, number>;
+  teachers: {
+    name: string;
+    lastName: string;
+    email: string;
+  }[];
+  programName: string;
+  curricularUnit: {
+    name: string;
+    credits: number;
+  };
+}

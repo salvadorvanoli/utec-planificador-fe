@@ -8,10 +8,10 @@
       <input
         pInputText
         id="course_description"
-        [value]="description()"
+        [(ngModel)]="description"
+        (blur)="onDescriptionChange()"
         autocomplete="off"
         class="w-full"
-        readonly
       />
       <label for="course_description">Descripción</label>
     </p-floatlabel>

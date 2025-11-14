@@ -29,7 +29,7 @@ export class CourseInfo implements OnInit {
   
   onCourseUpdated = output<Course>();
 
-  description = computed(() => this.courseData()?.description || '');
+  description = signal<string>('');
   shift = computed(() => this.courseData()?.shift || '');
   startDate = computed(() => this.courseData()?.startDate || '');
   endDate = computed(() => this.courseData()?.endDate || '');
@@ -116,6 +116,7 @@ export class CourseInfo implements OnInit {
       const data = this.courseData();
       if (data) {
         console.log('Course data loaded:', data);
+        this.description.set(data.description || '');
         const hoursMap = data.hoursPerDeliveryFormat;
         this.virtualHours.set(hoursMap?.['VIRTUAL']?.toString() || '');
         this.inPersonHours.set(hoursMap?.['IN_PERSON']?.toString() || '');
@@ -154,7 +155,7 @@ export class CourseInfo implements OnInit {
       involvesActivitiesWithProductiveSector: courseData.involvesActivitiesWithProductiveSector,
       sustainableDevelopmentGoals: updatedGoals,
       universalDesignLearningPrinciples: courseData.universalDesignLearningPrinciples,
-      curricularUnitId: courseData.curricularUnit.id
+      curricularUnitId: courseData.curricularUnit?.id || (courseData as any).curricularUnitId
     };
 
     // Llamar al servicio PUT para actualizar
@@ -210,7 +211,7 @@ export class CourseInfo implements OnInit {
       involvesActivitiesWithProductiveSector: courseData.involvesActivitiesWithProductiveSector,
       sustainableDevelopmentGoals: courseData.sustainableDevelopmentGoals,
       universalDesignLearningPrinciples: updatedPrinciples,
-      curricularUnitId: courseData.curricularUnit.id
+      curricularUnitId: courseData.curricularUnit?.id || (courseData as any).curricularUnitId
     };
 
     // Llamar al servicio PUT para actualizar
@@ -327,12 +328,35 @@ export class CourseInfo implements OnInit {
   // Método para manejar cambio de SCP
   onScpChange(value: string): void {
     const courseId = this.courseData()?.id;
-    if (!courseId) {
-      console.error('No course ID available');
+    const courseData = this.courseData();
+    
+    console.log('[onScpChange] courseId:', courseId);
+    console.log('[onScpChange] courseData:', courseData);
+    console.log('[onScpChange] curricularUnit:', courseData?.curricularUnit);
+    
+    if (!courseId || !courseData) {
+      console.error('No course data available');
       return;
     }
 
-    this.courseService.updatePartialGradingSystem(courseId, value).subscribe({
+    // Construir el request completo
+    const request = {
+      shift: courseData.shift,
+      description: courseData.description,
+      startDate: courseData.startDate,
+      endDate: courseData.endDate,
+      partialGradingSystem: value,
+      hoursPerDeliveryFormat: courseData.hoursPerDeliveryFormat,
+      isRelatedToInvestigation: courseData.isRelatedToInvestigation,
+      involvesActivitiesWithProductiveSector: courseData.involvesActivitiesWithProductiveSector,
+      sustainableDevelopmentGoals: courseData.sustainableDevelopmentGoals,
+      universalDesignLearningPrinciples: courseData.universalDesignLearningPrinciples,
+      curricularUnitId: courseData.curricularUnit?.id || (courseData as any).curricularUnitId
+    };
+
+    console.log('[onScpChange] Request a enviar:', request);
+
+    this.courseService.updateCourse(courseId, request).subscribe({
       next: (updatedCourse) => {
         this.onCourseUpdated.emit(updatedCourse);
         const option = this.scpOptions().find(opt => opt.value === value);
@@ -358,8 +382,14 @@ export class CourseInfo implements OnInit {
   // Método para manejar cambio de horas
   onHoursChange(): void {
     const courseId = this.courseData()?.id;
-    if (!courseId) {
-      console.error('No course ID available');
+    const courseData = this.courseData();
+    
+    console.log('[onHoursChange] courseId:', courseId);
+    console.log('[onHoursChange] courseData:', courseData);
+    console.log('[onHoursChange] curricularUnit:', courseData?.curricularUnit);
+    
+    if (!courseId || !courseData) {
+      console.error('No course data available');
       return;
     }
 
@@ -371,7 +401,22 @@ export class CourseInfo implements OnInit {
       IN_PERSON: inPerson
     };
 
-    this.courseService.updateHoursPerDeliveryFormat(courseId, hoursPerDeliveryFormat).subscribe({
+    // Construir el request completo
+    const request = {
+      shift: courseData.shift,
+      description: courseData.description,
+      startDate: courseData.startDate,
+      endDate: courseData.endDate,
+      partialGradingSystem: courseData.partialGradingSystem,
+      hoursPerDeliveryFormat: hoursPerDeliveryFormat,
+      isRelatedToInvestigation: courseData.isRelatedToInvestigation,
+      involvesActivitiesWithProductiveSector: courseData.involvesActivitiesWithProductiveSector,
+      sustainableDevelopmentGoals: courseData.sustainableDevelopmentGoals,
+      universalDesignLearningPrinciples: courseData.universalDesignLearningPrinciples,
+      curricularUnitId: courseData.curricularUnit?.id || (courseData as any).curricularUnitId
+    };
+
+    this.courseService.updateCourse(courseId, request).subscribe({
       next: (updatedCourse) => {
         this.onCourseUpdated.emit(updatedCourse);
         this.messageService.add({
@@ -397,6 +442,11 @@ export class CourseInfo implements OnInit {
   onInvestigationChange(value: string): void {
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
+    
+    console.log('[onInvestigationChange] courseId:', courseId);
+    console.log('[onInvestigationChange] courseData:', courseData);
+    console.log('[onInvestigationChange] curricularUnit:', courseData?.curricularUnit);
+    
     if (!courseId || !courseData) {
       console.error('No course data available');
       return;
@@ -416,7 +466,7 @@ export class CourseInfo implements OnInit {
       involvesActivitiesWithProductiveSector: courseData.involvesActivitiesWithProductiveSector,
       sustainableDevelopmentGoals: courseData.sustainableDevelopmentGoals,
       universalDesignLearningPrinciples: courseData.universalDesignLearningPrinciples,
-      curricularUnitId: courseData.curricularUnit.id
+      curricularUnitId: courseData.curricularUnit?.id || (courseData as any).curricularUnitId
     };
 
     this.courseService.updateCourse(courseId, request).subscribe({
@@ -445,6 +495,11 @@ export class CourseInfo implements OnInit {
   onProductiveSectorChange(value: string): void {
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
+    
+    console.log('[onProductiveSectorChange] courseId:', courseId);
+    console.log('[onProductiveSectorChange] courseData:', courseData);
+    console.log('[onProductiveSectorChange] curricularUnit:', courseData?.curricularUnit);
+    
     if (!courseId || !courseData) {
       console.error('No course data available');
       return;
@@ -464,7 +519,7 @@ export class CourseInfo implements OnInit {
       involvesActivitiesWithProductiveSector: involvesActivitiesWithProductiveSector,
       sustainableDevelopmentGoals: courseData.sustainableDevelopmentGoals,
       universalDesignLearningPrinciples: courseData.universalDesignLearningPrinciples,
-      curricularUnitId: courseData.curricularUnit.id
+      curricularUnitId: courseData.curricularUnit?.id || (courseData as any).curricularUnitId
     };
 
     this.courseService.updateCourse(courseId, request).subscribe({
@@ -483,6 +538,55 @@ export class CourseInfo implements OnInit {
           severity: 'error',
           summary: 'Error',
           detail: 'No se pudo actualizar la vinculación con el sector productivo',
+          life: 3000
+        });
+      }
+    });
+  }
+
+  // Método para manejar cambio de descripción
+  onDescriptionChange(): void {
+    const courseId = this.courseData()?.id;
+    const courseData = this.courseData();
+    
+    if (!courseId || !courseData) {
+      console.error('No course data available');
+      return;
+    }
+
+    const newDescription = this.description().trim();
+    
+    // Construir el request completo
+    const request = {
+      shift: courseData.shift,
+      description: newDescription,
+      startDate: courseData.startDate,
+      endDate: courseData.endDate,
+      partialGradingSystem: courseData.partialGradingSystem,
+      hoursPerDeliveryFormat: courseData.hoursPerDeliveryFormat,
+      isRelatedToInvestigation: courseData.isRelatedToInvestigation,
+      involvesActivitiesWithProductiveSector: courseData.involvesActivitiesWithProductiveSector,
+      sustainableDevelopmentGoals: courseData.sustainableDevelopmentGoals,
+      universalDesignLearningPrinciples: courseData.universalDesignLearningPrinciples,
+      curricularUnitId: courseData.curricularUnit?.id || (courseData as any).curricularUnitId
+    };
+
+    this.courseService.updateCourse(courseId, request).subscribe({
+      next: (updatedCourse) => {
+        this.onCourseUpdated.emit(updatedCourse);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Descripción actualizada',
+          detail: 'La descripción del curso se actualizó correctamente',
+          life: 3000
+        });
+      },
+      error: (err) => {
+        console.error('Error updating description:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo actualizar la descripción',
           life: 3000
         });
       }

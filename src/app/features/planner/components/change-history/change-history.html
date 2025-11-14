@@ -1,1 +1,62 @@
-<p>change-history works!</p>
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  (visibleChange)="onVisibleChange($event)"
+  header="Historial de Cambios"
+  [style]="{ width: '50vw', 'min-width': '600px' }"
+  [contentStyle]="{ padding: '1.5rem' }">
+  
+  <div class="change-history-content">
+    @if (isLoading()) {
+      <div class="text-center py-8">
+        <i class="pi pi-spin pi-spinner text-4xl text-[#00A9E0] mb-3"></i>
+        <p class="text-gray-600">Cargando historial...</p>
+      </div>
+    } @else if (modifications().length > 0) {
+      <div class="logs-list space-y-3">
+        @for (modification of modifications(); track modification.id) {
+          <div class="log-item flex items-start gap-3 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+            <div 
+              class="log-icon flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-[#00A9E0]/20">
+              <i class="pi pi-history text-lg text-[#00A9E0]"></i>
+            </div>
+            
+            <div class="log-content flex-1">
+              <p class="log-description text-gray-800 font-medium mb-1">
+                {{ modification.description }}
+              </p>
+              <div class="flex items-center gap-4 text-sm text-gray-500">
+                <span>
+                  <i class="pi pi-calendar mr-1"></i>
+                  {{ modification.modificationDate | date: 'dd/MM/yyyy HH:mm' }}
+                </span>
+                <span>
+                  <i class="pi pi-user mr-1"></i>
+                  {{ modification.teacherName }}
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="mt-6">
+        <p-paginator
+          [first]="first()"
+          [rows]="rows()"
+          [totalRecords]="totalElements()"
+          [rowsPerPageOptions]="[5, 10, 20]"
+          (onPageChange)="onPageChange($event)">
+        </p-paginator>
+      </div>
+    } @else {
+      <div class="text-center py-8 text-gray-500">
+        <i class="pi pi-info-circle text-4xl mb-3"></i>
+        <p>No hay cambios registrados</p>
+      </div>
+    }
+  </div>
+</p-dialog>

@@ -8,6 +8,7 @@ import { StatisticsPage } from './features/statistics-page/statistics-page';
 import { ChatPage } from './features/chat-page/chat-page';
 import { AssignPage } from './features/assign-page/assign-page';
 import { Planner } from './features/planner/planner';
+import { PdfPreview } from '@pages/pdf-preview/pdf-preview';
 import { authGuard, contextGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -35,7 +36,8 @@ export const routes: Routes = [
       { path: 'statistics-page', component: StatisticsPage, canActivate: [contextGuard] },
       { path: 'chat-page', component: ChatPage, canActivate: [contextGuard] },
       { path: 'assign-page', component: AssignPage, canActivate: [contextGuard] },
-      { path: 'planner/:courseId', component: Planner, canActivate: [contextGuard] },
+      { path: 'planner/:courseId', component: Planner },
+      { path: 'pdf-preview/:courseId', component: PdfPreview },
     ]
   },
 

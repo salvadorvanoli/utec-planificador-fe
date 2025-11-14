@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { Course, CourseRequest, PageResponse, PeriodResponse } from '../models';
+import { Course, CourseRequest, CoursePdfData, PageResponse, PeriodResponse } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -172,6 +172,18 @@ export class CourseService {
 
     return this.http.get<PageResponse<Course>>(this.apiUrl, { params }).pipe(
       tap(response => console.log('[CourseService] Courses response:', response))
+    );
+  }
+
+  /**
+   * Retrieves the PDF data for a specific course
+   * @param id Course ID
+   * @returns Observable with the course PDF data
+   */
+  getCoursePdfData(id: number): Observable<CoursePdfData> {
+    console.log(`[CourseService] GET course PDF data for ID: ${id}`);
+    return this.http.get<CoursePdfData>(`${this.apiUrl}/${id}/pdf-data`).pipe(
+      tap(response => console.log('[CourseService] PDF data response:', response))
     );
   }
 }
