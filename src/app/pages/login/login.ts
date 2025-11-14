@@ -78,11 +78,11 @@ export class Login {
     if (emailControl?.hasError('required') && emailControl?.touched) {
       return 'El correo es requerido';
     }
-    if (emailControl?.hasError('email') && emailControl?.touched) {
-      return 'Ingresa un correo válido';
-    }
     if (emailControl?.hasError('maxlength') && emailControl?.touched) {
       return 'El correo no puede exceder 100 caracteres';
+    }
+    if (emailControl?.hasError('email') && emailControl?.touched) {
+      return 'Ingresa un correo válido';
     }
     return '';
   }
