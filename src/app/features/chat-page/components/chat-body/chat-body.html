@@ -1,25 +1,18 @@
-<div class="flex flex-col gap-4 w-full px-4 sm:px-6 md:px-8 pt-8 pb-4">
-  <app-sent-message 
-    [bot]="false" 
-    [text]="'Necesito planificar una unidad académica de Programación Orientada a Objetos. ¿Qué elementos debo considerar para una planificación efectiva?'" 
-    class="self-end max-w-[85%] sm:max-w-[75%] md:max-w-[70%]"
-  ></app-sent-message>
-  
-  <app-sent-message 
-    [bot]="true" 
-    [text]="'Para planificar una unidad académica efectiva, debes considerar: 1) Objetivos de aprendizaje claros y medibles, 2) Distribución de horas teóricas y prácticas, 3) Metodologías de enseñanza (clases magistrales, laboratorios, proyectos), 4) Evaluaciones formativas y sumativas, 5) Recursos necesarios (software, materiales), y 6) Vinculación con ODS y principios de diseño universal. ¿Te gustaría profundizar en algún aspecto específico?'" 
-    class="self-start max-w-[85%] sm:max-w-[75%] md:max-w-[70%]"
-  ></app-sent-message>
-  
-  <app-sent-message 
-    [bot]="false" 
-    [text]="'¿Cómo distribuyo las horas presenciales y virtuales para un curso de 4 créditos que combina teoría y laboratorio?'" 
-    class="self-end max-w-[85%] sm:max-w-[75%] md:max-w-[70%]"
-  ></app-sent-message>
-
-  <app-sent-message 
-    [bot]="true" 
-    [inProgress]="true" 
-    class="self-start max-w-[85%] sm:max-w-[75%] md:max-w-[70%]"
-  ></app-sent-message>
+<div #chatContainer class="chat-body-container">
+  @if (messages().length === 0) {
+    <div class="empty-state">
+      <i class="pi pi-comments empty-state-icon"></i>
+      <p class="empty-state-title">¡Bienvenido al asistente pedagógico EDU BOT!</p>
+      <p class="empty-state-text">Realiza preguntas sobre planificación docente o selecciona un curso para obtener sugerencias.</p>
+    </div>
+  } @else {
+    @for (message of messages(); track $index) {
+      <app-sent-message
+        [bot]="message.isBot"
+        [text]="message.text"
+        [inProgress]="message.inProgress ?? false"
+        [class]="message.isBot ? 'self-start message-max-width' : 'self-end message-max-width'"
+      ></app-sent-message>
+    }
+  }
 </div>

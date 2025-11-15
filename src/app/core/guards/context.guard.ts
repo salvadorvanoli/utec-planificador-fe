@@ -1,95 +1,84 @@
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { inject } from '@angular/core';
 import { PositionService } from '../services';
 import { map, catchError, of } from 'rxjs';
+import { extractContextFromUrl } from '@app/shared/utils/context-encoder';
 
-export const contextGuard: CanActivateFn = () => {
+export const contextGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const positionService = inject(PositionService);
   const router = inject(Router);
 
-  const context = positionService.selectedContext();
+  try {
+    // Extraer el contexto de la URL (SOLO formato codificado)
+    const queryParams: Record<string, any> = {};
+    route.queryParamMap.keys.forEach(key => {
+      queryParams[key] = route.queryParamMap.get(key);
+    });
 
-  if (!context || !context.campus) {
-    router.navigate(['/option-page']);
-    return false;
-  }
+    const contextParams = extractContextFromUrl(queryParams);
+
+    // Si el contexto no se pudo extraer (sin token ctx, token inválido o corrupto), redirigir
+    if (!contextParams) {
+      console.warn('[ContextGuard] Missing or invalid encoded context (ctx parameter required), redirecting to option-page');
+      router.navigate(['/option-page']);
+      return false;
+    }
+
+    const itrIdNum = contextParams.itrId;
+    const campusIdNum = contextParams.campusId;
+
+    // Validar que los IDs sean números válidos y positivos
+    // campusId debe ser > 0 (no aceptamos -1 que significa "sin campus")
+    if (!itrIdNum || itrIdNum <= 0 || !campusIdNum || campusIdNum <= 0) {
+      console.warn('[ContextGuard] Invalid ID values, redirecting to option-page');
+      router.navigate(['/option-page']);
+      return false;
+    }
 
   const positions = positionService.userPositions();
 
   if (!positions) {
     return positionService.getUserPositions().pipe(
       map(() => {
-        if (validateContext()) {
-          return true;
+        if (positionService.validateContext(itrIdNum, campusIdNum)) {
+          const context = positionService.buildContextFromUrlParams(itrIdNum, campusIdNum);
+          if (context) {
+            positionService.selectedContext.set(context);
+            positionService.availableRoles.set(context.roles);
+            return true;
+          }
         }
-        positionService.clearAllState();
         router.navigate(['/option-page']);
         return false;
       }),
       catchError(() => {
-        positionService.clearAllState();
         router.navigate(['/option-page']);
         return of(false);
       })
     );
   }
 
-  if (!validateContext()) {
-    positionService.clearAllState();
+  // Validar que el contexto es válido
+  if (!positionService.validateContext(itrIdNum, campusIdNum)) {
     router.navigate(['/option-page']);
     return false;
   }
 
-  return true;
-
-  function validateContext(): boolean {
-    const positions = positionService.userPositions();
-    if (!positions || !context) return false;
-
-    const matchingItr = positions.positions.find(
-      position => position.isActive &&
-                  position.regionalTechnologicalInstitute.id === context.itr.id
-    )?.regionalTechnologicalInstitute;
-
-    if (!matchingItr) return false;
-
-    if (matchingItr.name !== context.itr.name) {
-      return false;
-    }
-
-    const matchingCampus = positions.positions
-      .filter(position =>
-        position.isActive &&
-        position.regionalTechnologicalInstitute.id === context.itr.id
-      )
-      .flatMap(position => position.campuses)
-      .find(campus => campus.id === context.campus.id);
-
-    if (!matchingCampus) return false;
-
-    if (matchingCampus.name !== context.campus.name) {
-      return false;
-    }
-
-    const validRoles = positions.positions
-      .filter(position =>
-        position.isActive &&
-        position.regionalTechnologicalInstitute.id === context.itr.id &&
-        position.campuses.some(campus => campus.id === context.campus.id)
-      )
-      .map(position => position.role);
-
-    if (validRoles.length !== context.roles.length) {
-      return false;
-    }
-
-    const allRolesValid = context.roles.every(role => validRoles.includes(role));
-    if (!allRolesValid) return false;
-
-    const allBackendRolesInContext = validRoles.every(role => context.roles.includes(role));
-    if (!allBackendRolesInContext) return false;
-
+  // Construir y setear el contexto si es válido
+  const context = positionService.buildContextFromUrlParams(itrIdNum, campusIdNum);
+  if (context) {
+    positionService.selectedContext.set(context);
+    positionService.availableRoles.set(context.roles);
     return true;
+  }
+
+  router.navigate(['/option-page']);
+  return false;
+  } catch (error) {
+    // Cualquier error inesperado, redirigir a selección de ITR
+    console.error('[ContextGuard] Unexpected error:', error);
+    router.navigate(['/option-page']);
+    return false;
   }
 };
 

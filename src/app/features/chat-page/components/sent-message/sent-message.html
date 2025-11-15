@@ -1,7 +1,10 @@
 <div
   class="sent-message"
+  [class.bot-message]="bot()"
+  [class.user-message]="!bot()"
+  [class.is-typing]="isTyping()"
   [style.border-radius]="borderRadius()"
-  style="padding: 12px 16px; background: #FFFFFF; border: 2px solid #000000; min-height: 48px; width: fit-content; max-width: 100%;"
+  (click)="onMessageClick($event)"
 >
   @if (inProgress()) {
     <div class="typing-indicator">
@@ -10,6 +13,6 @@
       <span class="dot"></span>
     </div>
   } @else {
-    <p style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">{{ text() }}</p>
+    <div class="markdown-content" [innerHTML]="htmlContent()"></div>
   }
 </div>
