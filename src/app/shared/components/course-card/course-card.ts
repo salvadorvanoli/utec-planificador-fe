@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Skeleton } from 'primeng/skeleton';
-import { Course } from '@app/core/models';
+import { Course, CourseBasicResponse } from '@app/core/models';
 import { extractContextFromUrl, buildContextQueryParams } from '@app/shared/utils/context-encoder';
 
 type NavigationMode = 'planner' | 'statistics' | 'info' | 'none';
@@ -25,7 +25,7 @@ export class CourseCard {
   checked = signal(false);
   readonly assign = input<boolean>(false);
   readonly docente = input<boolean>(false);
-  readonly course = input<Course | null>(null);
+  readonly course = input<Course | CourseBasicResponse | null>(null);
   readonly assignState = signal(this.assign());
   isLoading = signal(true);
   private navigationMode = signal<NavigationMode>('none');
@@ -35,6 +35,23 @@ export class CourseCard {
     return courseData?.teachers !== undefined && courseData.teachers.length > 0;
   });
 
+  readonly curricularUnitName = computed(() => {
+    const courseData = this.course();
+    if (!courseData) return 'Sin título';
+
+    // Check if it's CourseBasicResponse (has curricularUnitName directly)
+    if ('curricularUnitName' in courseData) {
+      return courseData.curricularUnitName || 'Sin título';
+    }
+
+    // Otherwise it's a Course (has curricularUnit object)
+    if ('curricularUnit' in courseData && courseData.curricularUnit) {
+      return courseData.curricularUnit.name || 'Sin título';
+    }
+
+    return 'Sin título';
+  });
+
   readonly teacherName = computed(() => {
     const courseData = this.course();
     if (!courseData?.teachers || courseData.teachers.length === 0) {
@@ -42,33 +59,63 @@ export class CourseCard {
     }
 
     const teacher = courseData.teachers[0];
-    if (!teacher?.user) {
-      return 'Sin docente asignado';
+    
+    // Check if it's a CourseBasicResponse (teachers are UserBasicResponse[])
+    if ('fullName' in teacher) {
+      return teacher.fullName || teacher.email || 'Sin información';
+    }
+    
+    // Otherwise it's a Course (teachers are Teacher[] with user property)
+    if ('user' in teacher && teacher.user) {
+      const { personalData, utecEmail } = teacher.user;
+      if (personalData?.firstName && personalData?.lastName) {
+        return `${personalData.firstName} ${personalData.lastName}`;
+      }
+      return utecEmail || 'Sin información';
     }
 
-    const { personalData, utecEmail } = teacher.user;
-
-    if (personalData?.firstName && personalData?.lastName) {
-      return `${personalData.firstName} ${personalData.lastName}`;
-    }
-
-    return utecEmail || 'Sin información';
+    return 'Sin docente asignado';
   });
 
   readonly formattedDate = computed(() => {
-    const dateString = this.course()?.startDate;
-    if (!dateString) return 'Sin fecha';
+    const courseData = this.course();
+    if (!courseData) return 'Sin fecha';
 
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('es-UY', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      });
-    } catch {
-      return 'Fecha inválida';
+    // Check if it's CourseBasicResponse (has lastModificationDate)
+    if ('lastModificationDate' in courseData) {
+      const dateString = courseData.lastModificationDate;
+      if (!dateString) return 'Sin modificaciones';
+
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-UY', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+      } catch {
+        return 'Fecha inválida';
+      }
     }
+
+    // Otherwise it's a Course (has startDate)
+    if ('startDate' in courseData) {
+      const dateString = courseData.startDate;
+      if (!dateString) return 'Sin fecha';
+
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-UY', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+      } catch {
+        return 'Fecha inválida';
+      }
+    }
+
+    return 'Sin fecha';
   });
 
   shouldShowPdfIcon = () => this.navigationMode() === 'info';
@@ -109,8 +156,6 @@ export class CourseCard {
       this.router.navigate(['/statistics-page', courseData.id]);
     } else if (mode === 'info') {
       // TODO: Future implementation for 'info' mode can be added here
-    } else {
-      // TODO: Handle 'none' mode or do nothing
     }
   }
 

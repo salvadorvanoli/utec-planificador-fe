@@ -2,6 +2,7 @@ import { CurricularUnit } from './curricular-unit';
 import { Teacher } from './teacher';
 import { WeeklyPlanning } from './weekly-planning';
 import { Modification } from './modification';
+import { UserBasicResponse } from './user';
 
 export interface Course {
   id: number;
@@ -21,6 +22,16 @@ export interface Course {
   modifications?: Modification[];
 }
 
+export interface CourseBasicResponse {
+  id: number;
+  description: string;
+  startDate: string;
+  endDate: string;
+  curricularUnitName: string;
+  teachers: UserBasicResponse[];
+  lastModificationDate: string | null;
+}
+
 export interface CourseResponse {
   id: number;
   shift: string;
@@ -37,17 +48,18 @@ export interface CourseResponse {
 }
 
 export interface CourseRequest {
-  shift: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  partialGradingSystem: string;
-  hoursPerDeliveryFormat: Record<string, number>;
-  isRelatedToInvestigation: boolean;
-  involvesActivitiesWithProductiveSector: boolean;
-  sustainableDevelopmentGoals: string[];
-  universalDesignLearningPrinciples: string[];
-  curricularUnitId: number;
+  shift: string; // Required
+  description?: string; // Optional
+  startDate: string; // Required
+  endDate: string; // Required
+  partialGradingSystem?: string; // Optional
+  hoursPerDeliveryFormat?: Record<string, number>; // Optional
+  isRelatedToInvestigation?: boolean; // Optional
+  involvesActivitiesWithProductiveSector?: boolean; // Optional
+  sustainableDevelopmentGoals?: string[]; // Optional
+  universalDesignLearningPrinciples?: string[]; // Optional
+  curricularUnitId: number; // Required
+  userIds: number[]; // Required
 }
 
 export interface PeriodResponse {

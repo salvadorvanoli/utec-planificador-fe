@@ -70,7 +70,12 @@ export class Selector implements OnInit {
                 const item = currentItems.find(i => i.code === value);
                 if (item) {
                     this.selectedItem.set(item);
+                } else {
+                    this.selectedItem.set(undefined);
                 }
+            } else {
+                // Si no hay valor seleccionado, limpiar la selección
+                this.selectedItem.set(undefined);
             }
         });
     }

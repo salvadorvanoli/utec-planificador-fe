@@ -169,12 +169,27 @@ export class FilterPanel implements OnInit {
   }
 
   clearFilters(): void {
+    // Limpiar el estado de los filtros
     this.filterStateService.clearFilters();
     
+    // Resetear las selecciones
     this.selectedPeriod.set(null);
     this.selectedCampusId.set(null);
     this.selectedTeacherId.set(null);
     
-    console.log('[FilterPanel] Filters cleared');
+    // Recargar todas las opciones sin filtros
+    if (this.docente()) {
+      // Para docente: recargar todos los periodos
+      const context = this.positionService.selectedContext();
+      if (context?.campus) {
+        this.loadPeriods(context.campus.id);
+      }
+    } else {
+      // Para alumno: recargar todas las sedes y todos los docentes
+      this.loadCampuses();
+      this.loadTeachers();
+    }
+    
+    console.log('[FilterPanel] Filters cleared and options reloaded');
   }
 }

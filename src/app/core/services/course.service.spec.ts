@@ -2,12 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { CourseService } from './course.service';
-import { Course, CourseRequest, PageResponse, PeriodResponse } from '../models';
+import { Course, CourseBasicResponse, CourseRequest, PageResponse, PeriodResponse } from '../models';
+import { environment } from '../../../environments/environment';
 
 describe('CourseService', () => {
   let service: CourseService;
   let httpMock: HttpTestingController;
-  const apiUrl = 'http://localhost:8080/api/v1/courses';
+  const apiUrl = `${environment.apiUrl}/courses`;
 
   const mockCourse: Course = {
     id: 1,
@@ -47,7 +48,8 @@ describe('CourseService', () => {
     involvesActivitiesWithProductiveSector: false,
     sustainableDevelopmentGoals: [],
     universalDesignLearningPrinciples: [],
-    curricularUnitId: 1
+    curricularUnitId: 1,
+    userIds: [1]
   };
 
   beforeEach(() => {
@@ -294,9 +296,23 @@ describe('CourseService', () => {
   });
 
   describe('getCourses', () => {
+    const mockCourseBasicResponse: CourseBasicResponse = {
+      id: 1,
+      description: 'Programación I',
+      startDate: '2025-03-01',
+      endDate: '2025-07-31',
+      curricularUnitName: 'Programación I',
+      teachers: [{
+        id: 1,
+        fullName: 'Juan Pérez',
+        email: 'juan.perez@utec.edu.uy'
+      }],
+      lastModificationDate: null
+    };
+
     it('should send GET request with pagination parameters', (done) => {
-      const mockResponse: PageResponse<Course> = {
-        content: [mockCourse],
+      const mockResponse: PageResponse<CourseBasicResponse> = {
+        content: [mockCourseBasicResponse],
         number: 0,
         size: 10,
         totalElements: 1,
@@ -307,7 +323,7 @@ describe('CourseService', () => {
         empty: false
       };
 
-      service.getCourses(undefined, undefined, undefined, 0, 10).subscribe({
+      service.getCourses(undefined, undefined, undefined, undefined, 0, 10).subscribe({
         next: (response) => {
           expect(response).toEqual(mockResponse);
           done();
@@ -323,8 +339,9 @@ describe('CourseService', () => {
       const userId = 123;
       const campusId = 1;
       const period = '2025-1';
-      const mockResponse: PageResponse<Course> = {
-        content: [mockCourse],
+      const searchText = 'Programación';
+      const mockResponse: PageResponse<CourseBasicResponse> = {
+        content: [mockCourseBasicResponse],
         number: 0,
         size: 10,
         totalElements: 1,
@@ -335,7 +352,7 @@ describe('CourseService', () => {
         empty: false
       };
 
-      service.getCourses(userId, campusId, period, 0, 10).subscribe({
+      service.getCourses(userId, campusId, period, searchText, 0, 10).subscribe({
         next: (response) => {
           expect(response).toEqual(mockResponse);
           done();
@@ -343,15 +360,15 @@ describe('CourseService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${apiUrl}?page=0&size=10&userId=${userId}&campusId=${campusId}&period=${period}`
+        `${apiUrl}?page=0&size=10&userId=${userId}&campusId=${campusId}&period=${period}&searchText=${searchText}`
       );
       expect(req.request.method).toBe('GET');
       req.flush(mockResponse);
     });
 
     it('should not include optional parameters if they are null or undefined', (done) => {
-      const mockResponse: PageResponse<Course> = {
-        content: [mockCourse],
+      const mockResponse: PageResponse<CourseBasicResponse> = {
+        content: [mockCourseBasicResponse],
         number: 0,
         size: 10,
         totalElements: 1,
@@ -362,7 +379,7 @@ describe('CourseService', () => {
         empty: false
       };
 
-      service.getCourses(undefined, undefined, '', 0, 10).subscribe({
+      service.getCourses(undefined, undefined, '', '', 0, 10).subscribe({
         next: (response) => {
           expect(response).toEqual(mockResponse);
           done();
@@ -372,6 +389,44 @@ describe('CourseService', () => {
       const req = httpMock.expectOne(`${apiUrl}?page=0&size=10`);
       expect(req.request.method).toBe('GET');
       req.flush(mockResponse);
+    });
+  });
+
+  describe('getLatestCourse', () => {
+    it('should send GET request to fetch latest course', (done) => {
+      const curricularUnitId = 1;
+      const userId = 123;
+
+      service.getLatestCourse(curricularUnitId, userId).subscribe({
+        next: (response) => {
+          expect(response).toEqual(mockCourse);
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(
+        `${apiUrl}/latest?curricularUnitId=${curricularUnitId}&userId=${userId}`
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush(mockCourse);
+    });
+
+    it('should return null when no latest course is found', (done) => {
+      const curricularUnitId = 1;
+      const userId = 123;
+
+      service.getLatestCourse(curricularUnitId, userId).subscribe({
+        next: (response) => {
+          expect(response).toBeNull();
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(
+        `${apiUrl}/latest?curricularUnitId=${curricularUnitId}&userId=${userId}`
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush(null);
     });
   });
 });

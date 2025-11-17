@@ -2,9 +2,9 @@
   <p-inputicon styleClass="pi pi-search" />
   <p-autocomplete
     [(ngModel)]="value"
-    [suggestions]="items"
-    (completeMethod)="search($event)"
-    placeholder="Buscar"
+    (ngModelChange)="onSearchChange($event)"
+    [suggestions]="[]"
+    placeholder="Buscar por unidad curricular o programa"
     class="custom-autocomplete"
   ></p-autocomplete>
 </p-iconfield>

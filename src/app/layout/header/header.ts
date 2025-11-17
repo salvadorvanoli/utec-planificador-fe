@@ -50,7 +50,9 @@ export class Header {
   }
 
   goToStudentPortal(): void {
-    this.router.navigate(['/student/courses']);
+    this.router.navigate(['/student/courses'], {
+      queryParams: { mode: 'info' }
+    });
   }
 
   logout(): void {

@@ -27,17 +27,15 @@
   } @else {
     <!-- Contenido cuando no está cargando -->
     <!-- Columna izquierda -->
-    <div class="flex flex-col gap-3 w-8/10">
-      <div class="flex gap-4">
-        <span class="card-title font-bold whitespace-nowrap">
-          {{ course()?.curricularUnit?.name || 'Sin título' }}
+    <div class="flex flex-col gap-2 w-8/10">
+      <span class="card-title font-bold">
+        {{ curricularUnitName() }}
+      </span>
+      @if (assignState() == false && hasTeachers()) {
+        <span class="card-professor-name text-gray-600">
+          Docente: {{ teacherName() }}
         </span>
-        @if (assignState() == false && hasTeachers()) {
-          <span class="card-professor-name text-gray-600">
-            Docente: {{ teacherName() }}
-          </span>
-        }
-      </div>
+      }
       @if (assignState() == false) {
         <span class="card-last-update-date text-gray-500">
           Última actualización: {{ formattedDate() }}

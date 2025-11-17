@@ -1,14 +1,15 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { Course, CourseRequest, PageResponse, PeriodResponse } from '../models';
+import { Course, CourseBasicResponse, CourseRequest, PageResponse, PeriodResponse } from '../models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/api/v1/courses';
+  private readonly apiUrl = `${environment.apiUrl}/courses`;
 
   /**
    * Creates a new course with a default weekly planning (week 1) starting on the course start date
@@ -48,6 +49,20 @@ export class CourseService {
    */
   deleteCourse(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  /**
+   * Gets the latest course for autocomplete based on curricular unit and teacher
+   * @param curricularUnitId Curricular Unit ID
+   * @param userId Teacher/User ID
+   * @returns Observable with the latest course or null if not found
+   */
+  getLatestCourse(curricularUnitId: number, userId: number): Observable<Course | null> {
+    const params = new HttpParams()
+      .set('curricularUnitId', curricularUnitId.toString())
+      .set('userId', userId.toString());
+    
+    return this.http.get<Course | null>(`${this.apiUrl}/latest`, { params });
   }
 
   /**
@@ -139,9 +154,10 @@ export class CourseService {
     userId?: number,
     campusId?: number,
     period?: string,
+    searchText?: string,
     page: number = 0,
     size: number = 10
-  ): Observable<PageResponse<Course>> {
+  ): Observable<PageResponse<CourseBasicResponse>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
@@ -158,9 +174,13 @@ export class CourseService {
       params = params.set('period', period);
     }
 
-    console.log('[CourseService] GET courses with params:', { userId, campusId, period, page, size });
+    if (searchText !== undefined && searchText !== null && searchText.trim() !== '') {
+      params = params.set('searchText', searchText.trim());
+    }
 
-    return this.http.get<PageResponse<Course>>(this.apiUrl, { params }).pipe(
+    console.log('[CourseService] GET courses with params:', { userId, campusId, period, searchText, page, size });
+
+    return this.http.get<PageResponse<CourseBasicResponse>>(this.apiUrl, { params }).pipe(
       tap(response => console.log('[CourseService] Courses response:', response))
     );
   }

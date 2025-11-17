@@ -1,46 +1,57 @@
-<div class="flex" style="width: 400px; height: 367px;">
+<div class="flex flex-col lg:h-[367px]">
     <app-color-block [color]="docente() ? 'blue' : 'blue'">
-        <div class="flex flex-col gap-5 w-full items-center justify-center pl-2.5 pt-5">
+        <div class="flex flex-col gap-5 w-full items-center justify-center pl-2.5 p-5">
             @if (docente()) {
                 <!-- Vista docente: muestra Periodo -->
-                <div class="flex w-[320px] h-[36px]">
+                <div class="flex w-full h-[36px]">
                     <app-select 
                         class="flex-1" 
                         [placeholder]="'Periodo'"
                         [options]="periodsOptions()"
+                        [selectedValue]="selectedPeriod() || ''"
                         (onSelectionChange)="onPeriodChange($event)">
                     </app-select>
                 </div>
             } @else {
                 <!-- Vista alumno: muestra Sede y Docente -->
-                <div class="flex w-[320px] h-[36px]">
+                <div class="flex w-full h-[36px]">
                     <app-select 
                         class="flex-1" 
                         [placeholder]="'Sede'"
                         [options]="campusOptions()"
+                        [selectedValue]="selectedCampusId()?.toString() || ''"
                         (onSelectionChange)="onCampusChange($event)">
                     </app-select>
                 </div>
-                <div class="flex w-[320px] h-[36px]">
+                <div class="flex w-full h-[36px]">
                     <app-select 
                         class="flex-1" 
                         [placeholder]="'Docente'"
                         [options]="teacherOptions()"
+                        [selectedValue]="selectedTeacherId()?.toString() || ''"
                         (onSelectionChange)="onTeacherChange($event)">
                     </app-select>
                 </div>
             }
             
-            @if (hasActiveFilters()) {
-                <div class="flex w-[320px] h-[36px] mt-2">
+            <!-- Clear filters button - always visible, disabled when no filters active -->
+            <div class="flex w-full h-[36px]">
+                @if (hasActiveFilters()) {
                     <app-button
                         class="w-full"
                         [label]="'Limpiar filtros'"
                         [color]="'red'"
                         (onClick)="clearFilters()">
                     </app-button>
-                </div>
-            }
+                } @else {
+                    <app-button
+                        class="w-full"
+                        [label]="'Limpiar filtros'"
+                        [color]="'black'"
+                        [textColor]="'#9CA3AF'">
+                    </app-button>
+                }
+            </div>
         </div>
     </app-color-block>
 </div>

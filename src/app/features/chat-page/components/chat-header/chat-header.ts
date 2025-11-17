@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, signal, effect, output } from '@angular/core';
 import { CourseService, PositionService, AiAgentService } from '@app/core/services';
-import { Course } from '@app/core/models';
+import { CourseBasicResponse } from '@app/core/models';
 import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
@@ -18,8 +18,8 @@ export class ChatHeader {
   private readonly positionService = inject(PositionService);
   private readonly aiAgentService = inject(AiAgentService);
 
-  readonly courses = signal<Course[]>([]);
-  readonly selectedCourse = signal<Course | null>(null);
+  readonly courses = signal<CourseBasicResponse[]>([]);
+  readonly selectedCourse = signal<CourseBasicResponse | null>(null);
   readonly isLoadingCourses = signal<boolean>(false);
   readonly isClearing = signal<boolean>(false);
   readonly showSuggestions = output<{ courseId: number; courseName: string }>();
@@ -35,7 +35,7 @@ export class ChatHeader {
 
   private loadCourses(campusId: number): void {
     this.isLoadingCourses.set(true);
-    this.courseService.getCourses(undefined, campusId, undefined, 0, 100)
+    this.courseService.getCourses(undefined, campusId, undefined, undefined, 0, 100)
       .pipe(finalize(() => this.isLoadingCourses.set(false)))
       .subscribe({
         next: (response) => {
@@ -48,7 +48,7 @@ export class ChatHeader {
       });
   }
 
-  onCourseChange(course: Course | null): void {
+  onCourseChange(course: CourseBasicResponse | null): void {
     this.selectedCourse.set(course);
   }
 
@@ -77,7 +77,7 @@ export class ChatHeader {
     }
   }
 
-  get courseOptions(): { label: string; value: Course }[] {
+  get courseOptions(): { label: string; value: CourseBasicResponse }[] {
     return this.courses().map(course => ({
       label: `${course.description} - ${course.startDate}`,
       value: course

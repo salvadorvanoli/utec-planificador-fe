@@ -3,7 +3,7 @@ import { CourseCard } from '../../../../shared/components/course-card/course-car
 import { Searchbar } from '../../../../shared/components/searchbar/searchbar';
 import { Paginator } from '../../../../shared/components/paginator/paginator';
 import { CourseService, FilterStateService } from '@app/core/services';
-import { Course } from '@app/core/models';
+import { CourseBasicResponse } from '@app/core/models';
 import { PaginatorState } from 'primeng/paginator';
 import { Skeleton } from 'primeng/skeleton';
 
@@ -19,7 +19,7 @@ export class ContentPanel {
 
   readonly docente = input<boolean>(false);
   
-  readonly courses = signal<Course[]>([]);
+  readonly courses = signal<CourseBasicResponse[]>([]);
   readonly totalRecords = signal<number>(0);
   readonly currentPage = signal<number>(0);
   readonly pageSize = signal<number>(10);
@@ -50,6 +50,7 @@ export class ContentPanel {
       filters.userId,
       filters.campusId,
       filters.period,
+      filters.searchText,
       page,
       size
     ).subscribe({
