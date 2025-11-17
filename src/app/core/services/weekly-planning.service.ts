@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { WeeklyPlanning } from '../models';
+import { environment } from '../../../environments/environment';
 
 export interface WeeklyPlanningRequest {
   weekNumber: number;
@@ -17,7 +18,7 @@ export interface WeeklyPlanningResponse extends WeeklyPlanning {}
 })
 export class WeeklyPlanningService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/api/v1/weekly-plannings';
+  private readonly apiUrl = `${environment.apiUrl}/weekly-plannings`;
 
   /**
    * Creates a new weekly planning for a course

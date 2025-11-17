@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { ProgrammaticContent } from '../models';
+import { environment } from '../../../environments/environment';
 
 export interface ProgrammaticContentRequest {
   title: string;
@@ -17,7 +18,7 @@ export interface ProgrammaticContentResponse extends ProgrammaticContent {}
 })
 export class ProgrammaticContentService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/api/v1/programmatic-contents';
+  private readonly apiUrl = `${environment.apiUrl}/programmatic-contents`;
 
   /**
    * Creates a new programmatic content

@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Activity } from '../models';
+import { environment } from '../../../environments/environment';
 
 export interface ActivityRequest {
   title: string;
@@ -23,7 +24,7 @@ export interface ActivityResponse extends Activity {}
 })
 export class ActivityService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/api/v1/activities';
+  private readonly apiUrl = `${environment.apiUrl}/activities`;
 
   /**
    * Creates a new activity
