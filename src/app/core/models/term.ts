@@ -1,4 +1,4 @@
-import { CurricularUnit } from './curricular-unit';
+import { CurricularUnit } from "./curricular-unit";
 
 export interface Term {
   id: number;

@@ -3,6 +3,7 @@ export * from './ai-agent.service';
 export * from './auth.service';
 export * from './campus.service';
 export * from './course.service';
+export * from './curricular-unit.service';
 export * from './enum.service';
 export * from './filter-state.service';
 export * from './position.service';

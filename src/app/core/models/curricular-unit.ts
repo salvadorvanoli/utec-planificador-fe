@@ -11,3 +11,13 @@ export interface CurricularUnit {
   courses?: Course[];
 }
 
+export interface CurricularUnitResponse {
+  id: number;
+  name: string;
+  credits: number;
+  domainAreas: string[];
+  professionalCompetencies: string[];
+  termId: number;
+}
+
+
