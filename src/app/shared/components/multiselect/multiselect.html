@@ -1,0 +1,11 @@
+<p-multiselect 
+  [options]="items()" 
+  [ngModel]="selectedItems()"
+  (ngModelChange)="onItemsChange($event)"
+  optionLabel="name" 
+  [placeholder]="placeholder()"
+  [showClear]="showClear()"
+  [filter]="filter()"
+  [filterPlaceHolder]="filterPlaceholder()"
+  class="w-full md:w-56" 
+/>

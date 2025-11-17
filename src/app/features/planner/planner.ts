@@ -4,7 +4,7 @@ import { WeeklyPlan } from './components/weekly-plan/weekly-plan';
 import { SectionHeader } from '../../layout/section-header/section-header';
 import { InfoType } from '@app/core/enums/info';
 import { Titulo } from '@app/shared/components/titulo/titulo';
-import { CourseInfo } from './components/course-info/course-info';
+import { CourseInfo } from '@app/shared/components/course-info/course-info';
 import { CourseService } from '@app/core/services';
 import { Course } from '@app/core/models';
 
