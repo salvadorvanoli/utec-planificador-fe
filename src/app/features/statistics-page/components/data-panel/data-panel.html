@@ -1,47 +1,77 @@
 <div class="data-panel-wrapper">
-  <!-- Título para el primer par de gráficos -->
-  <h2 class="section-title">Análisis de Habilidades Intelectuales y Competencias</h2>
-  
-  <div class="data-panel-container grid grid-cols-1 sm:grid-cols-2 mb-6 gap-8 w-fit mx-auto">
-    <!-- Card 1: Procesos cognitivos -->
-    <app-chart-card
-        [titulo]="'Procesos cognitivos'"
-        [labels]="['Comprender', 'Aplicar', 'Analizar']"
-        [values]="[120, 80, 60]"
-        [colors]="['#00A9E0', '#F59E42', '#7C3AED']"
-        [hoverColors]="['#38CFF5', '#FFB86B', '#A78BFA']"
-    ></app-chart-card>
+  @if (statistics()) {
+    <!-- Título para el primer par de gráficos -->
+    <h2 class="section-title">Análisis de Habilidades Intelectuales y Competencias</h2>
+    
+    <div class="data-panel-container grid grid-cols-1 sm:grid-cols-2 mb-6 gap-8 w-fit mx-auto">
+      <!-- Card 1: Procesos cognitivos -->
+      @if (cognitiveProcessesData().labels.length > 0) {
+        <app-chart-card
+            [titulo]="'Procesos cognitivos'"
+            [labels]="cognitiveProcessesData().labels"
+            [values]="cognitiveProcessesData().values"
+            [colors]="cognitiveProcessesData().colors"
+            [hoverColors]="cognitiveProcessesData().hoverColors"
+        ></app-chart-card>
+      } @else {
+        <div class="flex items-center justify-center h-[346px] w-[341px] bg-gray-50 rounded-lg">
+          <p class="text-gray-500">Sin datos de procesos cognitivos</p>
+        </div>
+      }
 
-    <!-- Card 2: Competencias -->
-    <app-chart-card
-        [titulo]="'Competencias'"
-        [labels]="['Trabajo en equipo', 'Comunicación', 'Pensamiento crítico']"
-        [values]="[90, 110, 70]"
-        [colors]="['#22C55E', '#F43F5E', '#FACC15']"
-        [hoverColors]="['#4ADE80', '#FB7185', '#FDE047']"
-    ></app-chart-card>
-  </div>
+      <!-- Card 2: Competencias -->
+      @if (competenciesData().labels.length > 0) {
+        <app-chart-card
+            [titulo]="'Competencias transversales'"
+            [labels]="competenciesData().labels"
+            [values]="competenciesData().values"
+            [colors]="competenciesData().colors"
+            [hoverColors]="competenciesData().hoverColors"
+        ></app-chart-card>
+      } @else {
+        <div class="flex items-center justify-center h-[346px] w-[341px] bg-gray-50 rounded-lg">
+          <p class="text-gray-500">Sin datos de competencias</p>
+        </div>
+      }
+    </div>
 
-  <!-- Título para el segundo par de gráficos -->
-  <h2 class="section-title">Modalidades de Ejecución y Recursos Utilizados</h2>
-  
-  <div class="data-panel-container grid grid-cols-1 sm:grid-cols-2 mb-6 gap-8 w-fit mx-auto">
-    <!-- Card 3: Modalidad de las actividades -->
-    <app-chart-card
-        [titulo]="'Modalidad de las actividades'"
-        [labels]="['Presencial', 'Virtual', 'Híbrido']"
-        [values]="[100, 60, 40]"
-        [colors]="['#6366F1', '#F472B6', '#F59E42']"
-        [hoverColors]="['#818CF8', '#F9A8D4', '#FFB86B']"
-    ></app-chart-card>
+    <!-- Título para el segundo par de gráficos -->
+    <h2 class="section-title">Modalidades de Ejecución y Estrategias Didácticas</h2>
+    
+    <div class="data-panel-container grid grid-cols-1 sm:grid-cols-2 mb-6 gap-8 w-fit mx-auto">
+      <!-- Card 3: Modalidad de las actividades -->
+      @if (modalitiesData().labels.length > 0) {
+        <app-chart-card
+            [titulo]="'Modalidades de aprendizaje'"
+            [labels]="modalitiesData().labels"
+            [values]="modalitiesData().values"
+            [colors]="modalitiesData().colors"
+            [hoverColors]="modalitiesData().hoverColors"
+        ></app-chart-card>
+      } @else {
+        <div class="flex items-center justify-center h-[346px] w-[341px] bg-gray-50 rounded-lg">
+          <p class="text-gray-500">Sin datos de modalidades</p>
+        </div>
+      }
 
-    <!-- Card 4: Recursos -->
-    <app-chart-card
-        [titulo]="'Recursos'"
-        [labels]="['Pizarrón', 'Exhibición', 'Demostración']"
-        [values]="[70, 50, 90]"
-        [colors]="['#F43F5E', '#22C55E', '#00A9E0']"
-        [hoverColors]="['#FB7185', '#4ADE80', '#38CFF5']"
-    ></app-chart-card>
-  </div>
+      <!-- Card 4: Estrategias didácticas -->
+      @if (strategiesData().labels.length > 0) {
+        <app-chart-card
+            [titulo]="'Estrategias didácticas'"
+            [labels]="strategiesData().labels"
+            [values]="strategiesData().values"
+            [colors]="strategiesData().colors"
+            [hoverColors]="strategiesData().hoverColors"
+        ></app-chart-card>
+      } @else {
+        <div class="flex items-center justify-center h-[346px] w-[341px] bg-gray-50 rounded-lg">
+          <p class="text-gray-500">Sin datos de estrategias</p>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="flex items-center justify-center py-12">
+      <p class="text-gray-500 text-lg">No hay estadísticas disponibles</p>
+    </div>
+  }
 </div>

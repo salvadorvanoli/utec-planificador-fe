@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input, si
 import { ChartModule } from 'primeng/chart';
 import { SkeletonModule } from 'primeng/skeleton';
 
-type ChartData = {
+type PrimeNGChartData = {
   labels: string[];
   datasets: Array<{
     data: number[];
@@ -27,7 +27,7 @@ export class ChartCard {
   readonly colors = input<string[]>(['#06b6d4', '#fb923c', '#64748b']); 
   readonly hoverColors = input<string[]>(['#22d3ee', '#fdba74', '#94a3b8']); 
   isLoading = signal(true);
-  readonly data = computed<ChartData>(() => ({
+  readonly data = computed<PrimeNGChartData>(() => ({
     labels: this.labels(),
     datasets: [
       {
