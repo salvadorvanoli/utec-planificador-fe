@@ -850,6 +850,12 @@ npm run build
 # Ejecutar pruebas unitarias
 npm run test
 
+# Ejecutar pruebas en modo headless (CI/CD)
+npm run test:headless
+
+# Ejecutar pruebas con cobertura de código
+npm run test:coverage
+
 # Build con watch mode
 npm run watch
 
@@ -861,6 +867,50 @@ ng generate service path/service-name
 
 # Generar guard
 ng generate guard path/guard-name
+```
+
+## Testing
+
+Este proyecto implementa una suite completa de tests unitarios usando **Jasmine** y **Karma** para garantizar la calidad y estabilidad del código.
+
+### Estadísticas de Testing
+
+- ✅ **75 tests** ejecutándose exitosamente
+- 📊 **Cobertura objetivo**: 80%+ en código crítico
+- 🚀 **Tests automatizados** en CI/CD
+
+### Tipos de Tests Implementados
+
+- **Componentes**: Validación de lógica, inputs, outputs y renderizado DOM
+- **Servicios**: Testing de lógica de negocio e interacciones HTTP
+- **Guards**: Verificación de control de acceso y navegación
+- **Interceptors**: Pruebas de transformación de peticiones HTTP
+- **Formularios**: Validación de forms reactivos y mensajes de error
+
+### Documentación Completa
+
+Para información detallada sobre cómo escribir, ejecutar y mantener tests, consulta la documentación completa:
+
+📚 **[TESTING_DOCUMENTATION.md](./TESTING_DOCUMENTATION.md)**
+
+La documentación incluye:
+- Guía de configuración del entorno de testing
+- Ejemplos prácticos por categoría (componentes, servicios, guards, etc.)
+- Patrones y mejores prácticas
+- Solución de problemas comunes
+- Testing de Signals, Formularios Reactivos y HTTP
+
+### Ejecutar Tests
+
+```bash
+# Modo desarrollo con watch
+npm test
+
+# Modo headless para CI/CD
+npm run test:headless
+
+# Con cobertura de código
+npm run test:coverage
 ```
 
 ## Estándares de Calidad

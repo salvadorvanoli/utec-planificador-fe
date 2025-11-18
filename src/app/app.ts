@@ -9,5 +9,5 @@ import { Toast } from 'primeng/toast';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('utec-planificador-fe');
+  readonly title = signal('utec-planificador-fe');
 }
