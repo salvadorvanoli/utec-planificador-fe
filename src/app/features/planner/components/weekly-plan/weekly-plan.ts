@@ -3,6 +3,7 @@ import { Container } from './components/container/container';
 import { WeekTitle } from './components/week-title/week-title';
 import { ContentSection } from './components/content-section/content-section';
 import { ActivitySection } from './components/activity-section/activity-section';
+import { Bibliography } from './components/bibliography/bibliography';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { WeeklyPlanningService, WeeklyPlanningResponse, ProgrammaticContentService, ActivityService } from '@app/core/services';
 import { inject } from '@angular/core';
@@ -13,7 +14,7 @@ import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-weekly-plan',
-  imports: [ Container, WeekTitle, ContentSection, ActivitySection, ProgressSpinnerModule ],
+  imports: [ Container, WeekTitle, ContentSection, ActivitySection, Bibliography, ProgressSpinnerModule ],
   templateUrl: './weekly-plan.html',
   styleUrl: './weekly-plan.scss'
 })
@@ -304,5 +305,85 @@ export class WeeklyPlan {
         }
       });
     }
+  }
+  
+  // Método para manejar la adición de una referencia bibliográfica
+  handleAddReference(reference: string): void {
+    console.log('[WeeklyPlan] Add reference requested:', reference);
+    const planningId = this.weeklyPlanningId();
+    
+    if (!planningId) {
+      console.error('[WeeklyPlan] No weekly planning ID available');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se pudo agregar la referencia'
+      });
+      return;
+    }
+    
+    this.weeklyPlanningService.addBibliographicReference(planningId, reference).subscribe({
+      next: (updatedPlanning) => {
+        console.log('[WeeklyPlan] Reference added successfully:', updatedPlanning);
+        this.weeklyPlanning.set(updatedPlanning);
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Referencia bibliográfica agregada correctamente'
+        });
+      },
+      error: (error) => {
+        console.error('[WeeklyPlan] Error adding reference:', error);
+        
+        let errorMessage = 'No se pudo agregar la referencia bibliográfica';
+        if (error.status === 400) {
+          errorMessage = 'La referencia ya existe o supera los 500 caracteres';
+        }
+        
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: errorMessage
+        });
+      }
+    });
+  }
+  
+  // Método para manejar la eliminación de una referencia bibliográfica
+  handleDeleteReference(reference: string): void {
+    console.log('[WeeklyPlan] Delete reference requested:', reference);
+    const planningId = this.weeklyPlanningId();
+    
+    if (!planningId) {
+      console.error('[WeeklyPlan] No weekly planning ID available');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se pudo eliminar la referencia'
+      });
+      return;
+    }
+    
+    this.weeklyPlanningService.deleteBibliographicReference(planningId, reference).subscribe({
+      next: (updatedPlanning) => {
+        console.log('[WeeklyPlan] Reference deleted successfully:', updatedPlanning);
+        this.weeklyPlanning.set(updatedPlanning);
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Referencia bibliográfica eliminada correctamente'
+        });
+      },
+      error: (error) => {
+        console.error('[WeeklyPlan] Error deleting reference:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo eliminar la referencia bibliográfica'
+        });
+      }
+    });
   }
 }

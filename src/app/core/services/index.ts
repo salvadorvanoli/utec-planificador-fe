@@ -6,6 +6,7 @@ export * from './course.service';
 export * from './enum.service';
 export * from './filter-state.service';
 export * from './modification.service';
+export * from './office-hours.service';
 export * from './pdf.service';
 export * from './position.service';
 export * from './programmatic-content.service';

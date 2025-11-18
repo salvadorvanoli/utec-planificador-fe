@@ -1,0 +1,180 @@
+// Estilos para el modal de horarios de consulta
+::ng-deep .office-hours-modal.p-dialog {
+  max-height: 85vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+::ng-deep .office-hours-modal .p-dialog-header {
+  flex-shrink: 0 !important;
+  background: linear-gradient(135deg, #00A9E0 0%, #0089b8 100%);
+  color: white;
+  padding: 1.25rem 1.5rem !important;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+::ng-deep .office-hours-modal .p-dialog-title {
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+::ng-deep .office-hours-modal .p-dialog-header-icons .p-dialog-header-close {
+  color: white;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+::ng-deep .office-hours-modal .p-dialog-content {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  flex: 1 1 auto !important;
+  max-height: calc(85vh - 80px) !important;
+  padding: 0 !important;
+}
+
+::ng-deep .office-hours-modal .p-dialog-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+::ng-deep .office-hours-modal .p-dialog-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::ng-deep .office-hours-modal .p-dialog-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::ng-deep .office-hours-modal .p-dialog-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+// Asegurar que el panel del DatePicker se vea correctamente
+::ng-deep .p-datepicker {
+  z-index: 21000 !important;
+}
+
+// Caja de horarios
+.schedule-box {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.schedule-header {
+  position: relative;
+}
+
+.schedule-title {
+  text-align: center;
+  color: #1a1a1a;
+  margin-bottom: 0.75rem;
+}
+
+.schedule-separator {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #383737 50%, transparent 100%);
+}
+
+.schedule-body {
+  padding-top: 1rem;
+}
+
+// Tags de horarios
+.tags-container {
+  min-height: 50px;
+}
+
+.schedule-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #a5e5fa 0%, #8ddbf7 100%);
+  color: white;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 169, 224, 0.2);
+  transition: all 0.2s ease;
+  cursor: default;
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 169, 224, 0.3);
+    
+    .remove-schedule-button {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+.remove-schedule-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  padding: 0;
+  margin-left: auto;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    transform: scale(0.9);
+  }
+  
+  i {
+    font-size: 0.75rem;
+  }
+}
+
+// Formulario de agregar horario
+.add-schedule-form {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+// Estilos para inputs de hora y select
+:host ::ng-deep input[type="time"] {
+  border: 1px solid #646060;
+  border-radius: 8px;
+  color: #1a1a1a;
+  
+  &:focus {
+    border-color: #646060;
+    box-shadow: 0 0 0 0.2rem rgba(56, 55, 55, 0.25);
+  }
+}
+
+:host ::ng-deep .add-schedule-form {
+  app-select .p-select,
+  .p-select {
+    border: 1px solid #646060;
+    border-radius: 8px;
+  }
+  
+  .p-inputtext {
+    border: 1px solid #646060;
+    border-radius: 8px;
+  }
+}

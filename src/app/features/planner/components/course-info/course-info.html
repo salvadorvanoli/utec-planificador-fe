@@ -44,25 +44,33 @@
     </div>
 
     <!-- Skeletons para columna derecha -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 right-column-grid">
-      <div class="preview-rect bg-white rounded-lg p-4">
-        <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
-        <p-skeleton width="100%" height="1px" styleClass="mb-3"></p-skeleton>
-        <div class="flex flex-col gap-2">
-          <p-skeleton width="90%" height="2rem" borderRadius="16px"></p-skeleton>
-          <p-skeleton width="85%" height="2rem" borderRadius="16px"></p-skeleton>
-          <p-skeleton width="70%" height="2rem" borderRadius="16px"></p-skeleton>
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 right-column-grid">
+        <div class="preview-rect bg-white rounded-lg p-4">
+          <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="100%" height="1px" styleClass="mb-3"></p-skeleton>
+          <div class="flex flex-col gap-2">
+            <p-skeleton width="90%" height="2rem" borderRadius="16px"></p-skeleton>
+            <p-skeleton width="85%" height="2rem" borderRadius="16px"></p-skeleton>
+            <p-skeleton width="70%" height="2rem" borderRadius="16px"></p-skeleton>
+          </div>
+        </div>
+
+        <div class="preview-rect bg-white rounded-lg p-4">
+          <p-skeleton width="80%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="100%" height="1px" styleClass="mb-3"></p-skeleton>
+          <div class="flex flex-col gap-2">
+            <p-skeleton width="95%" height="2rem" borderRadius="16px"></p-skeleton>
+            <p-skeleton width="88%" height="2rem" borderRadius="16px"></p-skeleton>
+            <p-skeleton width="92%" height="2rem" borderRadius="16px"></p-skeleton>
+          </div>
         </div>
       </div>
-
-      <div class="preview-rect bg-white rounded-lg p-4">
-        <p-skeleton width="80%" height="1.5rem" styleClass="mb-2"></p-skeleton>
-        <p-skeleton width="100%" height="1px" styleClass="mb-3"></p-skeleton>
-        <div class="flex flex-col gap-2">
-          <p-skeleton width="95%" height="2rem" borderRadius="16px"></p-skeleton>
-          <p-skeleton width="88%" height="2rem" borderRadius="16px"></p-skeleton>
-          <p-skeleton width="92%" height="2rem" borderRadius="16px"></p-skeleton>
-        </div>
+      
+      <!-- Botones skeleton -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-end">
+        <p-skeleton width="10rem" height="2.8rem"></p-skeleton>
+        <p-skeleton width="10rem" height="2.8rem"></p-skeleton>
       </div>
     </div>
   } @else {
@@ -131,23 +139,55 @@
     </div>
   </div>
 
-  <!-- segunda columna: dos rectángulos blancos (dos columnas internas) -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 right-column-grid">
-    <app-tags-box 
-      [title]="'ODS vinculados'" 
-      [tags]="odsTags()"
-      [enumOptions]="odsOptions()"
-      (onRemoveTag)="removeOdsTag($event)"
-      (onAddTag)="addOdsTag($event)"
-    />
+  <!-- segunda columna: dos rectángulos blancos y botones -->
+  <div class="flex flex-col gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 right-column-grid">
+      <app-tags-box 
+        [title]="'ODS vinculados'" 
+        [tags]="odsTags()"
+        [enumOptions]="odsOptions()"
+        (onRemoveTag)="removeOdsTag($event)"
+        (onAddTag)="addOdsTag($event)"
+      />
 
-    <app-tags-box 
-      [title]="'Principios del diseño universal del aprendizaje'" 
-      [tags]="principlesTags()"
-      [enumOptions]="principlesOptions()"
-      (onRemoveTag)="removePrincipleTag($event)"
-      (onAddTag)="addPrincipleTag($event)"
-    />
+      <app-tags-box 
+        [title]="'Principios del diseño universal del aprendizaje'" 
+        [tags]="principlesTags()"
+        [enumOptions]="principlesOptions()"
+        (onRemoveTag)="removePrincipleTag($event)"
+        (onAddTag)="addPrincipleTag($event)"
+      />
+    </div>
+
+    <!-- Botones de acción alineados a la derecha -->
+    <div class="flex flex-col sm:flex-row gap-3 justify-end">
+      <app-button
+        [color]="'blue'"
+        [label]="'Clases de consulta'"
+        (onClick)="onConsultClassesClick()"
+      />
+      <app-button
+        [color]="'blue'"
+        [label]="'Más información'"
+        (onClick)="onMoreInfoClick()"
+      />
+    </div>
   </div>
   }
 </div>
+
+<!-- Modal de horarios de consulta -->
+@if (courseData()) {
+  <app-office-hours
+    [visible]="showOfficeHoursModal()"
+    [courseId]="courseData()!.id"
+    (onClose)="closeOfficeHoursModal()"
+  />
+}
+
+<!-- Modal de información expandida -->
+<app-expanded-info
+  [visible]="showExpandedInfoModal()"
+  [courseData]="courseData()"
+  (onClose)="closeExpandedInfoModal()"
+/>

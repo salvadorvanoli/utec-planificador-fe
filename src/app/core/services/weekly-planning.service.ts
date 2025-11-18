@@ -99,4 +99,44 @@ export class WeeklyPlanningService {
       tap(response => console.log('[WeeklyPlanningService] Response:', response))
     );
   }
+
+  /**
+   * Adds a new bibliographic reference to a weekly planning
+   * @param id Weekly planning ID
+   * @param reference Reference text (max 500 characters)
+   * @returns Observable with the updated weekly planning
+   */
+  addBibliographicReference(id: number, reference: string): Observable<WeeklyPlanningResponse> {
+    console.log(`[WeeklyPlanningService] POST bibliographic reference for weekly planning: ${id}`);
+    return this.http.post<WeeklyPlanningResponse>(`${this.apiUrl}/${id}/bibliographic-references`, { reference }).pipe(
+      tap(response => console.log('[WeeklyPlanningService] Response:', response))
+    );
+  }
+
+  /**
+   * Gets all bibliographic references for a weekly planning
+   * @param id Weekly planning ID
+   * @returns Observable with array of reference strings
+   */
+  getBibliographicReferences(id: number): Observable<string[]> {
+    console.log(`[WeeklyPlanningService] GET bibliographic references for weekly planning: ${id}`);
+    return this.http.get<string[]>(`${this.apiUrl}/${id}/bibliographic-references`).pipe(
+      tap(response => console.log('[WeeklyPlanningService] Response:', response))
+    );
+  }
+
+  /**
+   * Deletes a specific bibliographic reference from a weekly planning
+   * @param id Weekly planning ID
+   * @param reference Exact text of the reference to delete
+   * @returns Observable with the updated weekly planning
+   */
+  deleteBibliographicReference(id: number, reference: string): Observable<WeeklyPlanningResponse> {
+    console.log(`[WeeklyPlanningService] DELETE bibliographic reference for weekly planning: ${id}`);
+    return this.http.delete<WeeklyPlanningResponse>(`${this.apiUrl}/${id}/bibliographic-references`, {
+      body: { reference }
+    }).pipe(
+      tap(response => console.log('[WeeklyPlanningService] Response:', response))
+    );
+  }
 }

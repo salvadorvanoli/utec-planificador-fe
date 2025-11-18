@@ -6,8 +6,10 @@
   [resizable]="false"
   (visibleChange)="onVisibleChange($event)"
   header="Historial de Cambios"
-  [style]="{ width: '50vw', 'min-width': '600px' }"
-  [contentStyle]="{ padding: '1.5rem' }">
+  [style]="{ width: '90%', 'max-width': '900px' }"
+  styleClass="change-history-modal"
+  appendTo="body"
+  [baseZIndex]="20000">
   
   <div class="change-history-content">
     @if (isLoading()) {
@@ -20,8 +22,8 @@
         @for (modification of modifications(); track modification.id) {
           <div class="log-item flex items-start gap-3 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
             <div 
-              class="log-icon flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-[#00A9E0]/20">
-              <i class="pi pi-history text-lg text-[#00A9E0]"></i>
+              [class]="'log-icon flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ' + getModificationBgColor(modification.type)">
+              <i [class]="'pi text-lg ' + getModificationIcon(modification.type) + ' ' + getModificationColor(modification.type)"></i>
             </div>
             
             <div class="log-content flex-1">

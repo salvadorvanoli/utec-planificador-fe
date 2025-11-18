@@ -44,22 +44,13 @@
         </div>
 
         <div class="separator"></div>
-        <!-- Título de bibliografía -->
-        <h3 class="text-lg font-semibold">Bibliografía</h3>
-
-        <div class="w-full">
-          <div class="min-h-[40px] bg-white rounded-lg shadow w-full border border-gray-200 p-2">
-            @if (bibliographicReferences().length > 0) {
-              <ul class="ml-2 list-disc list-inside text-sm text-gray-700">
-                @for (reference of bibliographicReferences(); track reference) {
-                  <li>{{ reference }}</li>
-                }
-              </ul>
-            } @else {
-              <p class="text-sm text-gray-500 italic">No hay referencias bibliográficas</p>
-            }
-          </div>
-        </div>
+        
+        <!-- Componente de bibliografía -->
+        <app-bibliography 
+          [references]="bibliographicReferences()"
+          (addReference)="handleAddReference($event)"
+          (deleteReference)="handleDeleteReference($event)"
+        ></app-bibliography>
       </div>
     </app-container>
   }

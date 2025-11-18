@@ -1,0 +1,62 @@
+// Estilos para el modal de información expandida
+::ng-deep .expanded-info-modal.p-dialog {
+  max-height: 85vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+::ng-deep .expanded-info-modal .p-dialog-header {
+  flex-shrink: 0 !important;
+  background: linear-gradient(135deg, #00A9E0 0%, #0089b8 100%);
+  color: white;
+  padding: 1.25rem 1.5rem !important;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+::ng-deep .expanded-info-modal .p-dialog-title {
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+::ng-deep .expanded-info-modal .p-dialog-header-icons .p-dialog-header-close {
+  color: white;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+::ng-deep .expanded-info-modal .p-dialog-content {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  flex: 1 1 auto !important;
+  max-height: calc(85vh - 80px) !important;
+  padding: 0 !important;
+}
+
+::ng-deep .expanded-info-modal .p-dialog-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+::ng-deep .expanded-info-modal .p-dialog-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::ng-deep .expanded-info-modal .p-dialog-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::ng-deep .expanded-info-modal .p-dialog-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+// Inputs de solo lectura
+input[readonly] {
+  opacity: 0.7;
+  
+  &:focus {
+    box-shadow: none;
+  }
+}

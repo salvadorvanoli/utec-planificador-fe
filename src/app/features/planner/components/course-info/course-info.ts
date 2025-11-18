@@ -4,15 +4,18 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { Skeleton } from 'primeng/skeleton';
 import { Selector } from '@app/shared/components/select/select';
+import { ButtonComponent } from '@app/shared/components/button/button';
 import { EnumService, EnumResponse, CourseService } from '@app/core/services';
 import { TagsBox } from './components/tags-box/tags-box';
+import { ExpandedInfo } from '../expanded-info/expanded-info';
+import { OfficeHours } from '../office-hours/office-hours';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { Course } from '@app/core/models';
 
 @Component({
   selector: 'app-course-info',
-  imports: [FloatLabel, Selector, InputTextModule, FormsModule, Skeleton, TagsBox, Toast],
+  imports: [FloatLabel, Selector, InputTextModule, FormsModule, Skeleton, TagsBox, Toast, ButtonComponent, ExpandedInfo, OfficeHours],
   providers: [MessageService],
   templateUrl: './course-info.html',
   styleUrl: './course-info.scss',
@@ -65,6 +68,10 @@ export class CourseInfo implements OnInit {
   selectedProductiveSector = computed(() => 
     this.courseData()?.involvesActivitiesWithProductiveSector ? 'true' : 'false'
   );
+
+  // Modales
+  showExpandedInfoModal = signal(false);
+  showOfficeHoursModal = signal(false);
 
   odsTags = computed(() => {
     const course = this.courseData();
@@ -591,5 +598,21 @@ export class CourseInfo implements OnInit {
         });
       }
     });
+  }
+
+  onConsultClassesClick(): void {
+    this.showOfficeHoursModal.set(true);
+  }
+
+  closeOfficeHoursModal(): void {
+    this.showOfficeHoursModal.set(false);
+  }
+
+  onMoreInfoClick(): void {
+    this.showExpandedInfoModal.set(true);
+  }
+
+  closeExpandedInfoModal(): void {
+    this.showExpandedInfoModal.set(false);
   }
 }
