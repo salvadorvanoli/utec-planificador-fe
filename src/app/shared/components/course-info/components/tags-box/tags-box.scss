@@ -144,4 +144,13 @@ $border-width: 1px;
 
 .dialog-content {
   padding: 1rem 0;
+  overflow: visible !important;
+}
+
+:host ::ng-deep .p-dialog {
+  overflow: visible !important;
+}
+
+:host ::ng-deep .p-dialog-content {
+  overflow: visible !important;
 }

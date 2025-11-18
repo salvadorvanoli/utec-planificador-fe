@@ -5,9 +5,9 @@
     [infoType]="InfoType.ASSIGN_COURSES"
 />
 
-<div class="flex flex-col items-center w-full max-w-6xl mt-8 gap-6 mx-auto">
+<div class="row mt-4 mb-10 grid grid-cols-1 md:grid-cols-2 gap-10 w-8/10 mx-auto align-items-stretch">
   <!-- Teacher Selection (Multiple) -->
-  <div class="w-8/10">
+  <div>
     <label for="select_teachers" class="block text-sm font-medium mb-1">
       Docentes
     </label>
@@ -30,7 +30,7 @@
   </div>
 
   <!-- Curricular Unit Selection -->
-  <div class="w-8/10">
+  <div>
     <label for="select_curricular_unit" class="block text-sm font-medium mb-1">
       Unidad Curricular
     </label>
@@ -48,39 +48,37 @@
       ></app-select>
     }
   </div>
+</div>
 
-  <!-- Course Info Component (Creation Mode) -->
-  <app-course-info
-    [courseData]="null"
-    [isLoading]="false"
-    [isAdminMode]="true"
-    [curricularUnitId]="selectedCurricularUnit() ? +selectedCurricularUnit() : null"
-    [teacherIds]="selectedTeacherIds()"
-    (onCourseCreated)="onCourseCreated($event)"
-  ></app-course-info>
+<!-- Course Info Component (Creation Mode) -->
+<app-course-info
+  [courseData]="null"
+  [isLoading]="false"
+  [isAdminMode]="true"
+  [curricularUnitId]="selectedCurricularUnit() ? +selectedCurricularUnit() : null"
+  [teacherIds]="selectedTeacherIds()"
+  (onCourseCreated)="onCourseCreated($event)"
+></app-course-info>
 
-  <!-- Create Button -->
-  @if (isFormValid()) {
-    <div class="w-8/10 flex justify-center mt-4">
-      <app-button
-        label="Crear curso"
-        [color]="'blue'"
-        fontFamily="'UTEC Text Light', Arial, sans-serif"
-        fontWeight="300"
-        fontSize="1.5rem"
-        (onClick)="onCreateCourse()"
-      ></app-button>
-    </div>
-  } @else {
-    <div class="w-8/10 flex justify-center mt-4">
-      <app-button
-        label="Crear curso"
-        [color]="'black'"
-        fontFamily="'UTEC Text Light', Arial, sans-serif"
-        fontWeight="300"
-        fontSize="1.5rem"
-        [textColor]="'#9CA3AF'"
-      ></app-button>
-    </div>
-  }
+<!-- Create Button -->
+<div class="mt-4 mb-10 w-8/10 mx-auto">
+@if (isFormValid()) {
+  <app-button
+    label="Crear curso"
+    [color]="'blue'"
+    fontFamily="'UTEC Text Light', Arial, sans-serif"
+    fontWeight="300"
+    fontSize="1.5rem"
+    (onClick)="onCreateCourse()"
+  ></app-button>
+} @else {
+  <app-button
+    label="Crear curso"
+    [color]="'black'"
+    fontFamily="'UTEC Text Light', Arial, sans-serif"
+    fontWeight="300"
+    fontSize="1.5rem"
+    [textColor]="'#9CA3AF'"
+  ></app-button>
+}
 </div>

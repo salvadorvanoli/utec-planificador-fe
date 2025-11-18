@@ -68,11 +68,11 @@ export class OptionPanel {
 
     if (action === 'planificador') {
       this.router.navigate(['/course-catalog'], {
-        queryParams: { ...contextParams, docente: true, mode: 'planner' }
+        queryParams: { ...contextParams, mode: 'planner' }
       });
     } else if (action === 'estadistico') {
       this.router.navigate(['/course-catalog'], {
-        queryParams: { ...contextParams, docente: this.hasTeacherRole(), mode: 'statistics' }
+        queryParams: { ...contextParams, mode: 'statistics' }
       });
     } else if (action === 'asignar-cursos') {
       this.router.navigate(['/assign-page'], {
@@ -84,7 +84,7 @@ export class OptionPanel {
       });
     } else if (action === 'info-cursos') {
       this.router.navigate(['/course-catalog'], {
-        queryParams: { ...contextParams, docente: false, mode: 'info' }
+        queryParams: { ...contextParams, mode: 'info' }
       });
     }
   }

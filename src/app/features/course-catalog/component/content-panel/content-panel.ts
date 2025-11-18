@@ -2,7 +2,7 @@ import { Component, effect, inject, input, signal } from '@angular/core';
 import { CourseCard } from '../../../../shared/components/course-card/course-card';
 import { Searchbar } from '../../../../shared/components/searchbar/searchbar';
 import { Paginator } from '../../../../shared/components/paginator/paginator';
-import { CourseService, FilterStateService } from '@app/core/services';
+import { CourseService, FilterStateService, AuthService } from '@app/core/services';
 import { CourseBasicResponse } from '@app/core/models';
 import { PaginatorState } from 'primeng/paginator';
 import { Skeleton } from 'primeng/skeleton';
@@ -16,6 +16,7 @@ import { Skeleton } from 'primeng/skeleton';
 export class ContentPanel {
   private readonly courseService = inject(CourseService);
   private readonly filterStateService = inject(FilterStateService);
+  private readonly authService = inject(AuthService);
 
   readonly docente = input<boolean>(false);
   
@@ -38,6 +39,16 @@ export class ContentPanel {
   }
 
   private loadCourses(): void {
+    // Validate permanent filters before loading courses
+    if (this.filterStateService.hasPermanentFilters()) {
+      const isValid = this.filterStateService.validatePermanentFilters();
+      if (!isValid) {
+        console.error('[ContentPanel] SECURITY VIOLATION: Permanent filters validation failed. Logging out user.');
+        this.authService.logout();
+        return;
+      }
+    }
+
     this.isLoading.set(true);
     
     const filters = this.filterStateService.filters();

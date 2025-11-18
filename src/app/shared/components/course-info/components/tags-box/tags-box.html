@@ -36,9 +36,10 @@
 <p-dialog
   [(visible)]="showModal"
   [modal]="true"
-  [style]="{ width: '400px' }"
+  [style]="{ width: '90vw', maxWidth: '600px', minHeight: '300px' }"
   [draggable]="false"
   [resizable]="false"
+  [breakpoints]="{ '960px': '75vw', '640px': '95vw' }"
 >
   <ng-template #header>
     <h3 class="text-lg font-semibold">Agregar {{ title() }}</h3>

@@ -53,14 +53,8 @@ export class MultiSelector implements OnInit {
                 }));
                 this.items.set(convertedItems);
             } else {
-                // Si no hay opciones, usar items por defecto
-                this.items.set([
-                    { name: 'Item 1', code: 'NY' },
-                    { name: 'Item 2', code: 'RM' },
-                    { name: 'Item 3', code: 'LDN' },
-                    { name: 'Item 4', code: 'IST' },
-                    { name: 'Item 5', code: 'PRS' }
-                ]);
+                // Si no hay opciones, establecer array vacío
+                this.items.set([]);
             }
         });
         

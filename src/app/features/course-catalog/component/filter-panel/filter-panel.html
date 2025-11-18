@@ -20,6 +20,7 @@
                         [placeholder]="'Sede'"
                         [options]="campusOptions()"
                         [selectedValue]="selectedCampusId()?.toString() || ''"
+                        [disabled]="isCampusPermanent()"
                         (onSelectionChange)="onCampusChange($event)">
                     </app-select>
                 </div>
@@ -29,6 +30,7 @@
                         [placeholder]="'Docente'"
                         [options]="teacherOptions()"
                         [selectedValue]="selectedTeacherId()?.toString() || ''"
+                        [disabled]="isTeacherPermanent()"
                         (onSelectionChange)="onTeacherChange($event)">
                     </app-select>
                 </div>

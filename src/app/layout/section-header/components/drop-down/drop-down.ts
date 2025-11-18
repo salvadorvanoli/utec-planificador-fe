@@ -61,7 +61,7 @@ export class DropDown {
   private readonly idToRoute: Record<string, { path: string; queryParams?: any }> = {
     home: { path: '/home' },
     menu: { path: '/option-page', queryParams: { step: 'main-menu' } },
-    catalog: { path: '/course-catalog', queryParams: { docente: false, mode: 'info' } },
+    catalog: { path: '/course-catalog', queryParams: { mode: 'info' } },
     planner: { path: '/planner' },
     statistics: { path: '/statistics-page' },
     chat: { path: '/chat-page' },

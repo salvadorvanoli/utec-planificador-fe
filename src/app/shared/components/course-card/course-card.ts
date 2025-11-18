@@ -150,10 +150,25 @@ export class CourseCard {
       return;
     }
     
+    // Extract current context from URL to preserve it in navigation
+    const currentParams = this.route.snapshot.queryParams;
+    const contextParams = extractContextFromUrl(currentParams);
+    
+    if (!contextParams) {
+      console.warn('[CourseCard] No context available for navigation');
+      return;
+    }
+    
+    // Build query params with context
+    const queryParams = buildContextQueryParams({
+      itrId: contextParams.itrId,
+      campusId: contextParams.campusId
+    });
+    
     if (mode === 'planner') {
-      this.router.navigate(['/planner', courseData.id]);
+      this.router.navigate(['/planner', courseData.id], { queryParams });
     } else if (mode === 'statistics') {
-      this.router.navigate(['/statistics-page', courseData.id]);
+      this.router.navigate(['/statistics-page', courseData.id], { queryParams });
     } else if (mode === 'info') {
       // TODO: Future implementation for 'info' mode can be added here
     }
