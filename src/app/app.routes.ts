@@ -42,7 +42,7 @@ export const routes: Routes = [
       { path: 'statistics-page', loadComponent: () => import('./features/statistics-page/statistics-page').then(m => m.StatisticsPage), canActivate: [contextGuard] },
       { path: 'chat-page', loadComponent: () => import('./features/chat-page/chat-page').then(m => m.ChatPage), canActivate: [contextGuard] },
       { path: 'assign-page', loadComponent: () => import('./features/assign-page/assign-page').then(m => m.AssignPage), canActivate: [contextGuard] },
-      { path: 'planner/:courseId', loadComponent: () => import('./features/planner/planner').then(m => m.Planner), canActivate: [contextGuard] },
+      { path: 'planner/:courseId', loadComponent: () => import('./features/planner/planner').then(m => m.Planner)},
       { path: 'pdf-preview/:courseId', component: PdfPreview }
     ]
   },
