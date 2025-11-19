@@ -7,8 +7,9 @@
       <div class="select-wrapper">
         <p-select
           [options]="courseOptions"
-          [(ngModel)]="selectedCourse"
+          [(ngModel)]="selectedCourseModel"
           (onChange)="onCourseChange($event.value)"
+          optionValue="value"
           placeholder="Seleccionar curso"
           optionLabel="label"
           [filter]="true"

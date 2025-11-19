@@ -74,3 +74,10 @@ export interface CoursePdfData {
     credits: number;
   };
 }
+
+export interface MyCourseSummary {
+  id: number;
+  curricularUnitName: string;
+  startDate: string;
+  shift: string;
+}
