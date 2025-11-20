@@ -9,8 +9,10 @@ import { WeekPicker } from '../week-picker/week-picker';
 })
 export class WeekTitle {
   weekNumber = input<number>(1);
-  startDate = input<string>('');
-  endDate = input<string>('');
+  startDate = input<string>(''); // Fecha inicio de la semana actual
+  endDate = input<string>(''); // Fecha fin de la semana actual
+  courseStartDate = input<string>(''); // Fecha inicio del curso
+  courseEndDate = input<string>(''); // Fecha fin del curso
   onWeekChange = output<number>();
   onDateRangeChange = output<{ startDate: string; endDate: string }>();
   

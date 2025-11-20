@@ -59,3 +59,24 @@
   align-items: center;
   height: 100%;
 }
+
+:host ::ng-deep .p-select-overlay {
+  .p-select-panel {
+    max-width: 400px !important;
+    min-width: 200px !important;
+  }
+  
+  .p-select-option {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    padding: 0.75rem 1rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  .p-select-option-label {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+}

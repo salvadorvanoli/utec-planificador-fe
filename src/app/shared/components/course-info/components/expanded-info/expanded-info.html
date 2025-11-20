@@ -1,0 +1,111 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visible() !== $event && closeDialog()"
+  [modal]="true"
+  [header]="'Información Detallada del Curso'"
+  [style]="{ width: '90%', 'max-width': '900px' }"
+  styleClass="expanded-info-modal"
+  [draggable]="false"
+  [resizable]="false"
+  appendTo="body"
+  [baseZIndex]="20000"
+>
+  <div class="p-4">
+    <!-- Primera fila: Carrera y Docente -->
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <p-floatlabel variant="in" class="w-full">
+        <input
+          pInputText
+          id="carrera"
+          [value]="carrera()"
+          [readonly]="true"
+          class="w-full bg-gray-50 cursor-not-allowed"
+        />
+        <label for="carrera">Carrera</label>
+      </p-floatlabel>
+
+      <p-floatlabel variant="in" class="w-full">
+        <input
+          pInputText
+          id="docente"
+          [value]="docente()"
+          [readonly]="true"
+          class="w-full bg-gray-50 cursor-not-allowed"
+        />
+        <label for="docente">Docente</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Segunda fila: Unidad Curricular | (Semestre y Créditos) -->
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <p-floatlabel variant="in" class="w-full">
+        <input
+          pInputText
+          id="unidad_curricular"
+          [value]="unidadCurricular()"
+          [readonly]="true"
+          class="w-full bg-gray-50 cursor-not-allowed"
+        />
+        <label for="unidad_curricular">Unidad Curricular</label>
+      </p-floatlabel>
+
+      <div class="grid grid-cols-2 gap-4">
+        <p-floatlabel variant="in" class="w-full">
+          <input
+            pInputText
+            id="semestre"
+            [value]="semestre()"
+            [readonly]="true"
+            class="w-full bg-gray-50 cursor-not-allowed"
+          />
+          <label for="semestre">Semestre</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="in" class="w-full">
+          <input
+            pInputText
+            id="creditos"
+            [value]="creditos()"
+            [readonly]="true"
+            class="w-full bg-gray-50 cursor-not-allowed"
+          />
+          <label for="creditos">Créditos</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <!-- Tercera fila: Tags boxes -->
+    <div class="grid grid-cols-2 gap-4 mt-6">
+      <app-tags-box
+        [title]="'Áreas de dominio'"
+        [tags]="domainAreasTags()"
+        [enumOptions]="domainAreasOptions()"
+        (onRemoveTag)="removeDomainAreaTag($event)"
+        (onAddTag)="addDomainAreaTag($event)"
+      />
+
+      <app-tags-box
+        [title]="'Competencias profesionales'"
+        [tags]="professionalCompetenciesTags()"
+        [enumOptions]="professionalCompetenciesOptions()"
+        (onRemoveTag)="removeProfessionalCompetencyTag($event)"
+        (onAddTag)="addProfessionalCompetencyTag($event)"
+      />
+    </div>
+
+
+    <div class="flex justify-end">
+      <button
+        type="button"
+        class="px-4 py-2 bg-[#00A9E0] text-white rounded hover:bg-[#0090b8] transition-colors"
+        (click)="closeDialog()"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+
+
+    
+ 
+</p-dialog>

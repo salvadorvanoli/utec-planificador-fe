@@ -1,11 +1,28 @@
-<p-select 
-  [options]="items()" 
-  [ngModel]="selectedItem()"
-  (ngModelChange)="onItemChange($event)"
-  optionLabel="name" 
-  [placeholder]="placeholder()" 
-  [appendTo]="appendTo()"
-  [disabled]="disabled()"
-  emptyMessage="No se encontraron resultados"
-  class="w-full md:w-56" 
-/>
+@if (label()) {
+  <p-iftalabel>  
+    <p-select 
+      [options]="items()" 
+      [ngModel]="selectedItem()"
+      (ngModelChange)="onItemChange($event)"
+      optionLabel="name" 
+      [placeholder]="placeholder()" 
+      appendTo="body"
+      [disabled]="disabled()"
+      emptyMessage="No se encontraron resultados"
+      class="w-full md:w-56"
+    />
+    <label for="dd-city">{{ label() }}</label>
+  </p-iftalabel>
+} @else {
+  <p-select 
+    [options]="items()" 
+    [ngModel]="selectedItem()"
+    (ngModelChange)="onItemChange($event)"
+    optionLabel="name" 
+    [placeholder]="placeholder()" 
+    appendTo="body"
+    [disabled]="disabled()"
+    emptyMessage="No se encontraron resultados"
+    class="w-full md:w-56"
+  />
+}

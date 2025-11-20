@@ -1,5 +1,14 @@
 <div class="card flex justify-center">
-  <p-datepicker  [readonlyInput]="true" [showIcon]="true" [ngModel]="selectedWeek()" (ngModelChange)="selectedWeek.set($event)" (onSelect)="onDateSelect($event)" [selectionMode]="'range'">
+  <p-datepicker 
+    [readonlyInput]="true" 
+    [showIcon]="true" 
+    [ngModel]="selectedWeek()" 
+    (ngModelChange)="selectedWeek.set($event)" 
+    (onSelect)="onDateSelect($event)" 
+    [selectionMode]="'range'"
+    [minDate]="minDate()"
+    [maxDate]="maxDate()"
+  >
     <ng-template #dateTemplate let-date>
       <span [class.highlight]="isInHoveredWeek(date)" (mouseenter)="onDayHover(date)" (mouseleave)="onDayLeave()">{{ date.day }}</span>
     </ng-template>

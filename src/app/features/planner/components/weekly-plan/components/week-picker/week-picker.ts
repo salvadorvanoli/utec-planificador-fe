@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, signal, input, effect, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, input, effect, output, computed } from '@angular/core';
 import { DatePicker } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-week-picker',
@@ -10,9 +12,15 @@ import { FormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WeekPicker {
-  // Inputs para recibir el rango de fechas desde el padre
-  startDate = input<string>(''); // formato YYYY-MM-DD
-  endDate = input<string>(''); // formato YYYY-MM-DD
+  private readonly messageService = inject(MessageService);
+  
+  // Inputs para recibir las fechas de la semana actual
+  weekStartDate = input<string>(''); // formato YYYY-MM-DD
+  weekEndDate = input<string>(''); // formato YYYY-MM-DD
+  
+  // Inputs para recibir las fechas del curso (límites del datepicker)
+  courseStartDate = input<string>(''); // formato YYYY-MM-DD
+  courseEndDate = input<string>(''); // formato YYYY-MM-DD
   
   // Output para emitir cuando el usuario seleccione una nueva semana
   onWeekChange = output<{ startDate: string; endDate: string }>();
@@ -20,11 +28,22 @@ export class WeekPicker {
   selectedWeek = signal<Date[]>([]);
   hoveredWeek = signal<Date[]>([]);
 
+  // Computed para las fechas mínima y máxima del curso
+  minDate = computed(() => {
+    const dateStr = this.courseStartDate();
+    return dateStr ? new Date(dateStr + 'T00:00:00') : undefined;
+  });
+
+  maxDate = computed(() => {
+    const dateStr = this.courseEndDate();
+    return dateStr ? new Date(dateStr + 'T00:00:00') : undefined;
+  });
+
   constructor() {
     // Effect para actualizar selectedWeek cuando cambien los inputs
     effect(() => {
-      const start = this.startDate();
-      const end = this.endDate();
+      const start = this.weekStartDate();
+      const end = this.weekEndDate();
       
       if (start && end) {
         const startDateObj = new Date(start + 'T00:00:00');
@@ -36,12 +55,53 @@ export class WeekPicker {
   }
 
   onDateSelect(date: Date) {
+    // Verificar si la fecha está fuera del rango del curso
+    const min = this.minDate();
+    const max = this.maxDate();
+    
+    if (min && date < min) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Fecha inválida',
+        detail: 'La fecha seleccionada está antes del inicio del curso'
+      });
+      return;
+    }
+    
+    if (max && date > max) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Fecha inválida',
+        detail: 'La fecha seleccionada está después del fin del curso'
+      });
+      return;
+    }
+    
     const day = date.getDay(); 
     const diffToMonday = (day + 6) % 7;
     const monday = new Date(date);
     monday.setDate(date.getDate() - diffToMonday);
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
+
+    // Verificar si la semana calculada está completamente dentro del rango
+    if (min && monday < min) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Semana inválida',
+        detail: 'La semana seleccionada comienza antes del inicio del curso'
+      });
+      return;
+    }
+    
+    if (max && sunday > max) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Semana inválida',
+        detail: 'La semana seleccionada termina después del fin del curso'
+      });
+      return;
+    }
 
     this.selectedWeek.set([monday, sunday]);
     

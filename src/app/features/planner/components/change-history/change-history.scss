@@ -1,0 +1,112 @@
+// Estilos para el modal de historial de cambios
+::ng-deep .change-history-modal.p-dialog {
+  max-height: 85vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+::ng-deep .change-history-modal .p-dialog-header {
+  flex-shrink: 0 !important;
+  background-color: #00A9E0 !important;
+  color: white !important;
+  padding: 1.25rem 1.5rem !important;
+  border-radius: 6px 6px 0 0;
+}
+
+::ng-deep .change-history-modal .p-dialog-header-icon {
+  color: white;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+::ng-deep .change-history-modal .p-dialog-content {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  flex: 1 1 auto !important;
+  max-height: calc(85vh - 80px) !important;
+  padding: 1.5rem !important;
+}
+
+::ng-deep .change-history-modal .p-dialog-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+::ng-deep .change-history-modal .p-dialog-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::ng-deep .change-history-modal .p-dialog-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::ng-deep .change-history-modal .p-dialog-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.log-item {
+  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+  
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.log-icon {
+  transition: transform 0.2s ease;
+  
+  .log-item:hover & {
+    transform: scale(1.1);
+  }
+}
+
+:host ::ng-deep {
+  .p-dialog-header {
+    background-color: #00A9E0;
+    color: white;
+    border-radius: 6px 6px 0 0;
+  }
+  
+  .p-dialog-header-icon {
+    color: white;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+  
+  .p-paginator {
+    border: none;
+    background: transparent;
+    padding: 0;
+    
+    .p-paginator-first,
+    .p-paginator-prev,
+    .p-paginator-next,
+    .p-paginator-last,
+    .p-paginator-page {
+      min-width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      
+      &:not(.p-disabled):hover {
+        background-color: #00A9E0;
+        color: white;
+      }
+    }
+    
+    .p-paginator-page.p-highlight {
+      background-color: #00A9E0;
+      color: white;
+    }
+  }
+}

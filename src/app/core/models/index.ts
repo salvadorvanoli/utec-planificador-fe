@@ -7,6 +7,7 @@ export * from './course';
 export * from './course-statistics';
 export * from './curricular-unit';
 export * from './modification';
+export * from './office-hours';
 export * from './pagination';
 export * from './position';
 export * from './regional-technological-institute';

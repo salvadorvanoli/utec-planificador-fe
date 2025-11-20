@@ -10,10 +10,11 @@ import { ColorPicker } from '../color-picker/color-picker';
 import { EnumService, EnumResponse } from '@app/core/services/enum.service';
 import { ActivityService, ActivityRequest } from '@app/core/services/activity.service';
 import { MessageService } from 'primeng/api';
+import { Multiselect } from '@app/shared/components/multiselect/multiselect';
 
 @Component({
   selector: 'app-add-activity',
-  imports: [DialogModule, InputTextModule, FormsModule, FloatLabel, Selector, ButtonComponent, CommonModule, ColorPicker],
+  imports: [DialogModule, InputTextModule, FormsModule, FloatLabel, Selector, ButtonComponent, CommonModule, ColorPicker, Multiselect],
   templateUrl: './add-activity.html',
   styleUrl: './add-activity.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -166,46 +167,6 @@ export class AddActivity {
   onColorChange(color: string): void {
     this.selectedColor.set(color);
     console.log('[AddActivity] Color changed to:', color);
-  }
-  
-  onCognitiveProcessChange(value: string): void {
-    const current = this.selectedCognitiveProcesses();
-    if (current.includes(value)) {
-      this.selectedCognitiveProcesses.set(current.filter(v => v !== value));
-    } else {
-      this.selectedCognitiveProcesses.set([...current, value]);
-    }
-    console.log('[AddActivity] Cognitive processes:', this.selectedCognitiveProcesses());
-  }
-  
-  onTransversalCompetencyChange(value: string): void {
-    const current = this.selectedTransversalCompetencies();
-    if (current.includes(value)) {
-      this.selectedTransversalCompetencies.set(current.filter(v => v !== value));
-    } else {
-      this.selectedTransversalCompetencies.set([...current, value]);
-    }
-    console.log('[AddActivity] Transversal competencies:', this.selectedTransversalCompetencies());
-  }
-  
-  onTeachingStrategyChange(value: string): void {
-    const current = this.selectedTeachingStrategies();
-    if (current.includes(value)) {
-      this.selectedTeachingStrategies.set(current.filter(v => v !== value));
-    } else {
-      this.selectedTeachingStrategies.set([...current, value]);
-    }
-    console.log('[AddActivity] Teaching strategies:', this.selectedTeachingStrategies());
-  }
-  
-  onLearningResourceChange(value: string): void {
-    const current = this.selectedLearningResources();
-    if (current.includes(value)) {
-      this.selectedLearningResources.set(current.filter(v => v !== value));
-    } else {
-      this.selectedLearningResources.set([...current, value]);
-    }
-    console.log('[AddActivity] Learning resources:', this.selectedLearningResources());
   }
   
   saveActivity(): void {

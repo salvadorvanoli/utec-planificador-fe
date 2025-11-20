@@ -3,6 +3,7 @@ import { Container } from './components/container/container';
 import { WeekTitle } from './components/week-title/week-title';
 import { ContentSection } from './components/content-section/content-section';
 import { ActivitySection } from './components/activity-section/activity-section';
+import { Bibliography } from './components/bibliography/bibliography';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { WeeklyPlanningService, WeeklyPlanningResponse, ProgrammaticContentService, ActivityService } from '@app/core/services';
 import { inject } from '@angular/core';
@@ -13,7 +14,7 @@ import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-weekly-plan',
-  imports: [ Container, WeekTitle, ContentSection, ActivitySection, ProgressSpinnerModule ],
+  imports: [ Container, WeekTitle, ContentSection, ActivitySection, Bibliography, ProgressSpinnerModule ],
   templateUrl: './weekly-plan.html',
   styleUrl: './weekly-plan.scss'
 })
@@ -25,6 +26,8 @@ export class WeeklyPlan {
   
   // Input del courseId desde el padre
   courseId = input.required<number>();
+  courseStartDate = input.required<string>();
+  courseEndDate = input.required<string>();
   
   // Señales de estado
   isLoading = signal(true);
@@ -43,6 +46,11 @@ export class WeeklyPlan {
   // Computed para las referencias bibliográficas
   bibliographicReferences = computed(() => {
     return this.weeklyPlanning()?.bibliographicReferences || [];
+  });
+  
+  // Computed para obtener el weeklyPlanningId
+  weeklyPlanningId = computed(() => {
+    return this.weeklyPlanning()?.id || 0;
   });
 
   constructor() {
@@ -181,6 +189,48 @@ export class WeeklyPlan {
     this.selectedContent.set(content);
   }
   
+  // Método para manejar cuando se crea un nuevo contenido programático
+  handleContentCreated(): void {
+    console.log('[WeeklyPlan] Content created/updated, reloading programmatic contents');
+    this.loadWeeklyPlanning(this.currentWeekNumber());
+  }
+  
+  // Método para manejar la eliminación de un contenido programático
+  handleContentDeleted(contentId: number): void {
+    console.log('[WeeklyPlan] Delete content requested:', contentId);
+    
+    // Confirmar antes de eliminar
+    if (confirm('¿Estás seguro de que deseas eliminar este contenido programático? Se eliminarán también todas sus actividades.')) {
+      this.programmaticContentService.deleteProgrammaticContent(contentId).subscribe({
+        next: () => {
+          console.log('[WeeklyPlan] Content deleted successfully:', contentId);
+          
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Contenido programático eliminado correctamente'
+          });
+          
+          // Si el contenido eliminado era el seleccionado, limpiar la selección
+          if (this.selectedContent()?.id === contentId) {
+            this.selectedContent.set(null);
+          }
+          
+          // Recargar la planificación
+          this.loadWeeklyPlanning(this.currentWeekNumber());
+        },
+        error: (error) => {
+          console.error('[WeeklyPlan] Error deleting content:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo eliminar el contenido programático'
+          });
+        }
+      });
+    }
+  }
+  
   // Método para manejar cuando se crea una nueva actividad
   handleActivityCreated(): void {
     console.log('[WeeklyPlan] Activity created, reloading current content');
@@ -255,5 +305,85 @@ export class WeeklyPlan {
         }
       });
     }
+  }
+  
+  // Método para manejar la adición de una referencia bibliográfica
+  handleAddReference(reference: string): void {
+    console.log('[WeeklyPlan] Add reference requested:', reference);
+    const planningId = this.weeklyPlanningId();
+    
+    if (!planningId) {
+      console.error('[WeeklyPlan] No weekly planning ID available');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se pudo agregar la referencia'
+      });
+      return;
+    }
+    
+    this.weeklyPlanningService.addBibliographicReference(planningId, reference).subscribe({
+      next: (updatedPlanning) => {
+        console.log('[WeeklyPlan] Reference added successfully:', updatedPlanning);
+        this.weeklyPlanning.set(updatedPlanning);
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Referencia bibliográfica agregada correctamente'
+        });
+      },
+      error: (error) => {
+        console.error('[WeeklyPlan] Error adding reference:', error);
+        
+        let errorMessage = 'No se pudo agregar la referencia bibliográfica';
+        if (error.status === 400) {
+          errorMessage = 'La referencia ya existe o supera los 500 caracteres';
+        }
+        
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: errorMessage
+        });
+      }
+    });
+  }
+  
+  // Método para manejar la eliminación de una referencia bibliográfica
+  handleDeleteReference(reference: string): void {
+    console.log('[WeeklyPlan] Delete reference requested:', reference);
+    const planningId = this.weeklyPlanningId();
+    
+    if (!planningId) {
+      console.error('[WeeklyPlan] No weekly planning ID available');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se pudo eliminar la referencia'
+      });
+      return;
+    }
+    
+    this.weeklyPlanningService.deleteBibliographicReference(planningId, reference).subscribe({
+      next: (updatedPlanning) => {
+        console.log('[WeeklyPlan] Reference deleted successfully:', updatedPlanning);
+        this.weeklyPlanning.set(updatedPlanning);
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Referencia bibliográfica eliminada correctamente'
+        });
+      },
+      error: (error) => {
+        console.error('[WeeklyPlan] Error deleting reference:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo eliminar la referencia bibliográfica'
+        });
+      }
+    });
   }
 }

@@ -1,0 +1,53 @@
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+::ng-deep .p-dialog {
+  max-width: 600px;
+  width: 90%;
+}
+
+::ng-deep .p-dialog-header {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+::ng-deep .p-dialog-content {
+  padding: 0;
+}
+
+::ng-deep .p-dialog-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e9ecef;
+}
+
+::ng-deep .p-floatlabel {
+  input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #00A9E0;
+      box-shadow: 0 0 0 0.2rem rgba(0, 169, 224, 0.25);
+    }
+  }
+
+  label {
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+}
+
+.select-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}

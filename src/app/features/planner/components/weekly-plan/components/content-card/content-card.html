@@ -4,8 +4,8 @@
       {{ titulo() }}
     </div>
     <div class="icons flex flex-row gap-2" aria-hidden="true">
-      <i class="pi pi-pencil text-gray-600 text-lg" title="Editar"></i>
-      <i class="pi pi-trash text-gray-600 text-lg" title="Eliminar"></i>
+      <i class="pi pi-pencil" title="Editar" role="button" aria-label="Editar contenido" (click)="handleEdit($event)"></i>
+      <i class="pi pi-trash" title="Eliminar" role="button" aria-label="Eliminar contenido" (click)="handleDelete($event)"></i>
     </div>
   </div>
 

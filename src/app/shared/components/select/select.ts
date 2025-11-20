@@ -1,6 +1,7 @@
 import { Component, OnInit, input, output, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Select } from 'primeng/select';
+import { IftaLabelModule } from 'primeng/iftalabel';
 
 interface Item {
     name: string;
@@ -19,7 +20,7 @@ type Color = 'blue' | 'black';
     templateUrl: './select.html',
     styleUrl: './select.scss',
     standalone: true,
-    imports: [FormsModule, Select],
+    imports: [FormsModule, Select, IftaLabelModule],
     host: {
     '[style.--select-dropdown-bg]': 'color() === "blue" ? "#00A9E0" : "#000000"'
   }
@@ -27,6 +28,7 @@ type Color = 'blue' | 'black';
 export class Selector implements OnInit {
     readonly color = input<Color>('blue');
     readonly placeholder = input<string>('Seleccionar');
+    readonly label = input<string>(''); // Label opcional
     
     readonly options = input<EnumOption[]>([]);
     
@@ -79,7 +81,6 @@ export class Selector implements OnInit {
     }
 
     ngOnInit() {
-        // Ya no es necesario inicializar items aquí, se hace en el effect
     }
 
     onItemChange(item: Item | undefined): void {

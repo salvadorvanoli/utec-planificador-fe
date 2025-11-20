@@ -4,8 +4,10 @@
       <p class="weekly-title">Semana {{ weekNumber() }}</p>
 
       <app-week-picker 
-        [startDate]="startDate()"
-        [endDate]="endDate()"
+        [weekStartDate]="startDate()"
+        [weekEndDate]="endDate()"
+        [courseStartDate]="courseStartDate()"
+        [courseEndDate]="courseEndDate()"
         (onWeekChange)="handleDateRangeChange($event)"
       ></app-week-picker>
     </div>

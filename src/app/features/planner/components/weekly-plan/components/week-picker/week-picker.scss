@@ -12,6 +12,17 @@
   --p-datepicker-date-range-selected-color: #ffffff; 
   --p-datepicker-today-background: #ffffff;
   --p-datepicker-today-color: #000000;
+
+  // Estilos para fechas deshabilitadas (fuera del rango del curso)
+  .p-datepicker-calendar td span.p-disabled {
+    opacity: 0.4 !important;
+    color: #999 !important;
+    cursor: not-allowed !important;
+  }
+
+  .p-datepicker-calendar td span.p-disabled:hover {
+    background-color: transparent !important;
+  }
 }
 
 

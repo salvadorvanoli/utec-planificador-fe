@@ -1,162 +1,94 @@
-:host {
-  display: block;
-  width: 100%;
-  height: 100% !important;
-}
+:host ::ng-deep {
+  .p-multiselect {
+    width: 100%;
+    border: 1px solid #000 !important;
+    
+    &:not(.p-disabled):hover {
+      border-color: #000 !important;
+    }
+    
+    &:not(.p-disabled).p-focus {
+      border-color: #000 !important;
+      box-shadow: 0 0 0 0.125rem rgba(0, 0, 0, 0.06) !important;
+    }
+  }
 
-:host ::ng-deep .p-multiselect {
-  width: 100% !important;
-  height: 100% !important;
-  border: 0.2px solid #000000;
-  border-radius: 15px;
-}
+  .p-multiselect-label {
+    padding: 0.5rem 0.75rem !important;
+  }
 
-:host ::ng-deep .p-multiselect.p-focus,
-:host ::ng-deep .p-multiselect:hover {
-  border-color: #d1d5db !important; 
-  box-shadow: none !important;
-}
+  .p-multiselect-trigger {
+    color: #000 !important;
+  }
 
-:host ::ng-deep .p-multiselect.p-focus .p-multiselect-dropdown,
-:host ::ng-deep .p-multiselect:hover .p-multiselect-dropdown {
-  border-left: 1.5px solid #d1d5db !important; 
-}
+  // Chips (elementos seleccionados en el trigger)
+  .p-multiselect-token {
+    background-color: #e0f7ff !important; 
+    color: #0c4a6e !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 0.25rem !important;
+    
+    .p-multiselect-token-label {
+      color: #0c4a6e !important;
+    }
+    
+    .p-multiselect-token-icon {
+      color: #0c4a6e !important;
+      
+      &:hover {
+        color: #dc2626 !important;
+      }
+    }
+  }
 
-:host ::ng-deep .p-multiselect .p-multiselect-dropdown {
-  background-color: var(--multiselect-dropdown-bg) !important;
-  position: relative;
-  width: 25px;
-  border-top-right-radius: 15px;
-  border-bottom-right-radius: 15px;
-  border-left: 1.5px solid #000000;
-}
+  // Panel desplegable
+  .p-multiselect-panel {
+    border: 1px solid #d1d5db !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  }
 
-:host ::ng-deep .p-multiselect .p-multiselect-dropdown-icon {
-  display: none !important;
-}
+  // Items en el dropdown
+  .p-multiselect-item {
+    padding: 0.5rem 0.75rem !important;
+    
+    &:not(.p-disabled):hover {
+      background-color: #f3f4f6 !important;
+    }
+    
+    // Elementos seleccionados (con checkbox marcado)
+    &.p-highlight {
+      background-color: #e0f7ff !important; 
+      color: #0c4a6e !important;
+      
+      &:hover {
+        background-color: #bae6fd !important; 
+      }
+    }
+  }
 
-:host ::ng-deep .p-multiselect .p-multiselect-dropdown::after {
-  content: '';
-  display: inline-block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 0;
-  height: 0;
-  border-left: 5.3px solid transparent;
-  border-right: 5.3px solid transparent;
-  border-top: 5.3px solid white; 
-}
+  // Checkbox
+  .p-checkbox {
+    .p-checkbox-box {
+      border-color: #d1d5db !important;
+      
+      &.p-highlight {
+        background-color: #00A9E0 !important;
+        border-color: #00A9E0 !important;
+      }
+    }
+  }
 
-:host ::ng-deep .p-multiselect .p-multiselect-label {
-  color: #000000 !important;         
-  font-weight: 500 !important;    
-  font-size: 1.25rem !important; 
-  font-family: 'UTEC Text Light', system-ui, sans-serif; 
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-/* Estilos para los chips/tokens seleccionados */
-:host ::ng-deep .p-multiselect .p-multiselect-label .p-multiselect-token {
-  background-color: var(--multiselect-dropdown-bg) !important;
-  color: white !important;
-  border-radius: 10px;
-  padding: 0.25rem 0.5rem;
-  margin-right: 0.25rem;
-  font-size: 0.875rem;
-}
-
-:host ::ng-deep .p-multiselect .p-multiselect-label .p-multiselect-token-icon {
-  color: white !important;
-  margin-left: 0.25rem;
-}
-
-/* Estilos del panel de opciones */
-:host ::ng-deep .p-multiselect-overlay {
-  border-radius: 15px;
-  border: 0.2px solid #000000;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-header {
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 0.75rem 1rem;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-header .p-multiselect-filter-container {
-  width: 100%;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-header .p-multiselect-filter {
-  width: 100%;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
-  padding: 0.5rem 1rem;
-  font-family: 'UTEC Text Light', system-ui, sans-serif;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-header .p-multiselect-filter:focus {
-  border-color: var(--multiselect-dropdown-bg);
-  box-shadow: 0 0 0 2px rgba(0, 169, 224, 0.2);
-  outline: none;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-list {
-  padding: 0.5rem 0;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-list .p-multiselect-option {
-  padding: 0.75rem 1rem;
-  font-family: 'UTEC Text Light', system-ui, sans-serif;
-  font-size: 1rem;
-  color: #000000;
-  transition: background-color 0.2s;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-list .p-multiselect-option:hover {
-  background-color: #f3f4f6;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-list .p-multiselect-option.p-focus {
-  background-color: #e5e7eb;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-list .p-multiselect-option.p-selected {
-  background-color: var(--multiselect-dropdown-bg) !important;
-  color: white !important;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-list .p-multiselect-option .p-checkbox {
-  margin-right: 0.5rem;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-list .p-multiselect-option .p-checkbox .p-checkbox-box {
-  border: 2px solid #d1d5db;
-  border-radius: 4px;
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-list .p-multiselect-option.p-selected .p-checkbox .p-checkbox-box {
-  background-color: white;
-  border-color: white;
-}
-
-:host ::ng-deep .p-multiselect-overlay .p-multiselect-list .p-multiselect-option.p-selected .p-checkbox .p-checkbox-box .p-checkbox-icon {
-  color: var(--multiselect-dropdown-bg) !important;
-}
-
-/* Botón de limpiar */
-:host ::ng-deep .p-multiselect .p-multiselect-clear-icon {
-  color: #6b7280;
-  margin-right: 0.5rem;
-}
-
-:host ::ng-deep .p-multiselect .p-multiselect-clear-icon:hover {
-  color: #374151;
+  // Header del panel (si existe)
+  .p-multiselect-header {
+    padding: 0.5rem 0.75rem !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    
+    .p-multiselect-close {
+      color: #6b7280 !important;
+      
+      &:hover {
+        color: #374151 !important;
+      }
+    }
+  }
 }

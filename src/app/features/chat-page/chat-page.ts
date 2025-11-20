@@ -86,7 +86,7 @@ export class ChatPage {
       });
   }
 
-  onShowSuggestions(data: { courseId: number; courseName: string }): void {
+  onShowSuggestions(data: { courseId: number; courseName: string } | any): void {
     // Add bot "thinking" message for suggestions
     const thinkingMessage: ChatMessage = {
       text: '',
@@ -96,9 +96,33 @@ export class ChatPage {
     };
     this.messages.update(msgs => [...msgs, thinkingMessage]);
 
+    let resolvedCourseId: number | undefined = undefined;
+    let resolvedCourseName: string | undefined = undefined;
+
+    if (data && typeof data === 'object') {
+      resolvedCourseId = data.courseId;
+      resolvedCourseName = data.courseName;
+    }
+
     this.isSending.set(true);
 
-    this.aiAgentService.getSuggestions({ courseId: data.courseId })
+    if (resolvedCourseId == null) {
+      console.warn('No courseId could be resolved for suggestions request. Aborting.');
+      this.messages.update(msgs => {
+        const filtered = msgs.filter(m => !m.inProgress);
+        const errorMessage: ChatMessage = {
+          text: 'No se pudo identificar el curso seleccionado. Por favor, selecciona un curso e intenta nuevamente.',
+          isBot: true,
+          timestamp: new Date()
+        };
+        return [...filtered, errorMessage];
+      });
+
+      this.isSending.set(false);
+      return;
+    }
+
+    this.aiAgentService.getSuggestions({ courseId: resolvedCourseId })
       .pipe(finalize(() => this.isSending.set(false)))
       .subscribe({
         next: (response) => {
@@ -107,7 +131,7 @@ export class ChatPage {
             const filtered = msgs.filter(m => !m.inProgress);
 
             const suggestionMessage: ChatMessage = {
-              text: this.formatSuggestions(data.courseName, response.analysis, response.pedagogicalSuggestions),
+              text: this.formatSuggestions(resolvedCourseName ?? '', response.analysis, response.pedagogicalSuggestions),
               isBot: true,
               timestamp: new Date()
             };
@@ -116,7 +140,6 @@ export class ChatPage {
         },
         error: (error) => {
           console.error('Error getting suggestions:', error);
-          // Remove thinking message and add error message
           this.messages.update(msgs => {
             const filtered = msgs.filter(m => !m.inProgress);
             const errorMessage: ChatMessage = {

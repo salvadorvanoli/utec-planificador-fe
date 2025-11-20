@@ -1,6 +1,6 @@
 import { Component, OnInit, input, output, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MultiSelect } from 'primeng/multiselect';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 interface Item {
     name: string;
@@ -19,7 +19,7 @@ type Color = 'blue' | 'black';
     templateUrl: './multiselect.html',
     styleUrl: './multiselect.scss',
     standalone: true,
-    imports: [FormsModule, MultiSelect],
+    imports: [FormsModule, MultiSelectModule],
     host: {
         '[style.--multiselect-dropdown-bg]': 'color() === "blue" ? "#00A9E0" : "#000000"'
     }
@@ -78,7 +78,12 @@ export class MultiSelector implements OnInit {
 
     onItemsChange(items: Item[]): void {
         this.selectedItems.set(items);
-        const codes = items.map(item => item.code);
-        this.onSelectionChange.emit(codes);
+        
+        if (items && items.length > 0) {
+            const codes = items.map(item => item.code);
+            this.onSelectionChange.emit(codes);
+        } else {
+            this.onSelectionChange.emit([]);
+        }
     }
 }

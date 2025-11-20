@@ -1,13 +1,16 @@
 <div class="w-full flex-none h-full">
 
-  <app-card-container [maxHeight]="'350px'" [hasCards]="contents().length > 0">
+  <app-card-container [maxHeight]="'162px'" [hasCards]="contents().length > 0">
     @for (content of contents(); track content.id) {
       <app-content-card 
+        [id]="content.id"
         [color]="content.color" 
         [titulo]="content.title" 
         [descripcion]="content.content"
         [isSelected]="selectedContentId() === content.id"
         (click)="selectContent(content)"
+        (onDelete)="handleDelete($event)"
+        (onEdit)="handleEdit($event)"
       ></app-content-card>
     }
   </app-card-container>
@@ -21,8 +24,17 @@
         fontWeight="300"
         fontSize="1rem"
         style="width:100%;"
+        (click)="openModal()"
       ></app-button>
     </div>
   </div>
 
 </div>
+
+<app-add-content
+  [visible]="modalVisible()"
+  (visibleChange)="modalVisible.set($event)"
+  [weeklyPlanningId]="weeklyPlanningId()"
+  [contentId]="editingContentId()"
+  (onContentCreated)="handleContentCreated()"
+></app-add-content>

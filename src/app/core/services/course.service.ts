@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { Course, CourseBasicResponse, CourseRequest, CourseStatistics, PageResponse, PeriodResponse } from '../models';
+import { Course, CourseBasicResponse, CourseRequest, CoursePdfData, CourseStatistics, PageResponse, PeriodResponse, MyCourseSummary } from '../models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -38,6 +38,16 @@ export class CourseService {
    * @param request Course update data
    * @returns Observable with the updated course
    */
+
+/*
+  updateCourse(id: number, request: CourseRequest): Observable<CourseResponse> {
+    console.log(`[CourseService] PUT update course ${id}:`, request);
+    return this.http.put<CourseResponse>(`${this.apiUrl}/${id}`, request).pipe(
+      tap(response => console.log('[CourseService] Response:', response))
+    );
+}
+    */
+
   updateCourse(id: number, request: CourseRequest): Observable<Course> {
     return this.http.put<Course>(`${this.apiUrl}/${id}`, request);
   }
@@ -194,6 +204,30 @@ export class CourseService {
     console.log(`[CourseService] GET course statistics for courseId: ${courseId}`);
     return this.http.get<CourseStatistics>(`${this.apiUrl}/${courseId}/statistics`).pipe(
       tap(response => console.log('[CourseService] Statistics response:', response))
+    );
+  }
+
+  /**
+   * Retrieves the PDF data for a specific course
+   * @param id Course ID
+   * @returns Observable with the course PDF data
+   */
+  getCoursePdfData(id: number): Observable<CoursePdfData> {
+    console.log(`[CourseService] GET course PDF data for ID: ${id}`);
+    return this.http.get<CoursePdfData>(`${this.apiUrl}/${id}/pdf-data`).pipe(
+      tap(response => console.log('[CourseService] PDF data response:', response))
+    );
+  }
+
+  /**
+   * Retrieves the summarized courses for the user by campus
+   * @param campusId Campus ID
+   * @returns Observable with the array of MyCourseSummary
+   */
+  getMyCoursesByCampus(campusId: number): Observable<MyCourseSummary[]> {
+    const url = `${this.apiUrl}/campus/${campusId}/my-courses`;
+    return this.http.get<MyCourseSummary[]>(url).pipe(
+      tap(response => console.log('[CourseService] My courses response:', response))
     );
   }
 }

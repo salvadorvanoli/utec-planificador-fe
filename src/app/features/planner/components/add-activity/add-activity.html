@@ -1,9 +1,10 @@
 <p-dialog
   [visible]="visible()"
   (visibleChange)="visibleChange.emit($event)"
-  modal="true"
+  [modal]="true"
   [header]="isEditMode() ? 'Editar Actividad' : 'Agregar Actividad'"
-  styleClass="w-9/10"
+  [style]="{ width: '90%', 'max-width': '1100px' }"
+  styleClass="add-activity-modal"
   [draggable]="false"
   [resizable]="false"
   appendTo="body"
@@ -20,8 +21,8 @@
     <!-- Objetivo del aprendizaje -->
     <div class="row w-full mt-4">
       <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="in_label_obj" [(ngModel)]="objective" autocomplete="off" class="w-full" />
-        <label for="in_label_obj">Objetivo del aprendizaje</label>
+        <input pInputText id="in_label_desc" [(ngModel)]="description" autocomplete="off" class="w-full" />
+        <label for="in_label_desc">Descripción de la actividad</label>
       </p-floatlabel>
     </div>
 
@@ -30,57 +31,61 @@
       <label class="block text-sm font-medium mb-2">Color de la actividad</label>
       <app-color-picker 
         [selectedColor]="selectedColor()" 
+        [activity]="true"
         (onColorChange)="onColorChange($event)">
       </app-color-picker>
     </div>
 
-    <div class="row mt-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full items-start auto-rows-auto">
-        <div class="select-col">
-          <label class="block text-sm font-medium mb-1">Procesos cognitivos</label>
-          <app-select 
-            [options]="cognitiveProcesses()"
-            (onSelectionChange)="onCognitiveProcessChange($event)">
-          </app-select>
-        </div>
-        <div class="select-col">
-          <label class="block text-sm font-medium mb-1">Competencias trasversales</label>
-          <app-select 
-            [options]="transversalCompetencies()"
-            (onSelectionChange)="onTransversalCompetencyChange($event)">
-          </app-select>
-        </div>
-        <div class="select-col">
-          <label class="block text-sm font-medium mb-1">Estrategias de enseñanza</label>
-          <app-select 
-            [options]="teachingStrategies()"
-            (onSelectionChange)="onTeachingStrategyChange($event)">
-          </app-select>
-        </div>
-        <div class="select-col">
-          <label class="block text-sm font-medium mb-1">Recursos</label>
-          <app-select 
-            [options]="learningResources()"
-            (onSelectionChange)="onLearningResourceChange($event)">
-          </app-select>
-        </div>
-      </div>
-    </div>
+    <!-- Procesos cognitivos -->
     <div class="row w-full mt-4">
-      <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="in_label_desc" [(ngModel)]="description" autocomplete="off" class="w-full" />
-        <label for="in_label_desc">Descripción de la actividad</label>
-      </p-floatlabel>
+      <label class="block text-sm font-medium mb-1">Procesos cognitivos</label>
+      <app-multiselect 
+        [options]="cognitiveProcesses()"
+        [selectedValues]="selectedCognitiveProcesses()"
+        [placeholder]="'Seleccionar procesos'"
+        (onSelectionChange)="selectedCognitiveProcesses.set($event)">
+      </app-multiselect>
     </div>
+
+    <!-- Competencias trasversales -->
+    <div class="row w-full mt-4">
+      <label class="block text-sm font-medium mb-1">Competencias trasversales</label>
+      <app-multiselect 
+        [options]="transversalCompetencies()"
+        [selectedValues]="selectedTransversalCompetencies()"
+        [placeholder]="'Seleccionar competencias'"
+        (onSelectionChange)="selectedTransversalCompetencies.set($event)">
+      </app-multiselect>
+    </div>
+
+    <!-- Estrategias de enseñanza -->
+    <div class="row w-full mt-4">
+      <label class="block text-sm font-medium mb-1">Estrategias de enseñanza</label>
+      <app-multiselect 
+        [options]="teachingStrategies()"
+        [selectedValues]="selectedTeachingStrategies()"
+        [placeholder]="'Seleccionar estrategias'"
+        (onSelectionChange)="selectedTeachingStrategies.set($event)">
+      </app-multiselect>
+    </div>
+
+    <!-- Recursos -->
+    <div class="row w-full mt-4">
+      <label class="block text-sm font-medium mb-1">Recursos</label>
+      <app-multiselect 
+        [options]="learningResources()"
+        [selectedValues]="selectedLearningResources()"
+        [placeholder]="'Seleccionar recursos'"
+        (onSelectionChange)="selectedLearningResources.set($event)">
+      </app-multiselect>
+    </div>
+    
 
     <div class="row mt-4">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full items-start auto-rows-auto">
         <div class="select-col">
           <div class="flex flex-col gap-2">
-            <p-floatlabel variant="in">
-              <input pInputText id="in_label_first_a" [(ngModel)]="link" autocomplete="off" class="w-full" />
-              <label for="in_label_first_a">Link de la actividad</label>
-            </p-floatlabel>
+           
 
             <p-floatlabel variant="in">
               <input pInputText id="in_label_first_b" [(ngModel)]="durationInMinutes" type="number" autocomplete="off" class="w-full" />
@@ -101,32 +106,27 @@
       </div>
     </div>
 
-  
-    <!-- botones -->
+    <!-- Botones -->
     <div class="row mt-4">
-      <div class="flex flex-col sm:flex-row sm:justify-end gap-3 w-full">
-        <div class="w-full sm:w-auto">
-          <app-button
-            label="Aceptar"
-            [color]="'blue'"
-            fontFamily="'UTEC Text Light', Arial, sans-serif"
-            fontWeight="300"
-            fontSize="1.5rem"
-            class="w-full sm:w-auto px-4 py-2"
-            (click)="saveActivity()"
-          ></app-button>
-        </div>
-        <div class="w-full sm:w-auto">
-          <app-button
-            label="Cancelar"
-            [color]="'red'"
-            fontFamily="'UTEC Text Light', Arial, sans-serif"
-            fontWeight="300"
-            fontSize="1.5rem"
-            class="w-full sm:w-auto px-4 py-2"
-            (click)="visibleChange.emit(false)"
-          ></app-button>
-        </div>
+      <div class="flex gap-2 justify-end">
+        <app-button
+          label="Cancelar"
+          [color]="'red'"
+          fontFamily="'UTEC Text Light', Arial, sans-serif"
+          fontWeight="300"
+          fontSize="1rem"
+          (click)="visibleChange.emit(false)"
+          >
+        </app-button>
+        <app-button
+          label="Guardar"
+          [color]="'blue'"
+          fontFamily="'UTEC Text Light', Arial, sans-serif"
+          fontWeight="300"
+          fontSize="1rem"
+          (click)="saveActivity()"
+          >
+        </app-button>
       </div>
     </div>
   </div>
