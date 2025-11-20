@@ -73,7 +73,8 @@ export class FilterPanel implements OnInit {
   readonly selectedTeacherId = signal<number | null>(null);
   readonly isLoadingTeachers = signal<boolean>(false);
 
-  readonly hasActiveFilters = computed(() => this.filterStateService.hasActiveFilters());
+  // Computed: determines if there are non-permanent filters active (for clear button state)
+  readonly hasActiveFilters = computed(() => this.filterStateService.hasActiveNonPermanentFilters());
 
   constructor() {
     // Detect if we're on the student/courses route

@@ -150,11 +150,35 @@ export class FilterStateService {
     console.log('[FilterStateService] All filters (including permanent) cleared');
   }
 
-  hasActiveFilters(): boolean {
-    return this.userIdSignal() !== undefined || 
-      this.campusIdSignal() !== undefined || 
-      this.periodSignal() !== undefined ||
-      this.searchTextSignal() !== undefined;
+  /**
+   * Checks if there are active non-permanent filters.
+   * This is useful for determining if the "Clear filters" button should be enabled.
+   * @returns true if there are non-permanent filters active
+   */
+  hasActiveNonPermanentFilters(): boolean {
+    const permCampus = this.permanentCampusId();
+    const permUser = this.permanentUserId();
+    const currentCampus = this.campusIdSignal();
+    const currentUser = this.userIdSignal();
+    const currentPeriod = this.periodSignal();
+    const currentSearchText = this.searchTextSignal();
+
+    // Check if period or searchText are set (always non-permanent)
+    if (currentPeriod !== undefined || currentSearchText !== undefined) {
+      return true;
+    }
+
+    // Check if campus is set and is NOT a permanent filter
+    if (currentCampus !== undefined && permCampus === undefined) {
+      return true;
+    }
+
+    // Check if user is set and is NOT a permanent filter
+    if (currentUser !== undefined && permUser === undefined) {
+      return true;
+    }
+
+    return false;
   }
 
   hasPermanentFilters(): boolean {
