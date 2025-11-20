@@ -3,7 +3,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
-import { TagsBox } from '../course-info/components/tags-box/tags-box';
+import { TagsBox } from '../tags-box/tags-box';
 import { Course } from '@app/core/models';
 import { EnumResponse } from '@app/core/services';
 
