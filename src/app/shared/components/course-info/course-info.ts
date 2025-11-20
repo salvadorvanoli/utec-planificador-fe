@@ -71,6 +71,14 @@ export class CourseInfo implements OnInit {
     { value: 'false', displayValue: 'No' }
   ]);
 
+  selectedInvestigation = computed(() => 
+    this.courseData()?.isRelatedToInvestigation ? 'true' : 'false'
+  );
+
+  selectedProductiveSector = computed(() => 
+    this.courseData()?.involvesActivitiesWithProductiveSector ? 'true' : 'false'
+  );
+
   // Modales
   showExpandedInfoModal = signal(false);
   showOfficeHoursModal = signal(false);

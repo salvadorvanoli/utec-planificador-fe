@@ -10,11 +10,11 @@ import { ColorPicker } from '../color-picker/color-picker';
 import { EnumService, EnumResponse } from '@app/core/services/enum.service';
 import { ActivityService, ActivityRequest } from '@app/core/services/activity.service';
 import { MessageService } from 'primeng/api';
-import { Multiselect } from '@app/shared/components/multiselect/multiselect';
+import { MultiSelector } from '@app/shared/components/multiselect/multiselect';
 
 @Component({
   selector: 'app-add-activity',
-  imports: [DialogModule, InputTextModule, FormsModule, FloatLabel, Selector, ButtonComponent, CommonModule, ColorPicker, Multiselect],
+  imports: [DialogModule, InputTextModule, FormsModule, FloatLabel, Selector, ButtonComponent, CommonModule, ColorPicker, MultiSelector],
   templateUrl: './add-activity.html',
   styleUrl: './add-activity.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
