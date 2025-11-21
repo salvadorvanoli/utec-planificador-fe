@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { CourseService } from './course.service';
 import html2pdf from 'html2pdf.js';
+import { ReportResponse } from '../models/ai-agent';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,12 @@ export class PdfService {
     try {
       // 1. Obtener los datos del curso
       const pdfData = await this.courseService.getCoursePdfData(courseId).toPromise();
-      
+
       if (!pdfData) {
         throw new Error('No se pudieron obtener los datos del curso');
       }
+
+
 
       // 2. Crear el HTML del PDF
       const htmlContent = this.generateHtmlContent(pdfData);
@@ -33,6 +36,23 @@ export class PdfService {
       await html2pdf().set(options).from(htmlContent).save();
     } catch (error) {
       console.error('Error al generar PDF:', error);
+      throw error;
+    }
+  }
+
+  async generateAiReportPdf(courseId: number, data: ReportResponse): Promise<void> {
+    try {
+      const htmlContent = this.generateReportHtmlContent(data);
+      const options = {
+        margin: 10,
+        filename: `reporte-calidad-curso-${courseId}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+      };
+      await html2pdf().set(options).from(htmlContent).save();
+    } catch (error) {
+      console.error('Error al generar PDF del reporte:', error);
       throw error;
     }
   }
@@ -140,6 +160,118 @@ export class PdfService {
     `;
   }
 
+
+
+  private generateReportHtmlContent(response: ReportResponse): string {
+    const r = response.report;
+    const fmtDate = this.formatDate(r.analysisDate);
+    const sectionTitle = (t: string) => `
+      <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px;">${t}</h3>
+    `;
+
+    return `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h1 style="color: #00A9E0; margin-bottom: 6px;">UTEC</h1>
+          <h2 style="color: #666; font-size: 18px;">Reporte de Calidad del Curso</h2>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          ${sectionTitle('Resumen General')}
+          <table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
+            <tr>
+              <td style="padding: 8px; font-weight: bold; width: 40%;">Curso:</td>
+              <td style="padding: 8px;">${r.courseId}</td>
+            </tr>
+            <tr style="background-color: #f5f5f5;">
+              <td style="padding: 8px; font-weight: bold;">Fecha de análisis:</td>
+              <td style="padding: 8px;">${fmtDate}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; font-weight: bold;">Calificación global:</td>
+              <td style="padding: 8px;">${response.overallRating || r.overallRating}</td>
+            </tr>
+            <tr style="background-color: #f5f5f5;">
+              <td style="padding: 8px; font-weight: bold;">Puntaje:</td>
+              <td style="padding: 8px;">${r.score}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; font-weight: bold;">Mensaje:</td>
+              <td style="padding: 8px;">${r.message}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          ${sectionTitle('Resumen Ejecutivo')}
+          <table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
+            <tr>
+              <td style="padding: 8px; font-weight: bold; width: 40%;">Semanas totales:</td>
+              <td style="padding: 8px;">${r.executiveSummary.totalWeeks}</td>
+            </tr>
+            <tr style="background-color: #f5f5f5;">
+              <td style="padding: 8px; font-weight: bold;">Horas totales:</td>
+              <td style="padding: 8px;">${r.executiveSummary.totalHours}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; font-weight: bold;">Horas presenciales:</td>
+              <td style="padding: 8px;">${r.executiveSummary.inPersonHours}</td>
+            </tr>
+            <tr style="background-color: #f5f5f5;">
+              <td style="padding: 8px; font-weight: bold;">Horas virtuales:</td>
+              <td style="padding: 8px;">${r.executiveSummary.virtualHours}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; font-weight: bold;">Horas híbridas:</td>
+              <td style="padding: 8px;">${r.executiveSummary.hybridHours}</td>
+            </tr>
+            <tr style="background-color: #f5f5f5;">
+              <td style="padding: 8px; font-weight: bold;">Duración promedio de actividad:</td>
+              <td style="padding: 8px;">${r.executiveSummary.averageActivityDuration}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; font-weight: bold;">Total de actividades analizadas:</td>
+              <td style="padding: 8px;">${r.executiveSummary.totalActivitiesAnalyzed}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          ${sectionTitle('Análisis Detallado')}
+          <div style="margin-top: 8px;">
+            <p style="margin: 6px 0;"><strong>Procesos cognitivos:</strong> ${r.detailedAnalysis.cognitiveProcesses}</p>
+            <p style="margin: 6px 0;"><strong>Competencias transversales:</strong> ${r.detailedAnalysis.transversalCompetencies}</p>
+            <p style="margin: 6px 0;"><strong>Balance de modalidades:</strong> ${r.detailedAnalysis.modalityBalance}</p>
+            <p style="margin: 6px 0;"><strong>Estrategias didácticas:</strong> ${r.detailedAnalysis.teachingStrategies}</p>
+            <p style="margin: 6px 0;"><strong>Recursos:</strong> ${r.detailedAnalysis.resources}</p>
+            <p style="margin: 6px 0;"><strong>Vinculación con ODS:</strong> ${r.detailedAnalysis.sdgLinkage}</p>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          ${sectionTitle('Fortalezas')}
+          <ul style="list-style: disc; padding-left: 20px; margin-top: 8px;">
+            ${r.strengths.map(s => `<li style=\"margin: 4px 0;\">${s}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          ${sectionTitle('Áreas de mejora')}
+          <ul style="list-style: disc; padding-left: 20px; margin-top: 8px;">
+            ${r.improvementAreas.map(s => `<li style=\"margin: 4px 0;\">${s}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          ${sectionTitle('Recomendaciones')}
+          <ul style="list-style: disc; padding-left: 20px; margin-top: 8px;">
+            ${response.recommendations.map(s => `<li style=\"margin: 4px 0;\">${s}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+    `;
+  }
+
   private formatShift(shift: string): string {
     const shifts: Record<string, string> = {
       'MORNING': 'Mañana',
@@ -152,10 +284,10 @@ export class PdfService {
   private formatDate(date: string): string {
     if (!date) return 'N/A';
     const d = new Date(date);
-    return d.toLocaleDateString('es-UY', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return d.toLocaleDateString('es-UY', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   }
 

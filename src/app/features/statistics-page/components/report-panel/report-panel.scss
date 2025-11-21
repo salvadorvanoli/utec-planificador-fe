@@ -4,12 +4,14 @@
 
 app-color-block {
   height: auto !important;
-  
+  padding: 1rem; /* espaciado interno para que en móvil no quede pegado */
+
   ::ng-deep .color-container {
     height: auto !important;
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     overflow: hidden;
+    padding: 1rem;
   }
 }
 
@@ -19,7 +21,6 @@ app-color-block {
   font-weight: 600;
   font-size: 2.5rem;
   text-align: left;
-  width: 100%;
 }
 
 .edu-bot-subtitle {
@@ -28,19 +29,65 @@ app-color-block {
   font-weight: 300;
   font-size: 2rem;
   text-align: left;
-  width: 100%;
 }
 
- 
- 
+
+
 :host ::ng-deep app-button {
-  height: 48px;  
+  height: 48px;
   display: block;
 }
 
- 
+
 :host ::ng-deep app-button .p-button {
   height: 48px !important;
   display: flex;
   align-items: center;
+}
+
+/* Responsive tweaks: centrar contenido en pantallas pequeñas y añadir margen inferior al botón */
+@media (max-width: 1220px) {
+  :host {
+    text-align: center;
+  }
+
+  .edu-bot-title,
+  .edu-bot-subtitle {
+    text-align: center;
+  }
+
+  /* Forzar que el layout use una sola columna hasta 1220px para evitar solapamientos */
+  :host ::ng-deep .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Forzar que el control y el estado estén en columna y que el estado quede debajo del botón */
+  :host ::ng-deep .controls-wrapper {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  :host ::ng-deep .report-status {
+    width: auto !important;
+    margin-top: 0.5rem !important;
+    justify-content: center !important;
+  }
+
+  :host ::ng-deep app-button {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 1rem !important; /* margen inferior adicional en móvil */
+  }
+
+  /* Ajustes de tamaño de texto para rangos menores a 1220px */
+  .edu-bot-title {
+    font-size: 2.2rem;
+  }
+  .edu-bot-subtitle {
+    font-size: 1.6rem; /* no tan pequeño */
+  }
+
+  :host ::ng-deep .color-container {
+    padding: 1rem 1rem !important;
+  }
 }

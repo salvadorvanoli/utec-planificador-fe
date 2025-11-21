@@ -1,2 +1,4 @@
 <p-button [label]="label()"
-(onClick)="onClick.emit($event)" />
+          [disabled]="disabled()"
+          [style.width]="width() || null"
+          (onClick)="onClick.emit($event)" />

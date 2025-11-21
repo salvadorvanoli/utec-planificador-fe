@@ -137,9 +137,14 @@ export class DropDown {
   private updateBreadcrumbFromRoute(url: string): void {
     const [cleanUrl] = url.split('?');
 
-    let config = this.routeToBreadcrumb.find((config) => config.route === cleanUrl);
+    // Normalize trailing slashes
+    const normalizedUrl = cleanUrl.endsWith('/') && cleanUrl.length > 1 ? cleanUrl.slice(0, -1) : cleanUrl;
 
-    if (cleanUrl === '/option-page') {
+    // Find a config that either equals the normalized url or is a prefix (for nested routes)
+    let config = this.routeToBreadcrumb.find((config) => normalizedUrl === config.route || normalizedUrl.startsWith(config.route + '/'));
+
+    // Special handling for option-page since it depends on context
+    if (normalizedUrl.startsWith('/option-page')) {
       const context = this.positionService.selectedContext();
 
       if (context?.campus && context?.itr) {
@@ -148,6 +153,17 @@ export class DropDown {
         config = { route: '/option-page', breadcrumb: ['home', 'menu', 'itr'] };
       } else {
         config = { route: '/option-page', breadcrumb: ['home', 'menu'] };
+      }
+    }
+
+    // If we didn't find a config yet, try to map some common nested routes to broader configs
+    if (!config) {
+      if (normalizedUrl.startsWith('/planner')) {
+        config = { route: '/planner', breadcrumb: ['home', 'menu', 'catalog', 'planner'] };
+      } else if (normalizedUrl.startsWith('/statistics-page')) {
+        config = { route: '/statistics-page', breadcrumb: ['home', 'menu', 'catalog', 'statistics'] };
+      } else if (normalizedUrl.startsWith('/course-catalog')) {
+        config = { route: '/course-catalog', breadcrumb: ['home', 'menu', 'catalog'] };
       }
     }
 
@@ -213,9 +229,13 @@ export class DropDown {
             itrId: contextParams.itrId,
             campusId: contextParams.campusId
           });
+          // Si el target es el catálogo, preservar el mode según la página actual
+          const currentPath = this.router.url.split('?')[0];
+          const modeFromCurrent = currentPath.startsWith('/planner') ? 'planner' : currentPath.startsWith('/statistics-page') ? 'statistics' : undefined;
           const mergedParams = {
             ...routeConfig.queryParams,
-            ...encodedParams
+            ...encodedParams,
+            ...(routeConfig.path === '/course-catalog' && modeFromCurrent ? { mode: modeFromCurrent } : {})
           };
           this.router.navigate([routeConfig.path], { queryParams: mergedParams });
           return;
@@ -223,7 +243,16 @@ export class DropDown {
       }
 
       if (routeConfig.queryParams) {
-        this.router.navigate([routeConfig.path], { queryParams: routeConfig.queryParams });
+        // Si vamos al catálogo, decidir el `mode` según la página actual para preservar contexto de 'planner' o 'statistics'
+        const targetIsCatalog = routeConfig.path === '/course-catalog';
+        if (targetIsCatalog) {
+          const currentPath = this.router.url.split('?')[0];
+          const modeFromCurrent = currentPath.startsWith('/planner') ? 'planner' : currentPath.startsWith('/statistics-page') ? 'statistics' : routeConfig.queryParams?.mode;
+          const mergedQuery = { ...(routeConfig.queryParams || {}), ...(modeFromCurrent ? { mode: modeFromCurrent } : {}) };
+          this.router.navigate([routeConfig.path], { queryParams: mergedQuery });
+        } else {
+          this.router.navigate([routeConfig.path], { queryParams: routeConfig.queryParams });
+        }
       } else {
         this.router.navigate([routeConfig.path]);
       }
@@ -238,4 +267,3 @@ export class DropDown {
     this.isDropdownOpen.set(isOpen);
   }
 }
-

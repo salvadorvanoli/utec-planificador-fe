@@ -15,7 +15,7 @@ type Color = 'blue' | 'black' | 'red' | 'white';
     '[style.--button-font-family]': 'fontFamily()',
     '[style.--button-font-weight]': 'fontWeight()',
     '[style.--button-font-size]': 'fontSize()',
-    '[style.--button-text-color]': 'textColor()'  
+    '[style.--button-text-color]': 'textColor()'
   }
 })
 export class ButtonComponent {
@@ -24,8 +24,10 @@ export class ButtonComponent {
   readonly fontFamily = input<string>('inherit');
   readonly fontWeight = input<string | number>('400');
   readonly fontSize = input<string>('1rem');
-  readonly onClick = output<MouseEvent>();;
+  readonly onClick = output<MouseEvent>();
   readonly textColor = input<string>('#FFFFFF');
+  readonly disabled = input<boolean>(false);
+  readonly width = input<string | null>(null);
 
   readonly buttonBgColor = computed(() => {
     switch (this.color()) {
@@ -34,7 +36,7 @@ export class ButtonComponent {
       case 'red':
         return '#E61610';
       case 'white':
-        return '#FFFFFF'; 
+        return '#FFFFFF';
       case 'black':
       default:
         return '#000000';
@@ -46,12 +48,12 @@ export class ButtonComponent {
       case 'blue':
         return '#0090b8';
       case 'red':
-        return '#c50e0a'; 
+        return '#c50e0a';
       case 'white':
-        return '#f3f4f6'; 
+        return '#f3f4f6';
       case 'black':
       default:
-        return '#333333'; 
+        return '#333333';
     }
   });
 }
