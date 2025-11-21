@@ -10,6 +10,11 @@
       <app-chat-header
         (showSuggestions)="onShowSuggestions($event)"
       ></app-chat-header>
+
+      <div class="chat-save-note mt-3 mb-4 text-sm text-gray-300 text-center md:text-left">
+        Las conversaciones se guardan durante 20 minutos desde tu último mensaje; si permanecen inactivas más tiempo, se eliminarán.
+      </div>
+
       <app-chat-body
         [messages]="messages()"
       ></app-chat-body>

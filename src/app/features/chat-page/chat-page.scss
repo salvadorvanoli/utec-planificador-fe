@@ -51,3 +51,30 @@
     border-radius: 20px !important;
   }
 }
+
+:host ::ng-deep .chat-save-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  max-width: 980px;
+  margin: 0.75rem auto;
+  font-size: 0.95rem;
+  line-height: 1.2;
+
+  @media (min-width: 768px) {
+    justify-content: flex-start;
+    text-align: left;
+    margin-left: 1.25rem;
+    margin-right: 1.25rem;
+  }
+}
+
+:host ::ng-deep .chat-page-color-block > .chat-save-note-accent {
+  border-top: 3px solid #00A9E0;
+}
