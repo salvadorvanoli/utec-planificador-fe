@@ -273,15 +273,33 @@ describe('CourseService', () => {
     });
   });
 
-  describe('getPeriodsByCampus', () => {
+  describe('getPeriods', () => {
+    it('should send GET request without parameters when no filters provided', (done) => {
+      const mockPeriods: PeriodResponse[] = [
+        { period: '2025-1S' },
+        { period: '2025-2S' }
+      ];
+
+      service.getPeriods().subscribe({
+        next: (response) => {
+          expect(response).toEqual(mockPeriods);
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/periods`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockPeriods);
+    });
+
     it('should send GET request with campusId parameter', (done) => {
       const campusId = 1;
       const mockPeriods: PeriodResponse[] = [
-        { period: '2025-1' },
-        { period: '2025-2' }
+        { period: '2025-1S' },
+        { period: '2025-2S' }
       ];
 
-      service.getPeriodsByCampus(campusId).subscribe({
+      service.getPeriods(campusId).subscribe({
         next: (response) => {
           expect(response).toEqual(mockPeriods);
           done();
@@ -290,7 +308,25 @@ describe('CourseService', () => {
 
       const req = httpMock.expectOne(`${apiUrl}/periods?campusId=${campusId}`);
       expect(req.request.method).toBe('GET');
-      expect(req.request.withCredentials).toBe(true);
+      req.flush(mockPeriods);
+    });
+
+    it('should send GET request with both campusId and userId parameters', (done) => {
+      const campusId = 1;
+      const userId = 5;
+      const mockPeriods: PeriodResponse[] = [
+        { period: '2025-1S' }
+      ];
+
+      service.getPeriods(campusId, userId).subscribe({
+        next: (response) => {
+          expect(response).toEqual(mockPeriods);
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/periods?campusId=${campusId}&userId=${userId}`);
+      expect(req.request.method).toBe('GET');
       req.flush(mockPeriods);
     });
   });

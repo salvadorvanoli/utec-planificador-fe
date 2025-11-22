@@ -11,11 +11,15 @@ export class CampusService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/campuses`;
 
-  getCampuses(userId?: number): Observable<Campus[]> {
+  getCampuses(userId?: number, period?: string): Observable<Campus[]> {
     let params = new HttpParams();
     
     if (userId !== undefined && userId !== null) {
       params = params.set('userId', userId.toString());
+    }
+
+    if (period !== undefined && period !== null && period.trim() !== '') {
+      params = params.set('period', period.trim());
     }
 
     return this.http.get<Campus[]>(this.apiUrl, { params });

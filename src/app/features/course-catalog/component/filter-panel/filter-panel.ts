@@ -2,13 +2,15 @@ import { ChangeDetectionStrategy, effect, Component, signal, input, inject, OnIn
 import { ColorBlock } from '@app/shared/components/color-block/color-block';
 import { Selector, EnumOption } from '@app/shared/components/select/select'
 import { ButtonComponent } from '@app/shared/components/button/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { FormsModule } from '@angular/forms';
 import { PositionService, CampusService, UserService, CourseService, FilterStateService, AuthService } from '@app/core/services';
 import { PeriodResponse, Campus, UserBasicResponse } from '@app/core/models';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-filter-panel',
-  imports: [ColorBlock, Selector, ButtonComponent],
+  imports: [ColorBlock, Selector, ButtonComponent, CheckboxModule, FormsModule],
   templateUrl: './filter-panel.html',
   styleUrl: './filter-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -73,6 +75,17 @@ export class FilterPanel implements OnInit {
   readonly selectedTeacherId = signal<number | null>(null);
   readonly isLoadingTeachers = signal<boolean>(false);
 
+  // Signals for authenticated user filter
+  readonly showMyCoursesOnly = signal<boolean>(false);
+  readonly authenticatedUserId = signal<number | null>(null);
+
+  // Computed: determines if checkbox should be visible (only in statistics mode when authenticated)
+  readonly shouldShowMyCoursesCheckbox = computed(() => {
+    return this.mode() === 'statistics' && 
+           this.authService.isAuthenticated() && 
+           this.docente();
+  });
+
   // Computed: determines if there are non-permanent filters active (for clear button state)
   readonly hasActiveFilters = computed(() => this.filterStateService.hasActiveNonPermanentFilters());
 
@@ -95,26 +108,54 @@ export class FilterPanel implements OnInit {
       this.docenteState.set(this.docente());
     });
 
+    // Effect para cargar períodos universales al inicializar
     effect(() => {
       const context = this.positionService.selectedContext();
-      if (context?.campus && this.docente()) {
-        this.loadPeriods(context.campus.id);
+      const isDocente = this.docente();
+      
+      if (isDocente && context?.campus) {
+        // Para docentes autenticados: cargar períodos del campus
+        const userId = this.showMyCoursesOnly() ? this.authenticatedUserId() : null;
+        this.loadPeriods(context.campus.id, userId);
+      } else if (!isDocente) {
+        // Para usuarios no autenticados: cargar todos los períodos (sin parámetros)
+        this.loadPeriods();
       } else {
         this.periods.set([]);
         this.periodsOptions.set([]);
       }
     });
 
+    // Effect para actualizar teachers cuando cambia campus o período
     effect(() => {
       const campusId = this.selectedCampusId();
+      const period = this.selectedPeriod();
+      
       if (!this.docente() && campusId !== null) {
-        this.loadTeachers(campusId);
+        this.loadTeachers(campusId, period);
+      }
+    }, { allowSignalWrites: true });
+
+    // Effect para actualizar campuses cuando cambia teacher o período
+    effect(() => {
+      const teacherId = this.selectedTeacherId();
+      const period = this.selectedPeriod();
+      
+      if (!this.docente() && teacherId !== null) {
+        this.loadCampuses(teacherId, period);
       }
     }, { allowSignalWrites: true });
   }
 
   ngOnInit(): void {
     const context = this.positionService.selectedContext();
+    
+    // Set authenticated user ID from position service
+    const userPositions = this.positionService.userPositions();
+    if (userPositions?.userId) {
+      this.authenticatedUserId.set(userPositions.userId);
+      console.log('[FilterPanel] Authenticated user ID set:', userPositions.userId);
+    }
     
     // Check if there are permanent filters to set initial values
     const permanentFilters = this.filterStateService.permanentFilters();
@@ -131,20 +172,24 @@ export class FilterPanel implements OnInit {
       console.log('[FilterPanel] Initial permanent teacher filter set:', permanentFilters.userId);
     }
     
+    // Load periods based on context
     if (context?.campus && this.docente()) {
       this.loadPeriods(context.campus.id);
+    } else if (!this.docente()) {
+      this.loadPeriods(); // Sin parámetros = todos los períodos
     }
 
+    // Load initial campuses and teachers for non-authenticated users
     if (!this.docente()) {
       this.loadCampuses();
       this.loadTeachers();
     }
   }
 
-  private loadPeriods(campusId: number): void {
+  private loadPeriods(campusId?: number, userId?: number | null): void {
     this.isLoadingPeriods.set(true);
     
-    this.courseService.getPeriodsByCampus(campusId).subscribe({
+    this.courseService.getPeriods(campusId, userId ?? undefined).subscribe({
       next: (periods) => {
         this.periods.set(periods);
         this.periodsOptions.set(
@@ -168,12 +213,31 @@ export class FilterPanel implements OnInit {
     this.selectedPeriod.set(period);
     this.filterStateService.setPeriod(period);
     console.log('Period selected:', period);
+    
+    // Cuando cambia el período, actualizar los demás filtros si no es docente
+    if (!this.docente()) {
+      // Recargar campuses con el nuevo período si hay un teacher seleccionado
+      const teacherId = this.selectedTeacherId();
+      if (teacherId) {
+        this.loadCampuses(teacherId, period);
+      } else {
+        this.loadCampuses(undefined, period);
+      }
+      
+      // Recargar teachers con el nuevo período si hay un campus seleccionado
+      const campusId = this.selectedCampusId();
+      if (campusId) {
+        this.loadTeachers(campusId, period);
+      } else {
+        this.loadTeachers(undefined, period);
+      }
+    }
   }
 
-  private loadCampuses(teacherId?: number): void {
+  private loadCampuses(teacherId?: number, period?: string | null): void {
     this.isLoadingCampuses.set(true);
     
-    this.campusService.getCampuses(teacherId).subscribe({
+    this.campusService.getCampuses(teacherId, period ?? undefined).subscribe({
       next: (campuses) => {
         this.campuses.set(campuses);
         this.campusOptions.set(
@@ -193,10 +257,10 @@ export class FilterPanel implements OnInit {
     });
   }
 
-  private loadTeachers(campusId?: number): void {
+  private loadTeachers(campusId?: number, period?: string | null): void {
     this.isLoadingTeachers.set(true);
     
-    this.userService.getTeachers(campusId).subscribe({
+    this.userService.getTeachers(campusId, period ?? undefined).subscribe({
       next: (teachers) => {
         this.teachers.set(teachers);
         this.teacherOptions.set(
@@ -229,7 +293,9 @@ export class FilterPanel implements OnInit {
     this.filterStateService.setCampusId(id);
     console.log('Campus selected:', id);
     
-    this.loadTeachers(id);
+    // Reload teachers with current period filter
+    const period = this.selectedPeriod();
+    this.loadTeachers(id, period);
   }
 
   onTeacherChange(teacherId: string): void {
@@ -245,7 +311,40 @@ export class FilterPanel implements OnInit {
     this.filterStateService.setUserId(id);
     console.log('Teacher selected:', id);
     
-    this.loadCampuses(id);
+    // Reload campuses with current period filter
+    const period = this.selectedPeriod();
+    this.loadCampuses(id, period);
+  }
+
+  onMyCoursesCheckboxChange(checked: boolean): void {
+    this.showMyCoursesOnly.set(checked);
+    
+    // Update filter state service with userId filter
+    if (checked && this.authenticatedUserId()) {
+      this.filterStateService.setUserId(this.authenticatedUserId()!);
+      console.log('[FilterPanel] Filtering by authenticated user:', this.authenticatedUserId());
+    } else {
+      // Clear userId filter if unchecked
+      const permanentUserId = this.filterStateService.permanentFilters().userId;
+      if (permanentUserId) {
+        // Restore permanent userId if exists
+        this.filterStateService.setUserId(permanentUserId);
+      } else {
+        this.filterStateService.setUserId(undefined);
+      }
+      console.log('[FilterPanel] Removed authenticated user filter');
+    }
+    
+    // Reload periods with updated filter
+    const context = this.positionService.selectedContext();
+    if (context?.campus) {
+      const userId = checked ? this.authenticatedUserId() : null;
+      this.loadPeriods(context.campus.id, userId);
+    }
+    
+    // Clear period selection when toggling
+    this.selectedPeriod.set(null);
+    this.filterStateService.setPeriod(undefined);
   }
 
   clearFilters(): void {
@@ -254,6 +353,9 @@ export class FilterPanel implements OnInit {
     
     // Reset period selection (never permanent)
     this.selectedPeriod.set(null);
+    
+    // Reset my courses checkbox
+    this.showMyCoursesOnly.set(false);
     
     // For non-permanent filters, reset selections
     if (!this.isCampusPermanent()) {
@@ -278,13 +380,16 @@ export class FilterPanel implements OnInit {
     
     // Reload options for non-permanent filters
     if (this.docente()) {
-      // Para docente: recargar todos los periodos
+      // Para docente: recargar todos los periodos sin filtro de usuario
       const context = this.positionService.selectedContext();
       if (context?.campus) {
-        this.loadPeriods(context.campus.id);
+        this.loadPeriods(context.campus.id, null);
       }
     } else {
-      // Para alumno: recargar opciones solo si no son permanentes
+      // Para usuario no autenticado: recargar períodos y filtros
+      this.loadPeriods(); // Sin parámetros = todos los períodos
+      
+      // Recargar opciones solo si no son permanentes
       if (!this.isCampusPermanent()) {
         this.loadCampuses();
       }

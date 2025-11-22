@@ -2,16 +2,20 @@
     <app-color-block [color]="docente() ? 'blue' : 'blue'">
         <div class="flex flex-col gap-5 w-full items-center justify-center pl-2.5 p-5">
             @if (docente()) {
-                <!-- Vista docente: muestra Periodo -->
-                <div class="flex w-full h-[36px]">
-                    <app-select 
-                        class="flex-1" 
-                        [placeholder]="'Periodo'"
-                        [options]="periodsOptions()"
-                        [selectedValue]="selectedPeriod() || ''"
-                        (onSelectionChange)="onPeriodChange($event)">
-                    </app-select>
-                </div>
+                <!-- Checkbox para mostrar solo mis cursos (solo en statistics mode) -->
+                @if (shouldShowMyCoursesCheckbox()) {
+                    <div class="flex items-center gap-2 w-full">
+                        <p-checkbox 
+                            [ngModel]="showMyCoursesOnly()"
+                            [binary]="true"
+                            inputId="myCoursesCheckbox"
+                            (onChange)="onMyCoursesCheckboxChange($event.checked)">
+                        </p-checkbox>
+                        <label for="myCoursesCheckbox" class="text-sm text-white cursor-pointer">
+                            Mostrar solo mis cursos
+                        </label>
+                    </div>
+                }
             } @else {
                 <!-- Vista alumno: muestra Sede y Docente -->
                 <div class="flex w-full h-[36px]">
@@ -35,6 +39,17 @@
                     </app-select>
                 </div>
             }
+
+            <!-- Vista general: muestra Periodo -->
+            <div class="flex w-full h-[36px]">
+                <app-select 
+                    class="flex-1" 
+                    [placeholder]="'Periodo'"
+                    [options]="periodsOptions()"
+                    [selectedValue]="selectedPeriod() || ''"
+                    (onSelectionChange)="onPeriodChange($event)">
+                </app-select>
+            </div>
             
             <!-- Clear filters button - always visible, disabled when no filters active -->
             <div class="flex w-full h-[36px]">

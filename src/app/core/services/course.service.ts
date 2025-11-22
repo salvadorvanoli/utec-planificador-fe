@@ -151,13 +151,25 @@ export class CourseService {
     );
   }
 
-  getPeriodsByCampus(campusId: number): Observable<PeriodResponse[]> {
-    const params = new HttpParams().set('campusId', campusId.toString());
+  /**
+   * Gets all unique academic periods with optional filters
+   * If no filters are provided, returns all periods in the system
+   * @param campusId Optional campus ID to filter periods
+   * @param userId Optional user ID to filter periods by teacher
+   * @returns Observable with the list of periods
+   */
+  getPeriods(campusId?: number, userId?: number): Observable<PeriodResponse[]> {
+    let params = new HttpParams();
+    
+    if (campusId !== undefined && campusId !== null) {
+      params = params.set('campusId', campusId.toString());
+    }
+    
+    if (userId !== undefined && userId !== null) {
+      params = params.set('userId', userId.toString());
+    }
 
-    return this.http.get<PeriodResponse[]>(`${this.apiUrl}/periods`, {
-      params,
-      withCredentials: true
-    });
+    return this.http.get<PeriodResponse[]>(`${this.apiUrl}/periods`, { params });
   }
 
   getCourses(
