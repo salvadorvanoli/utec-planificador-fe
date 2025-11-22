@@ -9,6 +9,15 @@ import { buildContextQueryParams } from '@app/shared/utils/context-encoder';
 
 type SelectionStep = 'itr' | 'campus' | 'main-menu';
 
+interface MenuCard {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+  action: string;
+  requiredRoles: Role[];
+}
+
 @Component({
   selector: 'app-option-panel',
   imports: [OptionCardComponent, Skeleton],
@@ -22,17 +31,65 @@ export class OptionPanel {
   private readonly router = inject(Router);
   readonly positionService = inject(PositionService);
 
-  readonly hasTeacherRole = computed(() =>
-    this.positionService.availableRoles().includes(Role.TEACHER)
-  );
+  // Definición de todas las tarjetas posibles con sus roles requeridos
+  private readonly allMenuCards: MenuCard[] = [
+    {
+      id: 'planificador',
+      icon: 'pi pi-calendar',
+      title: 'Planificador',
+      description: 'Organiza y gestiona tus planificaciones',
+      action: 'planificador',
+      requiredRoles: [Role.TEACHER]
+    },
+    {
+      id: 'panel-estadistico',
+      icon: 'pi pi-chart-bar',
+      title: 'Panel Estadístico',
+      description: 'Visualiza métricas y análisis de datos',
+      action: 'estadistico',
+      requiredRoles: [Role.TEACHER, Role.COORDINATOR, Role.EDUCATION_MANAGER]
+    },
+    {
+      id: 'edubot',
+      icon: 'pi pi-comments',
+      title: 'EduBot',
+      description: 'Chatea para asistencia académica',
+      action: 'chat',
+      requiredRoles: [Role.TEACHER]
+    },
+    {
+      id: 'asignar-cursos',
+      icon: 'pi pi-users',
+      title: 'Asignar Cursos',
+      description: 'Asigna docentes a los cursos',
+      action: 'asignar-cursos',
+      requiredRoles: [Role.COORDINATOR, Role.ANALYST]
+    },
+    {
+      id: 'info-cursos',
+      icon: 'pi pi-book',
+      title: 'Información de Cursos',
+      description: 'Consulta información sobre los cursos',
+      action: 'info-cursos',
+      requiredRoles: [Role.COORDINATOR, Role.EDUCATION_MANAGER]
+    }
+  ];
 
-  readonly hasCoordinatorRole = computed(() =>
-    this.positionService.availableRoles().includes(Role.COORDINATOR)
-  );
+  // Computed que genera la lista única de tarjetas basada en los roles del usuario
+  readonly availableMenuCards = computed(() => {
+    const userRoles = this.positionService.availableRoles();
+    const uniqueCards = new Map<string, MenuCard>();
 
-  readonly hasAnalystRole = computed(() =>
-    this.positionService.availableRoles().includes(Role.ANALYST)
-  );
+    // Filtrar tarjetas que el usuario puede ver según sus roles
+    this.allMenuCards.forEach(card => {
+      const hasRequiredRole = card.requiredRoles.some(role => userRoles.includes(role));
+      if (hasRequiredRole && !uniqueCards.has(card.id)) {
+        uniqueCards.set(card.id, card);
+      }
+    });
+
+    return Array.from(uniqueCards.values());
+  });
 
   handleITRSelection(itr: RegionalTechnologicalInstitute): void {
     this.positionService.selectITR(itr);

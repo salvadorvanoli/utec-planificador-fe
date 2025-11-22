@@ -99,55 +99,16 @@
               </div>
             }
           } @else {
-          @if (hasTeacherRole()) {
-            <app-option-card
-              icon="pi pi-calendar"
-              title="Planificador"
-              description="Organiza y gestiona tus planificaciones"
-              (click)="handleButtonClick('planificador')"
-            ></app-option-card>
-
-            <app-option-card
-              icon="pi pi-chart-bar"
-              title="Panel Estadístico"
-              description="Visualiza métricas y análisis de datos"
-              (click)="handleButtonClick('estadistico')"
-            ></app-option-card>
-
-            <app-option-card
-              icon="pi pi-comments"
-              title="EduBot"
-              description="Chatea para asistencia académica"
-              (click)="handleButtonClick('chat')"
-            ></app-option-card>
+            @for (card of availableMenuCards(); track card.id) {
+              <app-option-card
+                [icon]="card.icon"
+                [title]="card.title"
+                [description]="card.description"
+                (click)="handleButtonClick(card.action)"
+              ></app-option-card>
+            }
           }
-
-          @if (hasCoordinatorRole()) {
-            <app-option-card
-              icon="pi pi-users"
-              title="Asignar Cursos"
-              description="Asigna docentes a los cursos"
-              (click)="handleButtonClick('asignar-cursos')"
-            ></app-option-card>
-
-            <app-option-card
-              icon="pi pi-chart-bar"
-              title="Panel Estadístico"
-              description="Visualiza métricas y análisis de datos"
-              (click)="handleButtonClick('estadistico')"
-            ></app-option-card>
-          }
-
-          @if (hasAnalystRole()) {
-            <app-option-card
-              icon="pi pi-book"
-              title="Información de Cursos"
-              description="Consulta información sobre los cursos"
-              (click)="handleButtonClick('info-cursos')"
-            ></app-option-card>
-          }
-        }
-      </div>
+        </div>
       </div>
     }
   </div>
