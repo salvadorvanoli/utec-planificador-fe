@@ -2,6 +2,59 @@
 
 Sistema de planificación académica desarrollado para la Universidad Tecnológica del Uruguay (UTEC). Esta aplicación web permite a los estudiantes gestionar sus horarios, tareas y planificación académica de manera eficiente e intuitiva.
 
+## Inicio Rápido
+
+### Opción 1: Docker (Recomendado)
+
+```powershell
+# Iniciar frontend (NGINX + Angular)
+.\scripts\start.ps1
+
+# Ver estado
+.\scripts\status.ps1
+
+# Ver logs
+.\scripts\logs.ps1
+
+# Detener
+.\scripts\stop.ps1
+```
+
+**URL disponible:**
+- Frontend: http://localhost:4200
+
+**IMPORTANTE:** El frontend requiere que el backend esté corriendo en http://localhost:8080/api
+
+### Opción 2: Desarrollo Local
+
+**Requisitos:**
+- Node.js 22 LTS
+- npm
+
+```bash
+# Instalar dependencias
+npm install
+
+# Servidor de desarrollo
+ng serve
+
+# Build de producción
+ng build
+```
+
+## Requisitos
+
+- **Docker Desktop** (para opción 1)
+- **Node.js 22 LTS** y **npm** (para opción 2)
+- **PowerShell** (incluido en Windows, instalable en Linux/macOS)
+- **Backend corriendo** en http://localhost:8080/api
+
+## Configuración
+
+La URL del backend se configura en:
+- `src/environments/environment.ts` - Desarrollo
+- Variables de entorno Docker (modo producción)
+
 ## Propósito del Proyecto
 
 El **UTEC Planificador** es una herramienta integral diseñada para optimizar la experiencia académica de los estudiantes universitarios, proporcionando funcionalidades para:

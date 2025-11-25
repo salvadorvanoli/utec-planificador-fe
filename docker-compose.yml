@@ -1,0 +1,27 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    container_name: utec-planificador-frontend
+    restart: unless-stopped
+    
+    labels:
+      - "com.utec.project=planificador-docente"
+      - "com.utec.component=frontend"
+      - "com.utec.environment=development"
+      - "com.utec.framework=angular"
+    
+    ports:
+      - "4200:80"
+    
+    environment:
+      - NODE_ENV=production
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
