@@ -1,71 +1,75 @@
 <div class="bibliography-container">
-  <div class="flex justify-between items-center mb-4">
-    <h3 class="text-lg font-semibold">Bibliografía</h3>
-    @if (!isAdding()) {
-      <button
-        pButton
-        type="button"
-        icon="pi pi-plus"
-        label="Agregar"
-        class="p-button-sm"
-        (click)="startAdding()">
-      </button>
-    }
-  </div>
-
-  <!-- Add new reference form -->
-  @if (isAdding()) {
-    <div class="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-      <label class="block text-sm font-medium text-gray-700 mb-2">
-        Nueva Referencia (máx. 500 caracteres)
-      </label>
-      <textarea
-        [(ngModel)]="newReference"
-        class="w-full p-2 border border-gray-300 rounded-lg resize-none"
-        rows="3"
-        placeholder="Ingrese la referencia bibliográfica..."></textarea>
-      <div class="flex justify-end gap-2 mt-2">
+  <div class="mb-4">
+    <!-- Title with hover button -->
+    <div class="flex justify-between items-center mb-4 group">
+      <h3 class="text-lg font-semibold">Bibliografía</h3>
+      @if (!isAdding()) {
         <button
           pButton
           type="button"
-          label="Cancelar"
-          class="p-button-sm p-button-text"
-          (click)="cancelAdding()">
-        </button>
-        <button
-          pButton
-          type="button"
+          icon="pi pi-plus"
           label="Agregar"
-          icon="pi pi-check"
-          class="p-button-sm"
-          [disabled]="!newReference().trim()"
-          (click)="onAddReference()">
+          class="p-button-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          [disabled]="isDisabled()"
+          (click)="startAdding()">
         </button>
-      </div>
-    </div>
-  }
-
-  <!-- References list -->
-  <div class="w-full">
-    <div class="min-h-[40px] bg-white rounded-lg shadow w-full border border-gray-200 p-2">
-      @if (references().length > 0) {
-        <ul class="space-y-2">
-          @for (reference of references(); track reference) {
-            <li class="flex justify-between items-start gap-2 p-2 hover:bg-gray-50 rounded">
-              <span class="text-sm text-gray-700 flex-1">• {{ reference }}</span>
-              <button
-                pButton
-                type="button"
-                icon="pi pi-trash"
-                class="p-button-sm p-button-text p-button-danger"
-                (click)="onDeleteReference(reference)">
-              </button>
-            </li>
-          }
-        </ul>
-      } @else {
-        <p class="text-sm text-gray-500 italic">No hay referencias bibliográficas</p>
       }
+    </div>
+
+    <!-- Add new reference form -->
+    @if (isAdding()) {
+      <div class="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Nueva Referencia (máx. 500 caracteres)
+        </label>
+        <textarea
+          [(ngModel)]="newReference"
+          class="w-full p-2 border border-gray-300 rounded-lg resize-none"
+          rows="3"
+          placeholder="Ingrese la referencia bibliográfica..."></textarea>
+        <div class="flex justify-end gap-2 mt-2">
+          <button
+            pButton
+            type="button"
+            label="Cancelar"
+            class="p-button-sm p-button-text"
+            (click)="cancelAdding()">
+          </button>
+          <button
+            pButton
+            type="button"
+            label="Agregar"
+            icon="pi pi-check"
+            class="p-button-sm"
+            [disabled]="!newReference().trim()"
+            (click)="onAddReference()">
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- References list -->
+    <div class="w-full">
+      <div class="min-h-[40px] bg-white rounded-lg shadow w-full border border-gray-200 p-2">
+        @if (references().length > 0) {
+          <ul class="space-y-0">
+            @for (reference of references(); track reference) {
+              <li class="flex justify-between items-start gap-2 py-0.5 px-1 hover:bg-gray-50 rounded group">
+                <span class="text-sm text-gray-700 flex-1 break-words">• {{ reference }}</span>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-trash"
+                  class="p-button-sm p-button-text p-button-danger opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0"
+                  (click)="onDeleteReference(reference)">
+                </button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="text-sm text-gray-500 italic">No hay referencias bibliográficas</p>
+        }
+      </div>
     </div>
   </div>
 </div>

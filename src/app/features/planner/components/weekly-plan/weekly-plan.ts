@@ -312,8 +312,9 @@ export class WeeklyPlan {
     console.log('[WeeklyPlan] Add reference requested:', reference);
     const planningId = this.weeklyPlanningId();
     
-    if (!planningId) {
-      console.error('[WeeklyPlan] No weekly planning ID available');
+    if (!planningId || planningId === 0) {
+      console.error('[WeeklyPlan] No weekly planning ID available, current value:', planningId);
+      console.error('[WeeklyPlan] Current weeklyPlanning:', this.weeklyPlanning());
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -325,7 +326,23 @@ export class WeeklyPlan {
     this.weeklyPlanningService.addBibliographicReference(planningId, reference).subscribe({
       next: (updatedPlanning) => {
         console.log('[WeeklyPlan] Reference added successfully:', updatedPlanning);
-        this.weeklyPlanning.set(updatedPlanning);
+        if (updatedPlanning) {
+          console.log('[WeeklyPlan] Bibliographic references in response:', updatedPlanning.bibliographicReferences);
+        }
+        
+        // Obtener los datos frescos del backend
+        this.weeklyPlanningService.getWeeklyPlanningById(planningId).subscribe({
+          next: (freshPlanning) => {
+            console.log('[WeeklyPlan] Fresh planning data loaded:', freshPlanning);
+            console.log('[WeeklyPlan] Fresh bibliographic references:', freshPlanning.bibliographicReferences);
+            
+            // Actualizar con los datos frescos - crear una copia nueva del objeto
+            this.weeklyPlanning.set({ ...freshPlanning });
+          },
+          error: (error) => {
+            console.error('[WeeklyPlan] Error fetching fresh planning:', error);
+          }
+        });
         
         this.messageService.add({
           severity: 'success',
@@ -355,8 +372,9 @@ export class WeeklyPlan {
     console.log('[WeeklyPlan] Delete reference requested:', reference);
     const planningId = this.weeklyPlanningId();
     
-    if (!planningId) {
-      console.error('[WeeklyPlan] No weekly planning ID available');
+    if (!planningId || planningId === 0) {
+      console.error('[WeeklyPlan] No weekly planning ID available, current value:', planningId);
+      console.error('[WeeklyPlan] Current weeklyPlanning:', this.weeklyPlanning());
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -368,7 +386,23 @@ export class WeeklyPlan {
     this.weeklyPlanningService.deleteBibliographicReference(planningId, reference).subscribe({
       next: (updatedPlanning) => {
         console.log('[WeeklyPlan] Reference deleted successfully:', updatedPlanning);
-        this.weeklyPlanning.set(updatedPlanning);
+        if (updatedPlanning) {
+          console.log('[WeeklyPlan] Bibliographic references in response:', updatedPlanning.bibliographicReferences);
+        }
+        
+        // Obtener los datos frescos del backend
+        this.weeklyPlanningService.getWeeklyPlanningById(planningId).subscribe({
+          next: (freshPlanning) => {
+            console.log('[WeeklyPlan] Fresh planning data loaded:', freshPlanning);
+            console.log('[WeeklyPlan] Fresh bibliographic references:', freshPlanning.bibliographicReferences);
+            
+            // Actualizar con los datos frescos - crear una copia nueva del objeto
+            this.weeklyPlanning.set({ ...freshPlanning });
+          },
+          error: (error) => {
+            console.error('[WeeklyPlan] Error fetching fresh planning:', error);
+          }
+        });
         
         this.messageService.add({
           severity: 'success',
