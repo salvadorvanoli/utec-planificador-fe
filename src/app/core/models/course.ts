@@ -85,6 +85,14 @@ export interface CoursePdfData {
     name: string;
     credits: number;
   };
+  weeklyPlannings?: {
+    weekNumber: number;
+    startDate: string;
+    endDate: string;
+    contentTitles: string[];
+    bibliographicReferences: string[];
+  }[];
+  bibliography?: string[];
 }
 
 export interface MyCourseSummary {

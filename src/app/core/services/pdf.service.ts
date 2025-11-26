@@ -156,6 +156,56 @@ export class PdfService {
             </tr>
           </table>
         </div>
+
+        ${data.weeklyPlannings && data.weeklyPlannings.length > 0 ? `
+        <div style="margin-bottom: 20px; page-break-before: always;">
+          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px;">
+            Planificación Semanal
+          </h3>
+          ${data.weeklyPlannings.map((week: any) => `
+            <div style="margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #00A9E0;">
+              <h4 style="color: #333; margin: 0 0 8px 0;">
+                Semana ${week.weekNumber} (${this.formatDate(week.startDate)} - ${this.formatDate(week.endDate)})
+              </h4>
+              ${week.contentTitles && week.contentTitles.length > 0 ? `
+                <div style="margin-top: 8px;">
+                  <strong style="color: #666;">Contenidos:</strong>
+                  <ul style="margin: 5px 0; padding-left: 20px;">
+                    ${week.contentTitles.map((title: string) => `
+                      <li style="margin: 3px 0; color: #333;">${title}</li>
+                    `).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+              ${week.bibliographicReferences && week.bibliographicReferences.length > 0 ? `
+                <div style="margin-top: 8px;">
+                  <strong style="color: #666;">Referencias bibliográficas:</strong>
+                  <ul style="margin: 5px 0; padding-left: 20px;">
+                    ${week.bibliographicReferences.map((ref: string) => `
+                      <li style="margin: 3px 0; color: #333; font-style: italic;">${ref}</li>
+                    `).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+        ` : ''}
+
+        ${data.bibliography && data.bibliography.length > 0 ? `
+        <div style="margin-bottom: 20px;">
+          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px;">
+            Bibliografía General del Curso
+          </h3>
+          <ul style="list-style: none; padding: 0; margin-top: 10px;">
+            ${data.bibliography.map((ref: string) => `
+              <li style="padding: 8px; background-color: #f5f5f5; margin-bottom: 5px; border-radius: 4px; font-style: italic;">
+                ${ref}
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+        ` : ''}
       </div>
     `;
   }
