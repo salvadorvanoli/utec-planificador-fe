@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { Course, CourseBasicResponse, CourseRequest, CoursePdfData, CourseStatistics, PageResponse, PeriodResponse, MyCourseSummary } from '../models';
+import { Course, CourseBasicResponse, CourseRequest, CoursePdfData, CourseStatistics, PageResponse, PeriodResponse, MyCourseSummary, CourseDetailedInfo } from '../models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -29,6 +29,18 @@ export class CourseService {
     console.log(`[CourseService] GET course by ID: ${id}`);
     return this.http.get<Course>(`${this.apiUrl}/${id}`).pipe(
       tap(response => console.log('[CourseService] Response:', response))
+    );
+  }
+
+  /**
+   * Retrieves detailed information about a course
+   * @param id Course ID
+   * @returns Observable with the detailed course information
+   */
+  getDetailedInfo(id: number): Observable<CourseDetailedInfo> {
+    console.log(`[CourseService] GET detailed info for course: ${id}`);
+    return this.http.get<CourseDetailedInfo>(`${this.apiUrl}/${id}/detailed-info`).pipe(
+      tap(response => console.log('[CourseService] Detailed info response:', response))
     );
   }
 

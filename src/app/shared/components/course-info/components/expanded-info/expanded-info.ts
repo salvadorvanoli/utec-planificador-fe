@@ -1,11 +1,11 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect, inject } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { TagsBox } from '../tags-box/tags-box';
-import { Course } from '@app/core/models';
-import { EnumResponse } from '@app/core/services';
+import { Course, CourseDetailedInfo } from '@app/core/models';
+import { EnumResponse, CourseService } from '@app/core/services';
 
 @Component({
   selector: 'app-expanded-info',
@@ -15,23 +15,28 @@ import { EnumResponse } from '@app/core/services';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExpandedInfo {
+  private readonly courseService = inject(CourseService);
+  
   // Inputs y outputs
   visible = input<boolean>(false);
   courseData = input<Course | null>(null);
   onClose = output<void>();
 
-  // Signals para los campos (read-only)
-  carrera = computed(() => this.courseData()?.curricularUnit?.term?.name || 'No especificada');
+  // Signal para la información detallada
+  detailedInfo = signal<CourseDetailedInfo | null>(null);
+  isLoading = signal<boolean>(false);
+
+  // Signals para los campos (read-only) basados en detailed info
+  carrera = computed(() => this.detailedInfo()?.programName || 'No especificada');
   docente = computed(() => {
-    const teachers = this.courseData()?.teachers;
+    const teachers = this.detailedInfo()?.teachers;
     if (!teachers || teachers.length === 0) return 'No asignado';
     const teacher = teachers[0];
-    const userData = teacher.user?.personalData;
-    return userData ? `${userData.firstName} ${userData.lastName}` : 'No asignado';
+    return `${teacher.name} ${teacher.lastName}`;
   });
-  unidadCurricular = computed(() => this.courseData()?.curricularUnit?.name || '');
-  semestre = computed(() => this.courseData()?.curricularUnit?.term?.name || '');
-  creditos = computed(() => this.courseData()?.curricularUnit?.credits?.toString() || '');
+  unidadCurricular = computed(() => this.detailedInfo()?.curricularUnitName || '');
+  semestre = computed(() => this.detailedInfo()?.semesterNumber?.toString() || '');
+  creditos = computed(() => this.detailedInfo()?.credits?.toString() || '');
 
   // Tags para áreas de dominio y competencias profesionales
   domainAreasTags = signal<string[]>([]);
@@ -42,12 +47,39 @@ export class ExpandedInfo {
   professionalCompetenciesOptions = signal<EnumResponse[]>([]);
 
   constructor() {
-    // Effect para actualizar tags cuando cambie courseData
+    // Effect para cargar información detallada cuando se abre el diálogo
     effect(() => {
+      const isVisible = this.visible();
       const course = this.courseData();
-      if (course?.curricularUnit) {
-        this.domainAreasTags.set(course.curricularUnit.domainAreas || []);
-        this.professionalCompetenciesTags.set(course.curricularUnit.professionalCompetencies || []);
+      
+      if (isVisible && course?.id) {
+        this.loadDetailedInfo(course.id);
+      }
+    });
+    
+    // Effect para actualizar tags cuando cambie detailedInfo
+    effect(() => {
+      const info = this.detailedInfo();
+      if (info) {
+        this.domainAreasTags.set(info.domainAreas || []);
+        this.professionalCompetenciesTags.set(info.professionalCompetencies || []);
+      }
+    });
+  }
+
+  loadDetailedInfo(courseId: number): void {
+    console.log('[ExpandedInfo] Loading detailed info for course:', courseId);
+    this.isLoading.set(true);
+    
+    this.courseService.getDetailedInfo(courseId).subscribe({
+      next: (info) => {
+        console.log('[ExpandedInfo] Detailed info loaded:', info);
+        this.detailedInfo.set(info);
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('[ExpandedInfo] Error loading detailed info:', error);
+        this.isLoading.set(false);
       }
     });
   }

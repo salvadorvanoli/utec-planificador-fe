@@ -80,6 +80,7 @@
         [title]="'Áreas de dominio'"
         [tags]="domainAreasTags()"
         [enumOptions]="domainAreasOptions()"
+        [readonly]="true"
         (onRemoveTag)="removeDomainAreaTag($event)"
         (onAddTag)="addDomainAreaTag($event)"
       />
@@ -88,6 +89,7 @@
         [title]="'Competencias profesionales'"
         [tags]="professionalCompetenciesTags()"
         [enumOptions]="professionalCompetenciesOptions()"
+        [readonly]="true"
         (onRemoveTag)="removeProfessionalCompetencyTag($event)"
         (onAddTag)="addProfessionalCompetencyTag($event)"
       />

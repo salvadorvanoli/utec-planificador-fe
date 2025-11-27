@@ -32,6 +32,21 @@ export interface CourseBasicResponse {
   lastModificationDate: string | null;
 }
 
+export interface CourseDetailedInfo {
+  courseId: number;
+  programName: string;
+  curricularUnitName: string;
+  teachers: {
+    name: string;
+    lastName: string;
+    email: string;
+  }[];
+  credits: number;
+  semesterNumber: number;
+  domainAreas: string[];
+  professionalCompetencies: string[];
+}
+
 export interface CourseResponse {
   id: number;
   shift: string;
