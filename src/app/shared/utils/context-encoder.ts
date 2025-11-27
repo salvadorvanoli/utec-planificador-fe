@@ -4,9 +4,12 @@
  */
 
 export interface ContextParams {
-  itrId: number;
-  campusId: number;
+  itrId?: number;
+  campusId?: number;
   step?: string;
+  isEdit?: boolean;
+  courseId?: number;
+  mode?: string;
 }
 
 /**
@@ -38,10 +41,14 @@ export function decodeContext(token: string): ContextParams | null {
       return null;
     }
 
-    if (typeof params.itrId !== 'number' || isNaN(params.itrId)) {
-      return null;
+    // Validar itrId si está presente
+    if (params.itrId !== undefined) {
+      if (typeof params.itrId !== 'number' || isNaN(params.itrId)) {
+        return null;
+      }
     }
 
+    // Validar campusId si está presente
     if (params.campusId !== undefined) {
       if (typeof params.campusId !== 'number' || isNaN(params.campusId)) {
         return null;
@@ -56,34 +63,47 @@ export function decodeContext(token: string): ContextParams | null {
 
 /**
  * Construye los query params con el contexto codificado
- * Si campusId es -1, solo codifica el itrId (para selección de campus)
+ * TODOS los parámetros se codifican dentro del token ctx para seguridad
  */
 export function buildContextQueryParams(params: ContextParams): Record<string, string> {
-  if (params.campusId === -1) {
-    const itrOnlyParams = { itrId: params.itrId };
-    const token = btoa(JSON.stringify(itrOnlyParams));
-    const queryParams: Record<string, string> = { ctx: token };
+  // Construir objeto con todos los parámetros que se deben codificar
+  const paramsToEncode: ContextParams = {};
 
-    if (params.step) {
-      queryParams['step'] = params.step;
-    }
-
-    return queryParams;
+  // Agregar itrId y campusId si están presentes
+  if (params.itrId !== undefined) {
+    paramsToEncode.itrId = params.itrId;
   }
 
-  const token = encodeContext(params);
-  const queryParams: Record<string, string> = { ctx: token };
-
-  if (params.step) {
-    queryParams['step'] = params.step;
+  if (params.campusId !== undefined) {
+    paramsToEncode.campusId = params.campusId;
   }
 
-  return queryParams;
+  // Agregar parámetros opcionales si están presentes
+  if (params.step !== undefined) {
+    paramsToEncode.step = params.step;
+  }
+
+  if (params.isEdit !== undefined) {
+    paramsToEncode.isEdit = params.isEdit;
+  }
+
+  if (params.courseId !== undefined) {
+    paramsToEncode.courseId = params.courseId;
+  }
+
+  if (params.mode !== undefined) {
+    paramsToEncode.mode = params.mode;
+  }
+
+  // Codificar todo en el token ctx
+  const token = encodeContext(paramsToEncode);
+  return { ctx: token };
 }
 
 /**
  * Extrae el contexto de los query params actuales
  * SOLO acepta formato codificado (ctx)
+ * Todos los parámetros están codificados dentro del token por seguridad
  * Retorna null si el token es inválido o corrupto
  */
 export function extractContextFromUrl(queryParams: Record<string, any>): ContextParams | null {
@@ -98,21 +118,7 @@ export function extractContextFromUrl(queryParams: Record<string, any>): Context
       return null;
     }
 
-    if (decoded.itrId && !decoded.campusId) {
-      return {
-        itrId: decoded.itrId,
-        campusId: -1,
-        step: queryParams['step']
-      };
-    }
-
-    if (queryParams['step']) {
-      return {
-        ...decoded,
-        step: queryParams['step']
-      };
-    }
-
+    // El token contiene todos los parámetros codificados
     return decoded;
   } catch (error) {
     return null;

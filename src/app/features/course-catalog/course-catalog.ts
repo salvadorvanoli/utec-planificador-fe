@@ -6,6 +6,7 @@ import { InfoType } from '@app/core/enums/info';
 import { Role } from '@app/core/enums/role';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilterStateService, PositionService, AuthService } from '@app/core/services';
+import { extractContextFromUrl } from '@app/shared/utils/context-encoder';
 
 @Component({
   selector: 'app-course-catalog',
@@ -22,7 +23,7 @@ export class CourseCatalog implements OnInit {
   private readonly positionService = inject(PositionService);
   private readonly authService = inject(AuthService);
   
-  private readonly mode = signal<'planner' | 'statistics' | 'info' | null>(null);
+  readonly mode = signal<'planner' | 'statistics' | 'info' | 'management' | null>(null);
   private readonly isStudentRoute = signal<boolean>(false);
   
   // Computed: verificy if the user has the TEACHER role in the current context
@@ -74,9 +75,11 @@ export class CourseCatalog implements OnInit {
     this.route.queryParams.subscribe(query => {
       console.log('[CourseCatalog] Query params:', query);
       
-      // Set mode from query params
-      const mode = query['mode'];
-      if (mode === 'planner' || mode === 'statistics' || mode === 'info') {
+      // Extract mode from encrypted context token
+      const context = extractContextFromUrl(query);
+      const mode = context?.mode;
+      
+      if (mode === 'planner' || mode === 'statistics' || mode === 'info' || mode === 'management') {
         this.mode.set(mode);
       } else {
         this.mode.set(null);
@@ -154,7 +157,7 @@ export class CourseCatalog implements OnInit {
       return;
     }
 
-    // For modes statistics and planner: context is required
+    // For modes statistics, management, and planner: context is required
     if (!context) {
       console.warn('[CourseCatalog] No context available for setting permanent filters');
       return;
@@ -162,13 +165,13 @@ export class CourseCatalog implements OnInit {
 
     const permanentFilters: { campusId?: number; userId?: number } = {};
 
-    // Mode statistics: Permanent campus filter
-    if (currentMode === 'statistics') {
+    // Mode statistics or management: Permanent campus filter
+    if (currentMode === 'statistics' || currentMode === 'management') {
       if (context.campus?.id) {
         permanentFilters.campusId = context.campus.id;
-        console.log('[CourseCatalog] Statistics mode: Setting permanent campus filter:', context.campus.id);
+        console.log(`[CourseCatalog] ${currentMode} mode: Setting permanent campus filter:`, context.campus.id);
       } else {
-        console.error('[CourseCatalog] Statistics mode requires a campus in context');
+        console.error(`[CourseCatalog] ${currentMode} mode requires a campus in context`);
         this.router.navigate(['/option-page']);
         return;
       }

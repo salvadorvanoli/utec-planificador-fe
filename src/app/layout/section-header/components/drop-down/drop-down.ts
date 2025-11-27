@@ -58,14 +58,14 @@ export class DropDown {
     { id: 'assign', name: 'Assign', icon: 'pi pi-users' },
   ];
 
-  private readonly idToRoute: Record<string, { path: string; queryParams?: any }> = {
+  private readonly idToRoute: Record<string, { path: string; contextData?: any }> = {
     home: { path: '/home' },
-    menu: { path: '/option-page', queryParams: { step: 'main-menu' } },
-    catalog: { path: '/course-catalog', queryParams: { mode: 'info' } },
+    menu: { path: '/option-page', contextData: { step: 'main-menu' } },
+    catalog: { path: '/course-catalog', contextData: { mode: 'info' } },
     planner: { path: '/planner' },
     statistics: { path: '/statistics-page' },
     chat: { path: '/chat-page' },
-    itr: { path: '/option-page', queryParams: { step: 'campus' } },
+    itr: { path: '/option-page', contextData: { step: 'campus' } },
     assign: { path: '/assign-page' },
   };
 
@@ -215,47 +215,48 @@ export class DropDown {
           });
           this.router.navigate([routeConfig.path], { queryParams: encodedParams });
           return;
+        } else if (routeConfig.contextData) {
+          // Si hay contextData pero no hay contexto de URL, codificar el contextData
+          const encodedParams = buildContextQueryParams(routeConfig.contextData);
+          this.router.navigate([routeConfig.path], { queryParams: encodedParams });
+          return;
         } else {
-          this.router.navigate([routeConfig.path], {
-            queryParams: routeConfig.queryParams
-          });
+          // Sin contexto, navegar sin query params
+          this.router.navigate([routeConfig.path]);
           return;
         }
       }
 
       if (protectedRoutes.includes(routeConfig.path)) {
         if (contextParams?.itrId && contextParams?.campusId) {
-          const encodedParams = buildContextQueryParams({
-            itrId: contextParams.itrId,
-            campusId: contextParams.campusId
-          });
           // Si el target es el catálogo, preservar el mode según la página actual
           const currentPath = this.router.url.split('?')[0];
           const modeFromCurrent = currentPath.startsWith('/planner') ? 'planner' : currentPath.startsWith('/statistics-page') ? 'statistics' : undefined;
-          const mergedParams = {
-            ...routeConfig.queryParams,
-            ...encodedParams,
-            ...(routeConfig.path === '/course-catalog' && modeFromCurrent ? { mode: modeFromCurrent } : {})
-          };
-          this.router.navigate([routeConfig.path], { queryParams: mergedParams });
+          
+          // Determinar el mode: prioridad a modeFromCurrent, luego contextData, luego ninguno
+          const mode = routeConfig.path === '/course-catalog' 
+            ? (modeFromCurrent || routeConfig.contextData?.mode)
+            : undefined;
+          
+          const encodedParams = buildContextQueryParams({
+            itrId: contextParams.itrId,
+            campusId: contextParams.campusId,
+            ...(mode ? { mode } : {})
+          });
+          
+          this.router.navigate([routeConfig.path], { queryParams: encodedParams });
+          return;
+        } else if (routeConfig.contextData) {
+          // Si no hay contexto de URL pero hay contextData, intentar usarlo
+          // (solo para rutas públicas como /student/courses)
+          const encodedParams = buildContextQueryParams(routeConfig.contextData);
+          this.router.navigate([routeConfig.path], { queryParams: encodedParams });
           return;
         }
       }
 
-      if (routeConfig.queryParams) {
-        // Si vamos al catálogo, decidir el `mode` según la página actual para preservar contexto de 'planner' o 'statistics'
-        const targetIsCatalog = routeConfig.path === '/course-catalog';
-        if (targetIsCatalog) {
-          const currentPath = this.router.url.split('?')[0];
-          const modeFromCurrent = currentPath.startsWith('/planner') ? 'planner' : currentPath.startsWith('/statistics-page') ? 'statistics' : routeConfig.queryParams?.mode;
-          const mergedQuery = { ...(routeConfig.queryParams || {}), ...(modeFromCurrent ? { mode: modeFromCurrent } : {}) };
-          this.router.navigate([routeConfig.path], { queryParams: mergedQuery });
-        } else {
-          this.router.navigate([routeConfig.path], { queryParams: routeConfig.queryParams });
-        }
-      } else {
-        this.router.navigate([routeConfig.path]);
-      }
+      // Fallback: navegación sin contexto completo
+      this.router.navigate([routeConfig.path]);
       } catch (error) {
         console.error('[DropDown] Error in updateSelection:', error);
         this.router.navigate([routeConfig.path]);

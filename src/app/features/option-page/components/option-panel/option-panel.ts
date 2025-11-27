@@ -118,31 +118,40 @@ export class OptionPanel {
     const context = this.positionService.selectedContext();
     if (!context) return;
 
-    const contextParams = buildContextQueryParams({
-      itrId: context.itr.id,
-      campusId: context.campus.id
-    });
-
     if (action === 'planificador') {
-      this.router.navigate(['/course-catalog'], {
-        queryParams: { ...contextParams, mode: 'planner' }
+      const contextParams = buildContextQueryParams({
+        itrId: context.itr.id,
+        campusId: context.campus.id,
+        mode: 'planner'
       });
+      this.router.navigate(['/course-catalog'], { queryParams: contextParams });
     } else if (action === 'estadistico') {
-      this.router.navigate(['/course-catalog'], {
-        queryParams: { ...contextParams, mode: 'statistics' }
+      const contextParams = buildContextQueryParams({
+        itrId: context.itr.id,
+        campusId: context.campus.id,
+        mode: 'statistics'
       });
+      this.router.navigate(['/course-catalog'], { queryParams: contextParams });
     } else if (action === 'asignar-cursos') {
-      this.router.navigate(['/assign-page'], {
-        queryParams: contextParams
+      const contextParams = buildContextQueryParams({
+        itrId: context.itr.id,
+        campusId: context.campus.id,
+        mode: 'management'
       });
+      this.router.navigate(['/course-catalog'], { queryParams: contextParams });
     } else if (action === 'chat') {
-      this.router.navigate(['/chat-page'], {
-        queryParams: contextParams
+      const contextParams = buildContextQueryParams({
+        itrId: context.itr.id,
+        campusId: context.campus.id
       });
+      this.router.navigate(['/chat-page'], { queryParams: contextParams });
     } else if (action === 'info-cursos') {
-      this.router.navigate(['/course-catalog'], {
-        queryParams: { ...contextParams, mode: 'info' }
+      const contextParams = buildContextQueryParams({
+        itrId: context.itr.id,
+        campusId: context.campus.id,
+        mode: 'info'
       });
+      this.router.navigate(['/course-catalog'], { queryParams: contextParams });
     }
   }
 

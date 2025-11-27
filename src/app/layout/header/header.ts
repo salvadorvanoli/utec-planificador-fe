@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input, computed } from '@an
 import { ButtonComponent } from '@app/shared/components/button/button';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/core/services';
+import { buildContextQueryParams } from '@app/shared/utils/context-encoder';
 
 @Component({
   selector: 'app-header',
@@ -50,9 +51,8 @@ export class Header {
   }
 
   goToStudentPortal(): void {
-    this.router.navigate(['/student/courses'], {
-      queryParams: { mode: 'info' }
-    });
+    const queryParams = buildContextQueryParams({ mode: 'info' });
+    this.router.navigate(['/student/courses'], { queryParams });
   }
 
   logout(): void {

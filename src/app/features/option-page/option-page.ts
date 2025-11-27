@@ -71,8 +71,8 @@ export class OptionPage implements OnInit {
           return;
         }
 
-        // Si hay step parameter pero sin IDs, usar el step
-        const stepParam = query['step'];
+        // Si hay step parameter en el contexto pero sin IDs, usar el step
+        const stepParam = contextParams?.step;
         if (stepParam === 'campus') {
           this.step.set('campus');
         } else if (stepParam === 'main-menu') {
