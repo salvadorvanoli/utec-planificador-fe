@@ -1,11 +1,20 @@
-@import "tailwindcss";
-@plugin "tailwindcss-primeui";
-@custom-variant dark (&:where(.p-dark, .p-dark *));
+@layer tailwind-base, primeng, tailwind-utilities;
 
-.p-datatable-mask {
-    @apply backdrop-blur-sm! bg-surface-0/20! dark:bg-surface-900/20!;
+@layer tailwind-base {
+  @tailwind base;
 }
 
-.p-datatable-loading-icon {
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+@layer components {
+  .p-datatable-mask {
+    @apply backdrop-blur-sm! bg-surface-0/20! dark:bg-surface-900/20!;
+  }
+
+  .p-datatable-loading-icon {
     @apply text-primary!;
+  }
 }

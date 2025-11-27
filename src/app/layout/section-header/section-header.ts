@@ -14,6 +14,7 @@ type Color = 'blue' | 'black';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SectionHeader {
+  readonly text = input<string>('');
   readonly color = input<Color>('blue');
   readonly infoType = input.required<InfoTypeValue>();
   readonly showIcon = input<boolean>(false);
