@@ -76,7 +76,7 @@ export class PdfService {
             </tr>
             <tr style="background-color: #f5f5f5;">
               <td style="padding: 8px; font-weight: bold;">Unidad Curricular:</td>
-              <td style="padding: 8px;">${data.curricularUnit?.name || 'N/A'}</td>
+              <td style="padding: 8px;">${data.curricularUnit.name}</td>
             </tr>
             <tr>
               <td style="padding: 8px; font-weight: bold;">Programa:</td>
@@ -84,7 +84,7 @@ export class PdfService {
             </tr>
             <tr style="background-color: #f5f5f5;">
               <td style="padding: 8px; font-weight: bold;">Créditos:</td>
-              <td style="padding: 8px;">${data.curricularUnit?.credits || 'N/A'}</td>
+              <td style="padding: 8px;">${data.curricularUnit.credits}</td>
             </tr>
             <tr>
               <td style="padding: 8px; font-weight: bold;">Turno:</td>
@@ -114,12 +114,12 @@ export class PdfService {
             Docentes
           </h3>
           <ul style="list-style: none; padding: 0; margin-top: 10px;">
-            ${data.teachers?.map((teacher: any) => `
+            ${data.teachers.length > 0 ? data.teachers.map((teacher: any) => `
               <li style="padding: 8px; background-color: #f5f5f5; margin-bottom: 5px; border-radius: 4px;">
                 <strong>${teacher.name} ${teacher.lastName}</strong><br>
                 <span style="color: #666; font-size: 14px;">${teacher.email}</span>
               </li>
-            `).join('') || '<li>No hay docentes asignados</li>'}
+            `).join('') : '<li>No hay docentes asignados</li>'}
           </ul>
         </div>
 

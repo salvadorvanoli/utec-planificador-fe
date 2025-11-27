@@ -1,9 +1,7 @@
-import { CurricularUnit } from "./curricular-unit";
+import { ProgramResponse } from "./program";
 
-export interface Term {
+export interface TermResponse {
   id: number;
-  name: string;
-  startDate: string;
-  endDate: string;
-  curricularUnits?: CurricularUnit[];
+  number: number;
+  program: ProgramResponse;
 }

@@ -1,15 +1,4 @@
-import { Term } from './term';
-import { Course } from './course';
-
-export interface CurricularUnit {
-  id: number;
-  name: string;
-  credits: number;
-  domainAreas: string[]; 
-  professionalCompetencies: string[]; 
-  term: Term;
-  courses?: Course[];
-}
+import { TermResponse } from './term';
 
 export interface CurricularUnitResponse {
   id: number;
@@ -17,7 +6,5 @@ export interface CurricularUnitResponse {
   credits: number;
   domainAreas: string[];
   professionalCompetencies: string[];
-  termId: number;
+  term: TermResponse;
 }
-
-
