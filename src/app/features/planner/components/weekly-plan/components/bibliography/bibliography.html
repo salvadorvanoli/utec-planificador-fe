@@ -1,16 +1,16 @@
 <div class="bibliography-container">
   <div class="mb-4">
     <!-- Title with hover button -->
-    <div class="flex justify-between items-center mb-4 group">
+    <div class="flex items-center gap-2 mb-4 group">
       <h3 class="text-lg font-semibold">Bibliografía</h3>
       @if (!isAdding()) {
         <button
           pButton
           type="button"
           icon="pi pi-plus"
-          label="Agregar"
-          class="p-button-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          class="p-button-rounded p-button-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200"
           [disabled]="isDisabled()"
+          [style]="{ 'background-color': '#00A9E0', 'border-color': '#00A9E0' }"
           (click)="startAdding()">
         </button>
       }
@@ -55,12 +55,15 @@
           <ul class="space-y-0">
             @for (reference of references(); track reference) {
               <li class="flex justify-between items-start gap-2 py-0.5 px-1 hover:bg-gray-50 rounded group">
-                <span class="text-sm text-gray-700 flex-1 break-words">• {{ reference }}</span>
+                <div class="flex items-start flex-1 gap-1">
+                  <span class="text-sm text-gray-700 flex-shrink-0">•</span>
+                  <span class="text-sm text-gray-700 flex-1 break-words overflow-wrap-anywhere">{{ reference }}</span>
+                </div>
                 <button
                   pButton
                   type="button"
                   icon="pi pi-trash"
-                  class="p-button-sm p-button-text p-button-danger opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0"
+                  class="p-button-sm p-button-text p-button-danger opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0 ml-2"
                   (click)="onDeleteReference(reference)">
                 </button>
               </li>
