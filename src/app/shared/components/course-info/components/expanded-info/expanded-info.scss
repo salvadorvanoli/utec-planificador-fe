@@ -55,6 +55,7 @@
 // Inputs de solo lectura
 input[readonly] {
   opacity: 0.7;
+  cursor: default;
   
   &:focus {
     box-shadow: none;
