@@ -116,3 +116,12 @@ export interface MyCourseSummary {
   startDate: string;
   shift: string;
 }
+
+export interface TeacherPastCourse {
+  courseId: number;
+  displayName: string;
+  curricularUnitName: string;
+  period: string;
+  campusName: string;
+  teacherId: number;
+}

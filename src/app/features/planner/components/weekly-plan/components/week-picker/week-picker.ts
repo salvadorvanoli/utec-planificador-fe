@@ -84,23 +84,15 @@ export class WeekPicker {
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
 
-    // Verificar si la semana calculada está completamente dentro del rango
+    // Ajustar la semana para que esté dentro del rango del curso
+    // Si el lunes es antes del inicio del curso, usar la fecha de inicio
     if (min && monday < min) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Semana inválida',
-        detail: 'La semana seleccionada comienza antes del inicio del curso'
-      });
-      return;
+      monday.setTime(min.getTime());
     }
     
+    // Si el domingo es después del fin del curso, usar la fecha de fin
     if (max && sunday > max) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Semana inválida',
-        detail: 'La semana seleccionada termina después del fin del curso'
-      });
-      return;
+      sunday.setTime(max.getTime());
     }
 
     this.selectedWeek.set([monday, sunday]);

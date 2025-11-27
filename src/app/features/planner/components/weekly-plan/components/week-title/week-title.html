@@ -27,6 +27,7 @@
         aria-label="Semana siguiente" 
         title="Siguiente"
         (click)="handleWeekChange(weekNumber() + 1)"
+        [disabled]="weekNumber() >= maxWeekNumber()"
       >
         <i class="pi pi-chevron-right" aria-hidden="true"></i>
       </button>

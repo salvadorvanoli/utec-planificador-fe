@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 import { WeekPicker } from '../week-picker/week-picker';
 
 @Component({
@@ -15,6 +15,26 @@ export class WeekTitle {
   courseEndDate = input<string>(''); // Fecha fin del curso
   onWeekChange = output<number>();
   onDateRangeChange = output<{ startDate: string; endDate: string }>();
+  
+  // Calcular el número máximo de semanas del curso
+  maxWeekNumber = computed(() => {
+    const startStr = this.courseStartDate();
+    const endStr = this.courseEndDate();
+    
+    if (!startStr || !endStr) return 999; // Si no hay fechas, no limitar
+    
+    const start = new Date(startStr + 'T00:00:00');
+    const end = new Date(endStr + 'T00:00:00');
+    
+    // Calcular la diferencia en días
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Calcular el número de semanas (redondeando hacia arriba)
+    const weeks = Math.ceil((diffDays + 1) / 7);
+    
+    return weeks;
+  });
   
   handleWeekChange(newWeek: number): void {
     this.onWeekChange.emit(newWeek);
