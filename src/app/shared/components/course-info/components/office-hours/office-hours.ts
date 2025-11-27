@@ -1,8 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, output, signal, effect, inject } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonComponent } from '@app/shared/components/button/button';
-import { DatePicker } from 'primeng/datepicker';
-import { FloatLabel } from 'primeng/floatlabel';
+import { DatePickerComponent } from '@app/shared/components/datepicker/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { Toast } from 'primeng/toast';
@@ -12,7 +11,7 @@ import { OfficeHoursRequest, OfficeHoursResponse } from '@app/core/models';
 
 @Component({
   selector: 'app-office-hours',
-  imports: [DialogModule, ButtonComponent, DatePicker, FloatLabel, InputTextModule, FormsModule, Toast],
+  imports: [DialogModule, ButtonComponent, DatePickerComponent, InputTextModule, FormsModule, Toast],
   providers: [MessageService],
   templateUrl: './office-hours.html',
   styleUrl: './office-hours.scss',

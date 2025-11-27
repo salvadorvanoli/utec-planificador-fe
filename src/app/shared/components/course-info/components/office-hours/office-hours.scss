@@ -48,6 +48,29 @@
   border-radius: 4px;
 }
 
+// Estilos para inputs de hora - consistentes con datepicker
+$border-color: #646060;
+$border-width: 1px;
+$text-color: #1a1a1a;
+$border-radius: 15px;
+
+.time-input {
+  border: $border-width solid $border-color !important;
+  color: $text-color !important;
+  border-radius: $border-radius !important;
+  
+  &:enabled:hover {
+    border-color: $border-color !important;
+    color: $text-color !important;
+  }
+  
+  &:enabled:focus {
+    border-color: $border-color !important;
+    color: $text-color !important;
+    box-shadow: 0 0 0 0.2rem rgba(56, 55, 55, 0.25) !important;
+  }
+}
+
 ::ng-deep .office-hours-modal .p-dialog-content::-webkit-scrollbar-thumb:hover {
   background: #555;
 }

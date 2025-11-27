@@ -1,0 +1,28 @@
+<div class="w-full">
+  @if (label()) {
+    <label 
+        [for]="id() || 'datepicker_' + label()" 
+        class="block text-sm font-medium text-gray-700 mb-1.5"
+    >
+        {{ label() }}
+    </label>
+  }
+  <p-datepicker
+    [inputId]="id() || 'datepicker_' + label()"
+    [(ngModel)]="selectedDate"
+    showIcon
+    iconDisplay="input"
+    [showButtonBar]="true"
+    [showOnFocus]="showOnFocus()"
+    (ngModelChange)="onDateChange.emit($event)"
+    [dateFormat]="dateFormat()"
+    [disabled]="disabled()"
+    [minDate]="minDate()"
+    [maxDate]="maxDate()"
+    [readonlyInput]="readonlyInput()"
+    [invalid]="invalid()"
+    [placeholder]="placeholder()"
+    appendTo="body"
+    class="w-full"
+  />
+</div>

@@ -1,0 +1,42 @@
+$border-color: #646060;
+$border-width: 1px;
+$text-color: #1a1a1a;
+$border-radius: 15px;
+
+:host {
+  display: block;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+// Estilos del contenedor datepicker
+:host ::ng-deep p-datepicker {
+  display: block !important;
+  width: 100% !important;
+}
+
+// Input del datepicker - estilos base, hover y focus
+:host ::ng-deep .p-datepicker input,
+:host ::ng-deep .p-datepicker-input {
+  width: 100% !important;
+  border: $border-width solid $border-color !important;
+  color: $text-color !important;
+  border-radius: $border-radius !important;
+}
+
+:host ::ng-deep .p-datepicker-input:enabled:hover {
+  border-color: $border-color !important;
+  color: $text-color !important;
+}
+
+:host ::ng-deep .p-datepicker-input:enabled:focus {
+  border-color: $border-color !important;
+  color: $text-color !important;
+  box-shadow: 0 0 0 0.2rem rgba(56, 55, 55, 0.25) !important;
+}
+
+// Overlay del calendario - asegurar que esté sobre los dropdowns
+:host ::ng-deep .p-datepicker-overlay {
+  z-index: 1100 !important;
+}
