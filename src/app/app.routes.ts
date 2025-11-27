@@ -1,19 +1,14 @@
 import { Routes } from '@angular/router';
-import { MainLayout } from '@layout/main-layout/main-layout';
-import { Home } from '@pages/home/home';
-import { Login } from '@pages/login/login';
-import { CourseCatalog } from './features/course-catalog/course-catalog';
-import { OptionPage } from './features/option-page/option-page';
-import { StatisticsPage } from './features/statistics-page/statistics-page';
-import { ChatPage } from './features/chat-page/chat-page';
-import { AssignPage } from './features/assign-page/assign-page';
-import { Planner } from './features/planner/planner';
 import { PdfPreview } from '@pages/pdf-preview/pdf-preview';
-import { authGuard, contextGuard } from './core/guards/auth.guard';
+import { authGuard, contextGuard, roleGuard, courseAccessGuard } from './core/guards/auth.guard';
+import { Role } from './core/enums/role';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 
+  // ============================================
+  // RUTAS PÚBLICAS (sin autenticación)
+  // ============================================
   {
     path: 'home',
     loadComponent: () => import('@pages/home/home').then(m => m.Home)
@@ -24,28 +19,89 @@ export const routes: Routes = [
     loadComponent: () => import('@pages/login/login').then(m => m.Login)
   },
 
+  // Portal de estudiantes (público)
   {
     path: 'student',
     loadComponent: () => import('@layout/main-layout/main-layout').then(m => m.MainLayout),
     children: [
-      { path: 'courses', loadComponent: () => import('./features/course-catalog/course-catalog').then(m => m.CourseCatalog) }
+      { 
+        path: 'courses', 
+        loadComponent: () => import('./features/course-catalog/course-catalog').then(m => m.CourseCatalog) 
+      }
     ]
   },
 
+  // ============================================
+  // RUTAS PROTEGIDAS (requieren autenticación)
+  // ============================================
   {
     path: '',
     loadComponent: () => import('@layout/main-layout/main-layout').then(m => m.MainLayout),
     canActivate: [authGuard],
     children: [
-      { path: 'option-page', loadComponent: () => import('./features/option-page/option-page').then(m => m.OptionPage) },
-      { path: 'course-catalog', loadComponent: () => import('./features/course-catalog/course-catalog').then(m => m.CourseCatalog), canActivate: [contextGuard] },
-      { path: 'statistics-page/:courseId', loadComponent: () => import('./features/statistics-page/statistics-page').then(m => m.StatisticsPage), canActivate: [contextGuard] },
-      { path: 'chat-page', loadComponent: () => import('./features/chat-page/chat-page').then(m => m.ChatPage), canActivate: [contextGuard] },
-      { path: 'assign-page', loadComponent: () => import('./features/assign-page/assign-page').then(m => m.AssignPage), canActivate: [contextGuard] },
-      { path: 'planner/:courseId', loadComponent: () => import('./features/planner/planner').then(m => m.Planner)},
-      { path: 'pdf-preview/:courseId', component: PdfPreview }
+      // Option Page: Solo requiere autenticación
+      { 
+        path: 'option-page', 
+        loadComponent: () => import('./features/option-page/option-page').then(m => m.OptionPage) 
+      },
+
+      // Course Catalog: Requiere contexto válido (ITR + Campus)
+      { 
+        path: 'course-catalog', 
+        loadComponent: () => import('./features/course-catalog/course-catalog').then(m => m.CourseCatalog), 
+        canActivate: [contextGuard] 
+      },
+
+      // Planner: Solo TEACHERS pueden acceder Y solo a sus propios cursos
+      { 
+        path: 'planner/:courseId', 
+        loadComponent: () => import('./features/planner/planner').then(m => m.Planner),
+        canActivate: [contextGuard, roleGuard, courseAccessGuard],
+        data: { 
+          requiredRoles: [Role.TEACHER],
+          validateCourseOwnership: true 
+        }
+      },
+
+      // Statistics Page: TEACHERS (sus cursos) o ANALYST/COORDINATOR/EDUCATION_MANAGER (cursos de su campus)
+      { 
+        path: 'statistics-page/:courseId', 
+        loadComponent: () => import('./features/statistics-page/statistics-page').then(m => m.StatisticsPage), 
+        canActivate: [contextGuard, roleGuard],
+        data: { 
+          requiredRoles: [Role.TEACHER, Role.ANALYST, Role.COORDINATOR, Role.EDUCATION_MANAGER]
+        }
+      },
+
+      // Chat Page: Solo TEACHERS
+      { 
+        path: 'chat-page', 
+        loadComponent: () => import('./features/chat-page/chat-page').then(m => m.ChatPage), 
+        canActivate: [contextGuard, roleGuard],
+        data: { 
+          requiredRoles: [Role.TEACHER] 
+        }
+      },
+
+      // Assign Page: Solo ANALYST o COORDINATOR
+      { 
+        path: 'assign-page', 
+        loadComponent: () => import('./features/assign-page/assign-page').then(m => m.AssignPage), 
+        canActivate: [contextGuard, roleGuard],
+        data: { 
+          requiredRoles: [Role.ANALYST, Role.COORDINATOR] 
+        }
+      },
+
+      // PDF Preview: Requiere contexto pero no valida roles específicos
+      { 
+        path: 'pdf-preview/:courseId', 
+        component: PdfPreview,
+        canActivate: [contextGuard]
+      }
     ]
   },
 
+  // Redirect cualquier ruta no encontrada a home
   { path: '**', redirectTo: 'home' }
 ];

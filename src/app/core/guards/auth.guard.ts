@@ -3,6 +3,12 @@ import { AuthService } from '../services';
 import { inject } from '@angular/core';
 import { map, catchError, of } from 'rxjs';
 
+/**
+ * Guard básico de autenticación.
+ * Verifica que el usuario esté autenticado antes de permitir acceso a rutas protegidas.
+ * 
+ * Si no está autenticado, redirige a /home (página pública).
+ */
 export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -12,15 +18,19 @@ export const authGuard: CanActivateFn = () => {
       if (isAuthenticated) {
         return true;
       }
-      router.navigate(['/login']);
+      console.warn('[AuthGuard] User not authenticated, redirecting to home');
+      router.navigate(['/home']);
       return false;
     }),
     catchError(() => {
-      router.navigate(['/login']);
+      console.error('[AuthGuard] Error checking authentication status');
+      router.navigate(['/home']);
       return of(false);
     })
   );
 };
 
 export * from './context.guard';
+export * from './role.guard';
+export * from './course-access.guard';
 

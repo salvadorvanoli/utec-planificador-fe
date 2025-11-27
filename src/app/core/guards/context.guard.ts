@@ -35,45 +35,70 @@ export const contextGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
       return false;
     }
 
+  // Función helper para validar y construir contexto a partir de las posiciones cargadas
+  const validateAndSetContext = (loadedPositions: any): boolean => {
+    // Validar que el ITR exista en las posiciones del usuario
+    const matchingItr = loadedPositions.positions.find(
+      (position: any) => position.isActive &&
+                        position.regionalTechnologicalInstitute.id === itrIdNum
+    )?.regionalTechnologicalInstitute;
+
+    if (!matchingItr) {
+      console.warn('[ContextGuard] No matching ITR found in user positions');
+      router.navigate(['/option-page']);
+      return false;
+    }
+
+    // Validar que el campus exista en las posiciones del usuario para ese ITR
+    const matchingCampus = loadedPositions.positions
+      .filter((position: any) =>
+        position.isActive &&
+        position.regionalTechnologicalInstitute.id === itrIdNum
+      )
+      .flatMap((position: any) => position.campuses)
+      .find((campus: any) => campus.id === campusIdNum);
+
+    if (!matchingCampus) {
+      console.warn('[ContextGuard] No matching campus found in user positions');
+      router.navigate(['/option-page']);
+      return false;
+    }
+
+    // Construir y setear el contexto
+    const context = positionService.buildContextFromUrlParams(itrIdNum, campusIdNum);
+    if (context) {
+      console.log('[ContextGuard] Context validated and set:', { itrId: itrIdNum, campusId: campusIdNum });
+      positionService.selectedContext.set(context);
+      positionService.availableRoles.set(context.roles);
+      return true;
+    }
+
+    console.warn('[ContextGuard] Could not build context');
+    router.navigate(['/option-page']);
+    return false;
+  };
+
   const positions = positionService.userPositions();
 
+  // Si las posiciones no están cargadas (ej: refresh de página)
   if (!positions) {
+    console.log('[ContextGuard] Positions not loaded, fetching from server...');
+    
     return positionService.getUserPositions().pipe(
-      map(() => {
-        if (positionService.validateContext(itrIdNum, campusIdNum)) {
-          const context = positionService.buildContextFromUrlParams(itrIdNum, campusIdNum);
-          if (context) {
-            positionService.selectedContext.set(context);
-            positionService.availableRoles.set(context.roles);
-            return true;
-          }
-        }
-        router.navigate(['/option-page']);
-        return false;
+      map((loadedPositions) => {
+        console.log('[ContextGuard] Positions loaded successfully:', loadedPositions);
+        return validateAndSetContext(loadedPositions);
       }),
-      catchError(() => {
+      catchError((error) => {
+        console.error('[ContextGuard] Error loading positions:', error);
         router.navigate(['/option-page']);
         return of(false);
       })
     );
   }
 
-  // Validar que el contexto es válido
-  if (!positionService.validateContext(itrIdNum, campusIdNum)) {
-    router.navigate(['/option-page']);
-    return false;
-  }
-
-  // Construir y setear el contexto si es válido
-  const context = positionService.buildContextFromUrlParams(itrIdNum, campusIdNum);
-  if (context) {
-    positionService.selectedContext.set(context);
-    positionService.availableRoles.set(context.roles);
-    return true;
-  }
-
-  router.navigate(['/option-page']);
-  return false;
+  // Si las posiciones ya están cargadas, validar directamente
+  return validateAndSetContext(positions);
   } catch (error) {
     // Cualquier error inesperado, redirigir a selección de ITR
     console.error('[ContextGuard] Unexpected error:', error);
@@ -81,4 +106,3 @@ export const contextGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     return false;
   }
 };
-
