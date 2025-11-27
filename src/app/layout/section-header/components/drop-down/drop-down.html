@@ -10,7 +10,9 @@
     [dropdownIcon]="dropdownIcon()"
     class="w-full md:w-56"
     (onShow)="setDropdownState(true)"
-    (onHide)="setDropdownState(false)">
+    (onHide)="setDropdownState(false)"
+    emptyMessage="No se encontraron resultados"
+  >
 
     <ng-template pTemplate="item" let-option>
       <div class="logo-item" role="option" (click)="updateSelection(option.id)">
