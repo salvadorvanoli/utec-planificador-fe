@@ -1,23 +1,38 @@
-<div class="rectangle-9 flex gap-5" (click)="handleCardClick()">
+<div class="rectangle-9 flex flex-col sm:flex-row gap-4 sm:gap-5" 
+     [class.no-pointer]="mode() === 'management'"
+     [class.cursor-pointer]="mode() === 'info'"
+     [class.cursor-wait]="isGeneratingPdf()"
+     (click)="handleCardClick()">
   @if (isLoading()) {
     <!-- Skeletons -->
     <!-- Columna izquierda -->
-    <div class="flex flex-col gap-3 w-8/10">
-      <div class="flex gap-4">
-        <p-skeleton width="20%" height="24px"></p-skeleton>
-        @if (assignState() == false) {
-          <p-skeleton width="15%" height="20px"></p-skeleton>
-        }
+    <div class="flex flex-col gap-3 w-full sm:w-4/5">
+      <!-- Título + badge shift -->
+      <div class="flex gap-3 items-center">
+        <p-skeleton width="40%" height="24px"></p-skeleton>
+        <p-skeleton width="15%" height="20px" borderRadius="16px"></p-skeleton>
       </div>
       @if (assignState() == false) {
-        <p-skeleton width="15%" height="18px"></p-skeleton>
+        <!-- Program + Term -->
+        <div class="flex gap-4">
+          <p-skeleton width="30%" height="18px"></p-skeleton>
+          <p-skeleton width="25%" height="18px"></p-skeleton>
+        </div>
+        <!-- Rango de fechas -->
+        <p-skeleton width="45%" height="18px"></p-skeleton>
+        <!-- Docente -->
+        <p-skeleton width="35%" height="18px"></p-skeleton>
+        <!-- Última actualización -->
+        <p-skeleton width="40%" height="16px"></p-skeleton>
       }
     </div>
 
     <!-- Columna derecha -->
-    <div class="flex w-2/10 justify-center items-center">
+    <div class="flex w-full sm:w-1/5 justify-center sm:justify-center items-center">
       @if (assignState() == false) {
-        @if (shouldShowPdfIcon()) {
+        @if (isGeneratingPdf()) {
+          <i class="pi pi-spin pi-spinner text-2xl text-primary"></i>
+        } @else if (shouldShowPdfIcon()) {
           <p-skeleton width="24px" height="24px" shape="circle"></p-skeleton>
         }
       } @else {
@@ -27,26 +42,74 @@
   } @else {
     <!-- Contenido cuando no está cargando -->
     <!-- Columna izquierda -->
-    <div class="flex flex-col gap-2 w-8/10">
-      <span class="card-title font-bold">
-        {{ curricularUnitName() }}
-      </span>
+    <div class="flex flex-col gap-2 w-full sm:w-4/5">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="card-title font-bold">
+          {{ curricularUnitName() }}
+        </span>
+        @if (shift()) {
+          <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+            {{ shift() }}
+          </span>
+        }
+      </div>
+      @if (programName() || termName()) {
+        <div class="flex flex-wrap gap-2 text-sm text-gray-600">
+          @if (programName()) {
+            <span class="flex items-center gap-1">
+              <i class="pi pi-book text-xs"></i>
+              {{ programName() }}
+            </span>
+          }
+          @if (termName()) {
+            <span class="flex items-center gap-1">
+              <i class="pi pi-calendar text-xs"></i>
+              {{ termName() }}
+            </span>
+          }
+        </div>
+      }
+      @if (dateRange()) {
+        <span class="flex items-center gap-1 text-sm text-gray-600">
+          <i class="pi pi-calendar-clock text-xs"></i>
+          {{ dateRange() }}
+        </span>
+      }
       @if (assignState() == false && hasTeachers()) {
         <span class="card-professor-name text-gray-600">
-          Docente: {{ teacherName() }}
+          <i class="pi pi-user text-xs mr-1"></i>{{ teacherName() }}
         </span>
       }
       @if (assignState() == false) {
         <span class="card-last-update-date text-gray-500">
-          Última actualización: {{ formattedDate() }}
+          <i class="pi pi-clock text-xs mr-1"></i>Última actualización: {{ formattedDate() }}
         </span>
       }
     </div>
 
     <!-- Columna derecha -->
-    <div class="flex w-2/10 justify-center items-center">
+    <div class="flex w-full sm:w-1/5 justify-center sm:items-center">
       @if (assignState() == false) {
-        @if (shouldShowPdfIcon()) {
+        @if (mode() === 'management') {
+          <div class="management-buttons" (click)="$event.stopPropagation()">
+            <button 
+              (click)="onEdit($event)"
+              class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+              title="Editar curso"
+              aria-label="Editar curso">
+              <i class="pi pi-pencil text-xl"></i>
+            </button>
+            <button 
+              (click)="onDelete($event)"
+              class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+              title="Eliminar curso"
+              aria-label="Eliminar curso">
+              <i class="pi pi-trash text-xl"></i>
+            </button>
+          </div>
+        } @else if (isGeneratingPdf()) {
+          <i class="pi pi-spin pi-spinner text-2xl text-primary" aria-label="Generando PDF"></i>
+        } @else if (shouldShowPdfIcon()) {
           <i class="pi pi-file-pdf text-00A9E0-600 pdf-icon" aria-label="PDF"></i>
         }
       } @else {
@@ -55,3 +118,43 @@
     </div>
   }
 </div>
+
+<!-- Modal de confirmación de eliminación -->
+<p-dialog 
+  [(visible)]="showDeleteModal" 
+  [modal]="true" 
+  [closable]="true"
+  [style]="{ width: '500px' }"
+  header="Confirmar eliminación">
+  <div class="flex flex-col gap-4">
+    <div class="flex items-start gap-3">
+      <i class="pi pi-exclamation-triangle text-yellow-500 text-3xl"></i>
+      <div class="flex flex-col gap-2">
+        <p class="text-lg font-semibold">¿Estás seguro de que deseas eliminar este curso?</p>
+        <p class="text-gray-600">
+          Esta acción no se puede deshacer. Se eliminarán también todos los datos asociados al curso.
+        </p>
+      </div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-end">
+      <p-button 
+        label="Cancelar" 
+        icon="pi pi-times" 
+        (onClick)="cancelDelete()"
+        [text]="true"
+        severity="secondary">
+      </p-button>
+      <p-button 
+        label="Eliminar" 
+        icon="pi pi-trash" 
+        (onClick)="confirmDelete()"
+        severity="danger">
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Toast para mensajes -->
+<p-toast></p-toast>

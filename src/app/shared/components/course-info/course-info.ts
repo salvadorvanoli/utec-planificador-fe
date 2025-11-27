@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Skeleton } from 'primeng/skeleton';
 import { Selector } from '@app/shared/components/select/select';
 import { ButtonComponent } from '@app/shared/components/button/button';
+import { DatePickerComponent } from '@app/shared/components/datepicker/datepicker';
 import { EnumService, EnumResponse, CourseService } from '@app/core/services';
 import { TagsBox } from './components/tags-box/tags-box';
 import { ExpandedInfo } from './components/expanded-info/expanded-info';
@@ -12,11 +13,10 @@ import { OfficeHours } from './components/office-hours/office-hours';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { Course, CourseRequest } from '@app/core/models';
-import { DatePicker } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-course-info',
-  imports: [FloatLabel, Selector, InputTextModule, FormsModule, Skeleton, TagsBox, Toast, ButtonComponent, ExpandedInfo, OfficeHours, DatePicker],
+  imports: [FloatLabel, Selector, InputTextModule, FormsModule, Skeleton, TagsBox, Toast, ButtonComponent, ExpandedInfo, OfficeHours, DatePickerComponent],
   providers: [MessageService],
   templateUrl: './course-info.html',
   styleUrl: './course-info.scss',
@@ -85,8 +85,8 @@ export class CourseInfo implements OnInit {
 
   // Computed tags for display
   odsTags = computed(() => {
-    const course = this.courseData();
-    if (this.isCreationMode()) {
+    // En modo admin (creación o edición), usar los signals locales
+    if (this.isAdminMode()) {
       return this.selectedOds()
         .map((value: string) => {
           const option = this.odsOptions().find(opt => opt.value === value);
@@ -94,6 +94,8 @@ export class CourseInfo implements OnInit {
         });
     }
     
+    // En modo lectura (planner), usar los datos del curso
+    const course = this.courseData();
     if (!course || !course.sustainableDevelopmentGoals) return [];
     
     return course.sustainableDevelopmentGoals
@@ -104,8 +106,8 @@ export class CourseInfo implements OnInit {
   });
 
   principlesTags = computed(() => {
-    const course = this.courseData();
-    if (this.isCreationMode()) {
+    // En modo admin (creación o edición), usar los signals locales
+    if (this.isAdminMode()) {
       return this.selectedPrinciples()
         .map((value: string) => {
           const option = this.principlesOptions().find(opt => opt.value === value);
@@ -113,6 +115,8 @@ export class CourseInfo implements OnInit {
         });
     }
     
+    // En modo lectura (planner), usar los datos del curso
+    const course = this.courseData();
     if (!course || !course.universalDesignLearningPrinciples) return [];
     
     return course.universalDesignLearningPrinciples
@@ -165,20 +169,26 @@ export class CourseInfo implements OnInit {
         this.startDate.set(data.startDate ? new Date(data.startDate) : null);
         this.endDate.set(data.endDate ? new Date(data.endDate) : null);
         this.partialGradingSystem.set(data.partialGradingSystem || '');
-        this.isRelatedToInvestigation = signal(data.isRelatedToInvestigation || false);
-        this.involvesActivitiesWithProductiveSector = signal(data.involvesActivitiesWithProductiveSector || false);
+        // Note: isRelatedToInvestigation and involvesActivitiesWithProductiveSector are computed signals
+        // They automatically update when courseData() changes, so we don't set them here
         
         const hoursMap = data.hoursPerDeliveryFormat;
         this.virtualHours.set(hoursMap?.['VIRTUAL']?.toString() || '');
         this.inPersonHours.set(hoursMap?.['IN_PERSON']?.toString() || '');
+        
+        // Update ODS and Principles for admin mode editing
+        if (this.isAdminMode()) {
+          this.selectedOds.set(data.sustainableDevelopmentGoals || []);
+          this.selectedPrinciples.set(data.universalDesignLearningPrinciples || []);
+        }
       }
     });
   }
 
   // Métodos para manejar tags
   removeOdsTag(tag: string): void {
-    if (this.isCreationMode()) {
-      // In creation mode, remove from local selection
+    // En modo admin (creación o edición), solo actualizar signals locales
+    if (this.isAdminMode()) {
       const option = this.odsOptions().find(opt => opt.displayValue === tag);
       if (option) {
         this.selectedOds.update(current => current.filter(v => v !== option.value));
@@ -231,8 +241,8 @@ export class CourseInfo implements OnInit {
   }
 
   removePrincipleTag(tag: string): void {
-    if (this.isCreationMode()) {
-      // In creation mode, remove from local selection
+    // En modo admin (creación o edición), solo actualizar signals locales
+    if (this.isAdminMode()) {
       const option = this.principlesOptions().find(opt => opt.displayValue === tag);
       if (option) {
         this.selectedPrinciples.update(current => current.filter(v => v !== option.value));
@@ -285,8 +295,8 @@ export class CourseInfo implements OnInit {
   }
 
   addOdsTag(value: string): void {
-    if (this.isCreationMode()) {
-      // In creation mode, add to local selection
+    // En modo admin (creación o edición), solo actualizar signals locales
+    if (this.isAdminMode()) {
       if (!this.selectedOds().includes(value)) {
         this.selectedOds.update(current => [...current, value]);
       }
@@ -337,8 +347,8 @@ export class CourseInfo implements OnInit {
   }
 
   addPrincipleTag(value: string): void {
-    if (this.isCreationMode()) {
-      // In creation mode, add to local selection
+    // En modo admin (creación o edición), solo actualizar signals locales
+    if (this.isAdminMode()) {
       if (!this.selectedPrinciples().includes(value)) {
         this.selectedPrinciples.update(current => [...current, value]);
       }
@@ -390,16 +400,13 @@ export class CourseInfo implements OnInit {
 
   // Método para manejar cambio de SCP
   onScpChange(value: string): void {
-    this.partialGradingSystem.set(value); // Actualizar signal primero
+    this.partialGradingSystem.set(value);
     
-    if (this.isCreationMode()) return; // En modo creación, solo actualizar signal
+    // En modo admin (creación o edición), solo actualizar signal local
+    if (this.isAdminMode()) return;
 
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
-    
-    console.log('[onScpChange] courseId:', courseId);
-    console.log('[onScpChange] courseData:', courseData);
-    console.log('[onScpChange] curricularUnit:', courseData?.curricularUnit);
     
     if (!courseId || !courseData) {
       console.error('No course data available');
@@ -440,14 +447,11 @@ export class CourseInfo implements OnInit {
   }
 
   onHoursChange(): void {
-    if (this.isCreationMode()) return;
+    // En modo admin (creación o edición), solo actualizar signals locales
+    if (this.isAdminMode()) return;
     
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
-    
-    console.log('[onHoursChange] courseId:', courseId);
-    console.log('[onHoursChange] courseData:', courseData);
-    console.log('[onHoursChange] curricularUnit:', courseData?.curricularUnit);
     
     if (!courseId || !courseData) {
       console.error('No course data available');
@@ -490,12 +494,11 @@ export class CourseInfo implements OnInit {
 
   // Método para manejar cambio de investigación
   onInvestigationChange(value: string): void {
+    // En modo admin (creación o edición), solo actualizar signals locales
+    if (this.isAdminMode()) return;
+
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
-    
-    console.log('[onInvestigationChange] courseId:', courseId);
-    console.log('[onInvestigationChange] courseData:', courseData);
-    console.log('[onInvestigationChange] curricularUnit:', courseData?.curricularUnit);
     
     if (!courseId || !courseData) {
       console.error('No course data available');
@@ -532,12 +535,11 @@ export class CourseInfo implements OnInit {
   
   // Método para manejar cambio de actividades con sector productivo
   onProductiveSectorChange(value: string): void {
+    // En modo admin (creación o edición), solo actualizar signals locales
+    if (this.isAdminMode()) return;
+
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
-    
-    console.log('[onProductiveSectorChange] courseId:', courseId);
-    console.log('[onProductiveSectorChange] courseData:', courseData);
-    console.log('[onProductiveSectorChange] curricularUnit:', courseData?.curricularUnit);
     
     if (!courseId || !courseData) {
       console.error('No course data available');
@@ -574,6 +576,9 @@ export class CourseInfo implements OnInit {
 
   // Método para manejar cambio de descripción
   onDescriptionChange(): void {
+    // En modo admin (creación o edición), solo actualizar signal local
+    if (this.isAdminMode()) return;
+
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
     
@@ -627,7 +632,30 @@ export class CourseInfo implements OnInit {
   }
 
   // Método auxiliar para construir CourseRequest desde Course actual
-  private buildCourseRequest(course: Course): CourseRequest {
+  private buildCourseRequest(course: Course | null): CourseRequest {
+    if (!course) {
+      throw new Error('Course data is required to build request');
+    }
+
+    // Get curricularUnitId from course or from input (creation mode)
+    const curricularUnitId = course.curricularUnit?.id ?? this.curricularUnitId();
+    if (!curricularUnitId) {
+      throw new Error('Curricular unit ID is required');
+    }
+    
+    // Get userIds from course teachers or from input (creation mode)
+    let userIds: number[];
+    if (course.teachers && course.teachers.length > 0) {
+      userIds = course.teachers.map(t => t.id);
+    } else {
+      userIds = this.teacherIds();
+    }
+
+    // Validate that we have at least one teacher
+    if (!userIds || userIds.length === 0) {
+      throw new Error('At least one teacher is required');
+    }
+
     return {
       shift: course.shift,
       description: course.description,
@@ -639,8 +667,8 @@ export class CourseInfo implements OnInit {
       involvesActivitiesWithProductiveSector: course.involvesActivitiesWithProductiveSector,
       sustainableDevelopmentGoals: course.sustainableDevelopmentGoals,
       universalDesignLearningPrinciples: course.universalDesignLearningPrinciples,
-      curricularUnitId: course.curricularUnit.id || (course as any).curricularUnitId,
-      userIds: course.teachers?.map(t => t.id) || [],
+      curricularUnitId,
+      userIds,
     };
   }
 
@@ -752,12 +780,6 @@ export class CourseInfo implements OnInit {
     this.courseService.createCourse(courseRequest).subscribe({
       next: (createdCourse) => {
         this.onCourseCreated.emit(createdCourse);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Curso creado',
-          detail: 'El curso se creó correctamente',
-          life: 3000
-        });
       },
       error: (err) => {
         console.error('Error creating course:', err);
@@ -777,6 +799,162 @@ export class CourseInfo implements OnInit {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  // Method to update an existing course (admin mode only)
+  updateCourse(): void {
+    if (this.isCreationMode()) {
+      console.error('updateCourse called in creation mode');
+      return;
+    }
+
+    const courseData = this.courseData();
+    const courseId = courseData?.id;
+
+    if (!courseId || !courseData) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se encontró el curso a actualizar',
+        life: 3000
+      });
+      return;
+    }
+
+    // Validate that the course has not finished
+    const endDate = courseData.endDate ? new Date(courseData.endDate) : null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to compare dates only
+    
+    if (endDate && endDate < today) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'No se puede editar',
+        detail: 'No se puede modificar un curso que ya ha finalizado',
+        life: 3000
+      });
+      return;
+    }
+
+    // Validate required date fields
+    if (!this.startDate() || !this.endDate()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Campos incompletos',
+        detail: 'Las fechas de inicio y fin son obligatorias',
+        life: 3000
+      });
+      return;
+    }
+
+    if (this.startDate()! > this.endDate()!) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Fechas inválidas',
+        detail: 'La fecha de inicio no puede ser posterior a la fecha de fin',
+        life: 3000
+      });
+      return;
+    }
+
+    // Validate shift (now required)
+    if (!this.shift()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Campos incompletos',
+        detail: 'El turno es obligatorio',
+        life: 3000
+      });
+      return;
+    }
+
+    // Get curricularUnitId and teacherIds from existing course
+    const curricularUnitId = courseData.curricularUnit?.id;
+    const teacherIds = courseData.teachers?.map(t => t.id) || [];
+
+    if (!curricularUnitId) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se encontró la unidad curricular del curso',
+        life: 3000
+      });
+      return;
+    }
+
+    if (teacherIds.length === 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'El curso debe tener al menos un docente',
+        life: 3000
+      });
+      return;
+    }
+
+    // Build request with required fields
+    const courseRequest: CourseRequest = {
+      shift: this.shift()!,
+      startDate: this.formatDateForBackend(this.startDate()!),
+      endDate: this.formatDateForBackend(this.endDate()!),
+      curricularUnitId: curricularUnitId,
+      userIds: teacherIds
+    };
+
+    // Add optional fields
+    if (this.description()) {
+      courseRequest.description = this.description();
+    }
+
+    if (this.partialGradingSystem()) {
+      courseRequest.partialGradingSystem = this.partialGradingSystem();
+    }
+
+    const virtualHours = parseInt(this.virtualHours()) || 0;
+    const inPersonHours = parseInt(this.inPersonHours()) || 0;
+    if (virtualHours > 0 || inPersonHours > 0) {
+      courseRequest.hoursPerDeliveryFormat = {
+        VIRTUAL: virtualHours,
+        IN_PERSON: inPersonHours
+      };
+    }
+
+    if (this.isRelatedToInvestigation()) {
+      courseRequest.isRelatedToInvestigation = this.isRelatedToInvestigation();
+    }
+
+    if (this.involvesActivitiesWithProductiveSector()) {
+      courseRequest.involvesActivitiesWithProductiveSector = this.involvesActivitiesWithProductiveSector();
+    }
+
+    // Use the signals that are updated when admin adds/removes tags
+    if (this.selectedOds().length > 0) {
+      courseRequest.sustainableDevelopmentGoals = this.selectedOds();
+    } else {
+      courseRequest.sustainableDevelopmentGoals = [];
+    }
+
+    if (this.selectedPrinciples().length > 0) {
+      courseRequest.universalDesignLearningPrinciples = this.selectedPrinciples();
+    } else {
+      courseRequest.universalDesignLearningPrinciples = [];
+    }
+
+    this.courseService.updateCourse(courseId, courseRequest).subscribe({
+      next: (updatedCourse) => {
+        this.onCourseUpdated.emit(updatedCourse);
+      },
+      error: (err) => {
+        console.error('Error updating course:', err);
+        const errorMessage = err.error?.message || 'No se pudo actualizar el curso';
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: errorMessage,
+          life: 3000
+        });
+      }
+    });
   }
 
   /**

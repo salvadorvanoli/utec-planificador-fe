@@ -31,44 +31,6 @@ $border-radius: 15px;
   box-shadow: 0 0 0 0.2rem rgba(56, 55, 55, 0.25) !important;
 }
 
-:host ::ng-deep .p-datepicker-input {
-  border: $border-width solid $border-color !important;
-  color: $text-color !important;
-}
-
-:host ::ng-deep .p-datepicker-input:enabled:hover {
-  border-color: $border-color !important;
-  color: $text-color !important;
-}
-
-:host ::ng-deep .p-datepicker-input:enabled:focus {
-  border-color: $border-color !important;
-  color: $text-color !important;
-  box-shadow: 0 0 0 0.2rem rgba(56, 55, 55, 0.25) !important;
-}
-
-:host ::ng-deep p-datepicker {
-  display: block !important;
-  width: 100% !important;
-}
-
-:host ::ng-deep p-datepicker .p-datepicker-input-icon-container {
-  width: 100% !important;
-}
-
-:host ::ng-deep p-datepicker .p-datepicker-input {
-  width: 100% !important;
-}
-
- 
-:host ::ng-deep .p-floatlabel label {
-  color: rgba(26, 26, 26, 0.6) !important;
-}
-
-:host ::ng-deep .p-floatlabel:has(.p-inputtext:focus) label {
-  color: $text-color !important;
-}
-
  
 :host ::ng-deep app-select .p-select,
 :host ::ng-deep app-select .p-dropdown,

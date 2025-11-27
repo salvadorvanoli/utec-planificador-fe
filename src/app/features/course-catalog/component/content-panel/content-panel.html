@@ -7,11 +7,11 @@
       @if (isLoading()) {
         @for (item of [1, 2, 3]; track item) {
           <div class="flex gap-4 p-5 bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="flex items-center justify-center w-2/10">
+            <div class="flex items-center justify-center w-1/5">
               <p-skeleton width="100%" height="120px" borderRadius="8px"></p-skeleton>
             </div>
             
-            <div class="flex flex-col gap-3 w-8/10 justify-center">
+            <div class="flex flex-col gap-3 w-4/5 justify-center">
               <div class="flex gap-4">
                 <p-skeleton width="40%" height="24px"></p-skeleton>
                 <p-skeleton width="30%" height="20px"></p-skeleton>
@@ -32,7 +32,8 @@
           <app-course-card 
             [assign]="false" 
             [docente]="docente()" 
-            [course]="course">
+            [course]="course"
+            [mode]="mode()">
           </app-course-card>
         }
       }
@@ -44,4 +45,15 @@
       [first]="currentPage() * pageSize()"
       (onPageChange)="onPageChange($event)">
     </app-paginator>
+    
+    @if (mode() === 'management') {
+      <div class="flex justify-center mt-4">
+        <button 
+          (click)="onCreateCourse()"
+          class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+          <i class="pi pi-plus"></i>
+          <span>Crear curso</span>
+        </button>
+      </div>
+    }
 </div>

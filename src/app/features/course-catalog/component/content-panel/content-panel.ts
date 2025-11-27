@@ -2,10 +2,12 @@ import { Component, effect, inject, input, signal } from '@angular/core';
 import { CourseCard } from '../../../../shared/components/course-card/course-card';
 import { Searchbar } from '../../../../shared/components/searchbar/searchbar';
 import { Paginator } from '../../../../shared/components/paginator/paginator';
-import { CourseService, FilterStateService, AuthService } from '@app/core/services';
+import { CourseService, FilterStateService, AuthService, PositionService } from '@app/core/services';
 import { CourseBasicResponse } from '@app/core/models';
 import { PaginatorState } from 'primeng/paginator';
 import { Skeleton } from 'primeng/skeleton';
+import { Router, ActivatedRoute } from '@angular/router';
+import { buildContextQueryParams } from '@app/shared/utils/context-encoder';
 
 @Component({
   selector: 'app-content-panel',
@@ -17,8 +19,12 @@ export class ContentPanel {
   private readonly courseService = inject(CourseService);
   private readonly filterStateService = inject(FilterStateService);
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly positionService = inject(PositionService);
 
   readonly docente = input<boolean>(false);
+  readonly mode = input<'planner' | 'statistics' | 'info' | 'management' | null>(null);
   
   readonly courses = signal<CourseBasicResponse[]>([]);
   readonly totalRecords = signal<number>(0);
@@ -85,5 +91,21 @@ export class ContentPanel {
     this.currentPage.set(event.page ?? 0);
     this.pageSize.set(event.rows ?? 10);
     this.loadCourses();
+  }
+
+  onCreateCourse(): void {
+    const context = this.positionService.selectedContext();
+    if (!context) {
+      console.warn('[ContentPanel] No context available for creating course');
+      return;
+    }
+
+    const queryParams = buildContextQueryParams({
+      itrId: context.itr.id,
+      campusId: context.campus.id,
+      isEdit: false
+    });
+
+    this.router.navigate(['/assign-page'], { queryParams });
   }
 }

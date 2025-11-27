@@ -1,11 +1,11 @@
 <app-section-header
-    text="Crear curso"
+    [text]="pageTitle()"
     [color]="'blue'"
     [showIcon]="true"
     [infoType]="InfoType.ASSIGN_COURSES"
 />
 
-<div class="row mt-4 mb-10 grid grid-cols-1 md:grid-cols-2 gap-10 w-8/10 mx-auto align-items-stretch">
+<div class="row mt-4 mb-10 grid grid-cols-1 md:grid-cols-2 gap-10 w-4/5 mx-auto align-items-stretch">
   <!-- Teacher Selection (Multiple) -->
   <div>
     <label for="select_teachers" class="block text-sm font-medium mb-1">
@@ -39,7 +39,7 @@
     } @else {
       <app-select 
         id="select_curricular_unit"
-        [color]="'black'" 
+        [color]="'blue'" 
         [placeholder]="'Seleccione una unidad curricular'"
         [options]="curricularUnitOptions()"
         [selectedValue]="selectedCurricularUnit()"
@@ -50,30 +50,31 @@
   </div>
 </div>
 
-<!-- Course Info Component (Creation Mode) -->
+<!-- Course Info Component -->
 <app-course-info
-  [courseData]="null"
-  [isLoading]="false"
+  [courseData]="isEditMode() ? courseData() : null"
+  [isLoading]="isLoadingCourse()"
   [isAdminMode]="true"
   [curricularUnitId]="selectedCurricularUnit() ? +selectedCurricularUnit() : null"
   [teacherIds]="selectedTeacherIds()"
   (onCourseCreated)="onCourseCreated($event)"
+  (onCourseUpdated)="onCourseUpdated($event)"
 ></app-course-info>
 
-<!-- Create Button -->
-<div class="mt-4 mb-10 w-8/10 mx-auto">
-@if (isFormValid()) {
+<!-- Create/Update Button -->
+<div class="mt-4 mb-10 w-4/5 mx-auto">
+@if (isFormValid() || isEditMode()) {
   <app-button
-    label="Crear curso"
+    [label]="buttonLabel()"
     [color]="'blue'"
     fontFamily="'UTEC Text Light', Arial, sans-serif"
     fontWeight="300"
     fontSize="1.5rem"
-    (onClick)="onCreateCourse()"
+    (onClick)="onCreateOrUpdateCourse()"
   ></app-button>
 } @else {
   <app-button
-    label="Crear curso"
+    [label]="buttonLabel()"
     [color]="'black'"
     fontFamily="'UTEC Text Light', Arial, sans-serif"
     fontWeight="300"

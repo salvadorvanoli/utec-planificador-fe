@@ -7,7 +7,9 @@ import { InfoType } from '@app/core/enums/info';
 import { CourseInfo } from '@app/shared/components/course-info/course-info';
 import { PositionService, CurricularUnitService, UserService, CourseService } from '@app/core/services';
 import { CurricularUnitResponse, UserBasicResponse, Course } from '@app/core/models';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { buildContextQueryParams, extractContextFromUrl } from '@app/shared/utils/context-encoder';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-assign-page',
@@ -25,7 +27,14 @@ export class AssignPage implements OnInit {
   private readonly userService = inject(UserService);
   private readonly courseService = inject(CourseService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly messageService = inject(MessageService);
 
+  readonly isEditMode = signal<boolean>(false);
+  readonly courseId = signal<number | null>(null);
+  readonly courseData = signal<Course | null>(null);
+  readonly isLoadingCourse = signal<boolean>(false);
+  
   readonly curricularUnits = signal<CurricularUnitResponse[]>([]);
   readonly teachers = signal<UserBasicResponse[]>([]);
   readonly selectedCurricularUnit = signal<string>('');
@@ -33,6 +42,14 @@ export class AssignPage implements OnInit {
   readonly isLoadingCurricularUnits = signal<boolean>(true);
   readonly isLoadingTeachers = signal<boolean>(true);
   readonly latestCourse = signal<Course | null>(null);
+  
+  readonly pageTitle = computed(() => 
+    this.isEditMode() ? 'Editar curso' : 'Crear curso'
+  );
+  
+  readonly buttonLabel = computed(() => 
+    this.isEditMode() ? 'Guardar cambios' : 'Crear curso'
+  );
 
   readonly curricularUnitOptions = computed<EnumOption[]>(() => 
     this.curricularUnits().map(cu => ({
@@ -57,8 +74,11 @@ export class AssignPage implements OnInit {
   );
 
   constructor() {
-    // Effect para autocompletar campos cuando se selecciona unidad curricular y al menos un docente
+    // Effect para autocompletar campos cuando se selecciona unidad curricular y al menos un docente (solo en modo creación)
     effect(() => {
+      // Skip autocomplete in edit mode
+      if (this.isEditMode()) return;
+      
       const curricularUnitId = this.selectedCurricularUnit();
       const teacherIds = this.selectedTeachers();
       
@@ -94,7 +114,21 @@ export class AssignPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData();
+    // Check encrypted context to determine if we're editing or creating
+    this.route.queryParams.subscribe(params => {
+      const context = extractContextFromUrl(params);
+      const isEdit = context?.isEdit === true;
+      const courseId = context?.courseId ?? null;
+      
+      this.isEditMode.set(isEdit);
+      this.courseId.set(courseId);
+      
+      if (isEdit && courseId) {
+        this.loadCourseForEdit(courseId);
+      } else {
+        this.loadData();
+      }
+    });
   }
 
   private loadData(): void {
@@ -144,16 +178,95 @@ export class AssignPage implements OnInit {
     console.log('Teachers selected:', teacherIds);
   }
 
-  onCreateCourse(): void {
+  private loadCourseForEdit(courseId: number): void {
+    this.isLoadingCourse.set(true);
+    
+    this.courseService.getCourseById(courseId).subscribe({
+      next: (course) => {
+        console.log('Course loaded for editing:', course);
+        this.courseData.set(course);
+        
+        // Pre-select curricular unit and teachers
+        this.selectedCurricularUnit.set(course.curricularUnit.id.toString());
+        this.selectedTeachers.set(course.teachers.map(t => t.id.toString()));
+        
+        this.isLoadingCourse.set(false);
+        
+        // Load data after setting the course
+        this.loadData();
+      },
+      error: (error) => {
+        console.error('Error loading course:', error);
+        this.isLoadingCourse.set(false);
+        // Redirect back to catalog on error
+        const context = this.positionService.selectedContext();
+        if (context) {
+          const queryParams = buildContextQueryParams({
+            itrId: context.itr.id,
+            campusId: context.campus.id,
+            mode: 'management'
+          });
+          this.router.navigate(['/course-catalog'], { queryParams });
+        }
+      }
+    });
+  }
+
+  onCreateOrUpdateCourse(): void {
     if (this.courseInfoComponent) {
-      this.courseInfoComponent.createCourse();
+      if (this.isEditMode()) {
+        // In edit mode, call updateCourse method
+        this.courseInfoComponent.updateCourse();
+      } else {
+        this.courseInfoComponent.createCourse();
+      }
     }
   }
 
   onCourseCreated(course: Course): void {
     console.log('Course created successfully:', course);
-    // Redirect to planner with the new course
-    this.router.navigate(['/planner', course.id]);
+    
+    // Show success message
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Curso creado',
+      detail: 'El curso se creó correctamente',
+      life: 3000
+    });
+    
+    // Redirect back to course catalog in management mode
+    const context = this.positionService.selectedContext();
+    if (context) {
+      const queryParams = buildContextQueryParams({
+        itrId: context.itr.id,
+        campusId: context.campus.id,
+        mode: 'management'
+      });
+      this.router.navigate(['/course-catalog'], { queryParams });
+    }
+  }
+
+  onCourseUpdated(course: Course): void {
+    console.log('Course updated successfully:', course);
+    
+    // Show success message
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Curso actualizado',
+      detail: 'Los cambios se guardaron correctamente',
+      life: 3000
+    });
+    
+    // Redirect back to course catalog in management mode
+    const context = this.positionService.selectedContext();
+    if (context) {
+      const queryParams = buildContextQueryParams({
+        itrId: context.itr.id,
+        campusId: context.campus.id,
+        mode: 'management'
+      });
+      this.router.navigate(['/course-catalog'], { queryParams });
+    }
   }
 }
 

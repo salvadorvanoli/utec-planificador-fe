@@ -1,6 +1,6 @@
 <p-toast />
 
-<div class="row w-8/10 items-center mx-auto">
+<div class="row w-4/5 items-center mx-auto">
   @if (isLoading()) {
     <p-skeleton width="100%" height="3rem"></p-skeleton>
   } @else {
@@ -18,7 +18,7 @@
   }
 </div>
 
-<div class="row mt-4 mb-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-8/10 mx-auto align-items-stretch">
+<div class="row mt-4 mb-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-4/5 mx-auto align-items-stretch">
   @if (isLoading()) {
     <!-- Skeletons para columna izquierda -->
     <div class="flex flex-col gap-3 left-column">
@@ -93,25 +93,22 @@
       <!-- Admin fields: Start and End Dates -->
       @if (isAdminMode()) {
         <div class="grid grid-cols-2 gap-2">
-          <p-floatlabel variant="in" class="w-full">
-            <p-datepicker 
-              inputId="start_date" 
-              [(ngModel)]="startDate"
-              dateFormat="dd/mm/yy"
-              class="w-full"
-            />
-            <label for="start_date">Fecha de inicio</label>
-          </p-floatlabel>
+          <app-datepicker
+            id="start_date"
+            [label]="'Fecha de inicio'"
+            [(selectedDate)]="startDate"
+            [dateFormat]="'dd/mm/yy'"
+            [placeholder]="'Seleccionar fecha'"
+          />
 
-          <p-floatlabel variant="in" class="w-full">
-            <p-datepicker 
-              inputId="end_date" 
-              [(ngModel)]="endDate"
-              dateFormat="dd/mm/yy"
-              class="w-full"
-            />
-            <label for="end_date">Fecha de fin</label>
-          </p-floatlabel>
+          <app-datepicker
+            id="end_date"
+            [label]="'Fecha de fin'"
+            [(selectedDate)]="endDate"
+            [dateFormat]="'dd/mm/yy'"
+            [placeholder]="'Seleccionar fecha'"
+            [minDate]="startDate()"
+          />
         </div>
       }
 
@@ -204,18 +201,20 @@
       </div>
 
       <!-- Botones de acción alineados a la derecha -->
-      <div class="flex flex-col sm:flex-row gap-3 justify-end">
-        <app-button
-          [color]="'blue'"
-          [label]="'Clases de consulta'"
-          (onClick)="onConsultClassesClick()"
-        />
-        <app-button
-          [color]="'blue'"
-          [label]="'Más información'"
-          (onClick)="onMoreInfoClick()"
-        />
-      </div>
+      @if (!isAdminMode()) {
+        <div class="flex flex-col sm:flex-row gap-3 justify-end">
+          <app-button
+            [color]="'blue'"
+            [label]="'Clases de consulta'"
+            (onClick)="onConsultClassesClick()"
+          />
+          <app-button
+            [color]="'blue'"
+            [label]="'Más información'"
+            (onClick)="onMoreInfoClick()"
+          />
+        </div>
+      }
     </div>
   }
 </div>

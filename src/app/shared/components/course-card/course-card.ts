@@ -3,32 +3,39 @@ import { FormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Skeleton } from 'primeng/skeleton';
+import { Dialog } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
 import { Course, CourseBasicResponse } from '@app/core/models';
 import { extractContextFromUrl, buildContextQueryParams } from '@app/shared/utils/context-encoder';
-
-type NavigationMode = 'planner' | 'statistics' | 'info' | 'none';
+import { CourseService, PositionService, PdfService } from '@app/core/services';
+import { MessageService } from 'primeng/api';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-course-card',
-  imports: [CheckboxModule, FormsModule, Skeleton],
+  imports: [CheckboxModule, FormsModule, Skeleton, Dialog, ButtonModule, Toast],
+  providers: [MessageService],
   templateUrl: './course-card.html',
   styleUrl: './course-card.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    '(click)': 'handleCardClick()'
-  }
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CourseCard {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly courseService = inject(CourseService);
+  private readonly positionService = inject(PositionService);
+  private readonly messageService = inject(MessageService);
+  private readonly pdfService = inject(PdfService);
 
   checked = signal(false);
   readonly assign = input<boolean>(false);
   readonly docente = input<boolean>(false);
   readonly course = input<Course | CourseBasicResponse | null>(null);
+  readonly mode = input<'planner' | 'statistics' | 'info' | 'management' | null>(null);
   readonly assignState = signal(this.assign());
   isLoading = signal(true);
-  private navigationMode = signal<NavigationMode>('none');
+  readonly showDeleteModal = signal(false);
+  readonly isGeneratingPdf = signal(false);
 
   readonly hasTeachers = computed(() => {
     const courseData = this.course();
@@ -60,21 +67,71 @@ export class CourseCard {
 
     const teacher = courseData.teachers[0];
     
-    // Check if it's a CourseBasicResponse (teachers are UserBasicResponse[])
+    // Both Course and CourseBasicResponse use UserBasicResponse[]
     if ('fullName' in teacher) {
       return teacher.fullName || teacher.email || 'Sin información';
     }
-    
-    // Otherwise it's a Course (teachers are Teacher[] with user property)
-    if ('user' in teacher && teacher.user) {
-      const { personalData, utecEmail } = teacher.user;
-      if (personalData?.firstName && personalData?.lastName) {
-        return `${personalData.firstName} ${personalData.lastName}`;
-      }
-      return utecEmail || 'Sin información';
-    }
 
     return 'Sin docente asignado';
+  });
+
+  readonly shift = computed(() => {
+    const courseData = this.course();
+    if (!courseData) return null;
+    return courseData.shift || null;
+  });
+
+  readonly termName = computed(() => {
+    const courseData = this.course();
+    if (!courseData) return null;
+    
+    // Check if it's CourseBasicResponse (has termName directly)
+    if ('termName' in courseData) {
+      return courseData.termName || null;
+    }
+    
+    // Otherwise it's a Course - term information not directly available
+    return null;
+  });
+
+  readonly programName = computed(() => {
+    const courseData = this.course();
+    if (!courseData) return null;
+    
+    // Check if it's CourseBasicResponse (has programName directly)
+    if ('programName' in courseData) {
+      return courseData.programName || null;
+    }
+    
+    // Otherwise it's a Course - program information not directly available
+    return null;
+  });
+
+  readonly dateRange = computed(() => {
+    const courseData = this.course();
+    if (!courseData) return null;
+
+    const startDate = courseData.startDate;
+    const endDate = courseData.endDate;
+
+    if (!startDate || !endDate) return null;
+
+    try {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const options: Intl.DateTimeFormatOptions = {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      };
+      
+      const startFormatted = start.toLocaleDateString('es-UY', options);
+      const endFormatted = end.toLocaleDateString('es-UY', options);
+      
+      return `${startFormatted} - ${endFormatted}`;
+    } catch {
+      return null;
+    }
   });
 
   readonly formattedDate = computed(() => {
@@ -118,31 +175,22 @@ export class CourseCard {
     return 'Sin fecha';
   });
 
-  shouldShowPdfIcon = () => this.navigationMode() === 'info';
+  shouldShowPdfIcon = () => this.mode() === 'info';
 
   constructor() {
     effect(() => {
       this.assignState.set(this.assign());
     });
-
-    this.route.queryParams.subscribe(params => {
-      const mode = params['mode'];
-
-      if (mode === 'planner') {
-        this.navigationMode.set('planner');
-      } else if (mode === 'statistics') {
-        this.navigationMode.set('statistics');
-      } else if (mode === 'info') {
-        this.navigationMode.set('info');
-      } else {
-        const isDocente = this.docente();
-        this.navigationMode.set(isDocente ? 'planner' : 'none');
-      }
-    });
   }
 
   handleCardClick(): void {
-    const mode = this.navigationMode();
+    const mode = this.mode();
+    
+    // In management mode, disable card click - only buttons should work
+    if (mode === 'management') {
+      return;
+    }
+
     const courseData = this.course();
     
     if (!courseData?.id) {
@@ -170,8 +218,115 @@ export class CourseCard {
     } else if (mode === 'statistics') {
       this.router.navigate(['/statistics-page', courseData.id], { queryParams });
     } else if (mode === 'info') {
-      // TODO: Future implementation for 'info' mode can be added here
+      // Download PDF for the course
+      this.downloadCoursePdf();
     }
+  }
+
+  async downloadCoursePdf(): Promise<void> {
+    const courseData = this.course();
+    
+    if (!courseData?.id) {
+      console.warn('[CourseCard] No course ID available for PDF download');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'No se pudo obtener el ID del curso',
+        life: 3000
+      });
+      return;
+    }
+
+    this.isGeneratingPdf.set(true);
+
+    try {
+      await this.pdfService.generateCoursePdf(courseData.id);
+      console.log('[CourseCard] PDF generado exitosamente');
+      this.messageService.add({
+        severity: 'success',
+        summary: 'PDF generado',
+        detail: 'El PDF se ha descargado correctamente',
+        life: 3000
+      });
+    } catch (error) {
+      console.error('[CourseCard] Error al generar PDF:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se pudo generar el PDF. Por favor, intenta nuevamente.',
+        life: 5000
+      });
+    } finally {
+      this.isGeneratingPdf.set(false);
+    }
+  }
+
+  onEdit(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    const courseData = this.course();
+    if (!courseData?.id) {
+      console.warn('[CourseCard] No course ID available for editing');
+      return;
+    }
+
+    const context = this.positionService.selectedContext();
+    if (!context) {
+      console.warn('[CourseCard] No context available for editing');
+      return;
+    }
+
+    const queryParams = buildContextQueryParams({
+      itrId: context.itr.id,
+      campusId: context.campus.id,
+      isEdit: true,
+      courseId: courseData.id
+    });
+
+    this.router.navigate(['/assign-page'], { queryParams });
+  }
+
+  onDelete(event: Event): void {
+    event.stopPropagation();
+    this.showDeleteModal.set(true);
+  }
+
+  confirmDelete(): void {
+    const courseData = this.course();
+    if (!courseData?.id) {
+      console.warn('[CourseCard] No course ID available for deletion');
+      return;
+    }
+
+    this.courseService.deleteCourse(courseData.id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Curso eliminado',
+          detail: 'El curso se eliminó correctamente',
+          life: 3000
+        });
+        this.showDeleteModal.set(false);
+        // Reload page to refresh the course list
+        window.location.reload();
+      },
+      error: (error) => {
+        console.error('[CourseCard] Error deleting course:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error?.message || 'No se pudo eliminar el curso',
+          life: 5000
+        });
+        this.showDeleteModal.set(false);
+      }
+    });
+  }
+
+  cancelDelete(): void {
+    this.showDeleteModal.set(false);
   }
 
   ngOnInit() {

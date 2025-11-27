@@ -21,16 +21,18 @@ export class ExpandedInfo {
   onClose = output<void>();
 
   // Signals para los campos (read-only)
-  carrera = computed(() => this.courseData()?.curricularUnit?.term?.name || 'No especificada');
+  carrera = computed(() => this.courseData()?.curricularUnit.term.program.name || 'No especificada');
   docente = computed(() => {
     const teachers = this.courseData()?.teachers;
     if (!teachers || teachers.length === 0) return 'No asignado';
     const teacher = teachers[0];
-    const userData = teacher.user?.personalData;
-    return userData ? `${userData.firstName} ${userData.lastName}` : 'No asignado';
+    return teacher.fullName || teacher.email || 'No asignado';
   });
   unidadCurricular = computed(() => this.courseData()?.curricularUnit?.name || '');
-  semestre = computed(() => this.courseData()?.curricularUnit?.term?.name || '');
+  semestre = computed(() => {
+    const term = this.courseData()?.curricularUnit?.term;
+    return term ? `Semestre ${term.number}` : '';
+  });
   creditos = computed(() => this.courseData()?.curricularUnit?.credits?.toString() || '');
 
   // Tags para áreas de dominio y competencias profesionales
