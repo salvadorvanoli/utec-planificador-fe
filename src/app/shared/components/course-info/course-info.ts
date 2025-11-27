@@ -458,8 +458,19 @@ export class CourseInfo implements OnInit {
       return;
     }
 
-    const virtual = parseInt(this.virtualHours()) || 0;
-    const inPerson = parseInt(this.inPersonHours()) || 0;
+    // Validar que las horas no sean negativas
+    let virtual = parseInt(this.virtualHours()) || 0;
+    let inPerson = parseInt(this.inPersonHours()) || 0;
+    
+    if (virtual < 0) {
+      virtual = 0;
+      this.virtualHours.set('0');
+    }
+    
+    if (inPerson < 0) {
+      inPerson = 0;
+      this.inPersonHours.set('0');
+    }
 
     const hoursPerDeliveryFormat: Record<string, number> = {
       VIRTUAL: virtual,
@@ -752,8 +763,13 @@ export class CourseInfo implements OnInit {
       courseRequest.partialGradingSystem = this.partialGradingSystem();
     }
 
-    const virtualHours = parseInt(this.virtualHours()) || 0;
-    const inPersonHours = parseInt(this.inPersonHours()) || 0;
+    // Validar que las horas no sean negativas
+    let virtualHours = parseInt(this.virtualHours()) || 0;
+    let inPersonHours = parseInt(this.inPersonHours()) || 0;
+    
+    if (virtualHours < 0) virtualHours = 0;
+    if (inPersonHours < 0) inPersonHours = 0;
+    
     if (virtualHours > 0 || inPersonHours > 0) {
       courseRequest.hoursPerDeliveryFormat = {
         VIRTUAL: virtualHours,
@@ -910,8 +926,13 @@ export class CourseInfo implements OnInit {
       courseRequest.partialGradingSystem = this.partialGradingSystem();
     }
 
-    const virtualHours = parseInt(this.virtualHours()) || 0;
-    const inPersonHours = parseInt(this.inPersonHours()) || 0;
+    // Validar que las horas no sean negativas
+    let virtualHours = parseInt(this.virtualHours()) || 0;
+    let inPersonHours = parseInt(this.inPersonHours()) || 0;
+    
+    if (virtualHours < 0) virtualHours = 0;
+    if (inPersonHours < 0) inPersonHours = 0;
+    
     if (virtualHours > 0 || inPersonHours > 0) {
       courseRequest.hoursPerDeliveryFormat = {
         VIRTUAL: virtualHours,
