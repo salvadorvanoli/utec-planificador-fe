@@ -30,11 +30,22 @@ describe('CourseService', () => {
       professionalCompetencies: ['PROBLEM_SOLVING'],
       term: {
         id: 1,
-        name: 'Primer Semestre',
-        startDate: '2025-03-01',
-        endDate: '2025-07-31'
+        number: 1,
+        program: {
+          id: 1,
+          name: 'Ingeniería en Sistemas',
+          durationInTerms: 8,
+          totalCredits: 240
+        }
       }
-    }
+    },
+    teachers: [
+      {
+        id: 1,
+        fullName: 'Juan Pérez',
+        email: 'juan.perez@utec.edu.uy'
+      }
+    ]
   };
 
   const mockCourseRequest: CourseRequest = {
@@ -334,10 +345,13 @@ describe('CourseService', () => {
   describe('getCourses', () => {
     const mockCourseBasicResponse: CourseBasicResponse = {
       id: 1,
+      shift: 'Matutino',
       description: 'Programación I',
       startDate: '2025-03-01',
       endDate: '2025-07-31',
       curricularUnitName: 'Programación I',
+      termName: 'Semestre 1',
+      programName: 'Ingeniería en Sistemas',
       teachers: [{
         id: 1,
         fullName: 'Juan Pérez',
