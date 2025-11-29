@@ -91,7 +91,7 @@ export class OfficeHours {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo eliminar el horario de consulta',
+          detail: error.error?.message || 'No se pudo eliminar el horario de consulta',
           life: 3000
         });
       }
@@ -190,7 +190,7 @@ export class OfficeHours {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo agregar el horario de consulta',
+          detail: error.error?.message || 'No se pudo agregar el horario de consulta',
           life: 3000
         });
       }
