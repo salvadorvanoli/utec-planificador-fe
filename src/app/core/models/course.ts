@@ -19,10 +19,13 @@ export interface Course {
 
 export interface CourseBasicResponse {
   id: number;
+  shift: string;
   description: string;
   startDate: string;
   endDate: string;
   curricularUnitName: string;
+  termName: string;
+  programName: string;
   teachers: UserBasicResponse[];
   lastModificationDate: string | null;
 }
