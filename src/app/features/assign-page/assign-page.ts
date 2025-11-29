@@ -10,13 +10,11 @@ import { CurricularUnitResponse, UserBasicResponse, Course } from '@app/core/mod
 import { Router, ActivatedRoute } from '@angular/router';
 import { buildContextQueryParams, extractContextFromUrl } from '@app/shared/utils/context-encoder';
 import { MessageService } from 'primeng/api';
-import { DialogModule } from 'primeng/dialog';
-import { Toast } from 'primeng/toast';
+
 
 @Component({
   selector: 'app-assign-page',
-  imports: [SectionHeader, Selector, MultiSelector, ButtonComponent, CourseInfo, DialogModule, Toast],
-  providers: [MessageService],
+  imports: [SectionHeader, Selector, MultiSelector, ButtonComponent, CourseInfo],
   templateUrl: './assign-page.html',
   styleUrl: './assign-page.scss'
 })
@@ -31,7 +29,6 @@ export class AssignPage implements OnInit {
   private readonly courseService = inject(CourseService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly messageService = inject(MessageService);
 
   readonly isEditMode = signal<boolean>(false);
   readonly courseId = signal<number | null>(null);
@@ -45,11 +42,6 @@ export class AssignPage implements OnInit {
   readonly isLoadingCurricularUnits = signal<boolean>(true);
   readonly isLoadingTeachers = signal<boolean>(true);
   readonly latestCourse = signal<Course | null>(null);
-  
-  // Modal de advertencia para cambios críticos
-  readonly showWarningModal = signal<boolean>(false);
-  readonly originalCurricularUnitId = signal<string>('');
-  readonly originalTeacherIds = signal<string[]>([]);
   
   readonly pageTitle = computed(() => 
     this.isEditMode() ? 'Editar curso' : 'Crear curso'
@@ -201,10 +193,6 @@ export class AssignPage implements OnInit {
         this.selectedCurricularUnit.set(curricularUnitIdStr);
         this.selectedTeachers.set(teacherIdsStr);
         
-        // Store original values to detect changes
-        this.originalCurricularUnitId.set(curricularUnitIdStr);
-        this.originalTeacherIds.set(teacherIdsStr);
-        
         this.isLoadingCourse.set(false);
         
         // Load data after setting the course
@@ -230,68 +218,15 @@ export class AssignPage implements OnInit {
   onCreateOrUpdateCourse(): void {
     if (this.courseInfoComponent) {
       if (this.isEditMode()) {
-        // Check if critical fields (teachers or curricularUnit) have changed
-        const curricularUnitChanged = this.selectedCurricularUnit() !== this.originalCurricularUnitId();
-        
-        const currentTeacherIds = new Set(this.selectedTeachers());
-        const originalTeacherIdsSet = new Set(this.originalTeacherIds());
-        const teachersChanged = currentTeacherIds.size !== originalTeacherIdsSet.size ||
-          ![...currentTeacherIds].every(id => originalTeacherIdsSet.has(id));
-        
-        // Check if there's at least one teacher in common (intersection)
-        const hasCommonTeacher = [...originalTeacherIdsSet].some(id => currentTeacherIds.has(id));
-        
-        // Only show warning if:
-        // 1. Curricular unit changed OR
-        // 2. ALL teachers were replaced (no common teacher)
-        const shouldWarnAboutPlanningReplacement = curricularUnitChanged || (teachersChanged && !hasCommonTeacher);
-        
-        if (shouldWarnAboutPlanningReplacement) {
-          console.log('Critical change detected requiring planning replacement:', { 
-            curricularUnitChanged, 
-            allTeachersReplaced: teachersChanged && !hasCommonTeacher 
-          });
-          this.showWarningModal.set(true);
-        } else {
-          // No critical changes (or teachers partially changed with continuity), proceed with update
-          if (teachersChanged && hasCommonTeacher) {
-            console.log('Teachers partially changed but at least one remains - planning will be preserved');
-          }
-          this.courseInfoComponent.updateCourse();
-        }
+        this.courseInfoComponent.updateCourse();
       } else {
         this.courseInfoComponent.createCourse();
       }
     }
   }
 
-  confirmUpdate(): void {
-    this.showWarningModal.set(false);
-    if (this.courseInfoComponent) {
-      this.courseInfoComponent.updateCourse();
-    }
-  }
-
-  cancelUpdate(): void {
-    this.showWarningModal.set(false);
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Actualización cancelada',
-      detail: 'No se realizaron cambios en el curso',
-      life: 3000
-    });
-  }
-
   onCourseCreated(course: Course): void {
     console.log('Course created successfully:', course);
-    
-    // Show success message
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Curso creado',
-      detail: 'El curso se creó correctamente',
-      life: 3000
-    });
     
     // Redirect back to course catalog in management mode
     const context = this.positionService.selectedContext();
@@ -307,14 +242,6 @@ export class AssignPage implements OnInit {
 
   onCourseUpdated(course: Course): void {
     console.log('Course updated successfully:', course);
-    
-    // Show success message
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Curso actualizado',
-      detail: 'Los cambios se guardaron correctamente',
-      life: 3000
-    });
     
     // Redirect back to course catalog in management mode
     const context = this.positionService.selectedContext();

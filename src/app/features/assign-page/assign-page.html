@@ -33,18 +33,24 @@
   <div>
     <label for="select_curricular_unit" class="block text-sm font-medium mb-1">
       Unidad Curricular
+      @if (isEditMode()) {
+        <span class="text-xs text-gray-500 ml-2">(no se puede modificar)</span>
+      }
     </label>
     @if (isLoadingCurricularUnits()) {
       <p class="text-gray-500">Cargando unidades curriculares...</p>
     } @else {
       <app-select 
         id="select_curricular_unit"
-        [color]="'blue'" 
+        [color]="isEditMode() ? 'black' : 'blue'" 
         [placeholder]="'Seleccione una unidad curricular'"
         [options]="curricularUnitOptions()"
         [selectedValue]="selectedCurricularUnit()"
         (onSelectionChange)="onCurricularUnitChange($event)"
+        [disabled]="isEditMode()"
         class="w-full"
+        [class.opacity-60]="isEditMode()"
+        [class.cursor-not-allowed]="isEditMode()"
       ></app-select>
     }
   </div>
@@ -82,68 +88,3 @@
     [textColor]="'#9CA3AF'"
   ></app-button>
 }
-</div>
-
-<!-- Modal de advertencia para cambios críticos -->
-<p-dialog 
-  [(visible)]="showWarningModal" 
-  [modal]="true" 
-  [closable]="true"
-  [header]="'Advertencia: Cambio crítico'"
-  [style]="{ width: '90%', 'max-width': '650px' }"
-  styleClass="warning-modal"
-  [draggable]="false"
-  [resizable]="false"
-  appendTo="body"
-  [baseZIndex]="20000"
->
-  <div class="p-4">
-    <div class="flex items-start gap-4 mb-4">
-      <div class="flex-shrink-0">
-        <i class="pi pi-exclamation-triangle text-orange-500 text-4xl"></i>
-      </div>
-      <div class="flex flex-col gap-3">
-        <p class="text-lg font-semibold text-gray-800">
-          Los cambios que está realizando afectarán la planificación del curso
-        </p>
-        <div class="text-gray-600 space-y-2">
-          <p>
-            Al <strong>cambiar la unidad curricular</strong> o al <strong>reemplazar a todos los docentes</strong> 
-            de este curso, la planificación semanal existente será <strong class="text-orange-600">reemplazada completamente</strong>.
-          </p>
-          <p>
-            El sistema intentará copiar la planificación del curso más reciente que coincida con la 
-            nueva configuración, pero todo el trabajo realizado en la planificación actual se perderá.
-          </p>
-          <p class="text-sm text-gray-500 mt-3">
-            <strong>Nota:</strong> Si mantiene al menos un docente del equipo original, la planificación 
-            se conservará. Esta operación no se puede deshacer.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <ng-template pTemplate="footer">
-    <div class="flex justify-end gap-2">
-      <button
-        type="button"
-        class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
-        (click)="cancelUpdate()"
-      >
-        Cancelar
-      </button>
-      <button
-        type="button"
-        class="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition-colors flex items-center gap-2"
-        (click)="confirmUpdate()"
-      >
-        <i class="pi pi-check"></i>
-        Continuar de todas formas
-      </button>
-    </div>
-  </ng-template>
-</p-dialog>
-
-<!-- Toast para mensajes -->
-<p-toast position="top-right" />
