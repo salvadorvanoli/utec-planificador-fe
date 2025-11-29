@@ -9,6 +9,7 @@
     <app-color-block [color]="'black'" class="chat-page-color-block">
       <app-chat-header
         (showSuggestions)="onShowSuggestions($event)"
+        (sessionCleared)="onSessionCleared()"
       ></app-chat-header>
 
       <div class="chat-save-note mt-3 mb-4 text-sm text-gray-300 text-center md:text-left">

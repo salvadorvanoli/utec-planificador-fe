@@ -26,6 +26,7 @@ export class ChatHeader {
   readonly isLoadingCourses = signal<boolean>(false);
   readonly isClearing = signal<boolean>(false);
   readonly showSuggestions = output<{ courseId: number; courseName: string }>();
+  readonly sessionCleared = output<void>();
 
   constructor() {
     effect(() => {
@@ -75,7 +76,9 @@ export class ChatHeader {
       .subscribe({
         next: () => {
           console.log('Session cleared successfully');
-          window.location.reload();
+          this.selectedCourse.set(null);
+          this.selectedCourseModel = null;
+          this.sessionCleared.emit();
         },
         error: (error) => {
           console.error('Error clearing session:', error);
