@@ -62,7 +62,7 @@ describe('ButtonComponent', () => {
     it('should compute correct background color for blue', () => {
       fixture.componentRef.setInput('color', 'blue');
       expect(component.buttonBgColor()).toBe('#00A9E0');
-      expect(component.buttonBgHoverColor()).toBe('#0090b8');
+      expect(component.buttonBgHoverColor()).toBe('#33BAEB');
     });
 
     it('should compute correct background color for red', () => {
