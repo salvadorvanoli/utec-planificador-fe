@@ -36,6 +36,8 @@ export class ContentPanel {
     effect(() => {
       const filters = this.filterStateService.filters();
       console.log('[ContentPanel] Filters changed:', filters);
+      // Resetear a la primera página cuando cambian los filtros
+      this.currentPage.set(0);
       this.loadCourses();
     }, { allowSignalWrites: true });
   }
