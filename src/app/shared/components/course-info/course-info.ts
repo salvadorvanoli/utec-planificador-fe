@@ -13,10 +13,11 @@ import { OfficeHours } from './components/office-hours/office-hours';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { Course, CourseRequest } from '@app/core/models';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-course-info',
-  imports: [FloatLabel, Selector, InputTextModule, FormsModule, Skeleton, TagsBox, Toast, ButtonComponent, ExpandedInfo, OfficeHours, DatePickerComponent],
+  imports: [FloatLabel, Selector, InputTextModule, FormsModule, Skeleton, TagsBox, Toast, ButtonComponent, ExpandedInfo, OfficeHours, DatePickerComponent, DialogModule],
   providers: [MessageService],
   templateUrl: './course-info.html',
   styleUrl: './course-info.scss',
@@ -886,7 +887,7 @@ export class CourseInfo implements OnInit {
 
     // Get curricularUnitId and teacherIds from existing course
     const curricularUnitId = courseData.curricularUnit?.id;
-    const teacherIds = courseData.teachers?.map(t => t.id) || [];
+    const originalTeacherIds = courseData.teachers?.map(t => t.id) || [];
 
     if (!curricularUnitId) {
       this.messageService.add({
@@ -898,7 +899,7 @@ export class CourseInfo implements OnInit {
       return;
     }
 
-    if (teacherIds.length === 0) {
+    if (originalTeacherIds.length === 0) {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -914,7 +915,7 @@ export class CourseInfo implements OnInit {
       startDate: this.formatDateForBackend(this.startDate()!),
       endDate: this.formatDateForBackend(this.endDate()!),
       curricularUnitId: curricularUnitId,
-      userIds: teacherIds
+      userIds: originalTeacherIds // Use original teacher IDs (cannot be changed in edit mode)
     };
 
     // Add optional fields
@@ -961,6 +962,12 @@ export class CourseInfo implements OnInit {
       courseRequest.universalDesignLearningPrinciples = [];
     }
 
+    // Note: Teachers cannot change curricularUnit or teachers in edit mode
+    // This is validated by the backend
+    this.proceedWithUpdate(courseId, courseRequest);
+  }
+
+  private proceedWithUpdate(courseId: number, courseRequest: CourseRequest): void {
     this.courseService.updateCourse(courseId, courseRequest).subscribe({
       next: (updatedCourse) => {
         this.onCourseUpdated.emit(updatedCourse);

@@ -124,34 +124,48 @@
   [(visible)]="showDeleteModal" 
   [modal]="true" 
   [closable]="true"
-  [style]="{ width: '500px' }"
-  header="Confirmar eliminación">
-  <div class="flex flex-col gap-4">
-    <div class="flex items-start gap-3">
-      <i class="pi pi-exclamation-triangle text-yellow-500 text-3xl"></i>
-      <div class="flex flex-col gap-2">
-        <p class="text-lg font-semibold">¿Estás seguro de que deseas eliminar este curso?</p>
+  [header]="'Confirmar eliminación'"
+  [style]="{ width: '90%', 'max-width': '550px' }"
+  styleClass="delete-confirmation-modal"
+  [draggable]="false"
+  [resizable]="false"
+  appendTo="body"
+  [baseZIndex]="20000"
+>
+  <div class="p-4">
+    <div class="flex items-start gap-4 mb-4">
+      <div class="flex-shrink-0">
+        <i class="pi pi-exclamation-triangle text-yellow-500 text-4xl"></i>
+      </div>
+      <div class="flex flex-col gap-3">
+        <p class="text-lg font-semibold text-gray-800">
+          ¿Estás seguro de que deseas eliminar este curso?
+        </p>
         <p class="text-gray-600">
-          Esta acción no se puede deshacer. Se eliminarán también todos los datos asociados al curso.
+          Esta acción no se puede deshacer. Se eliminarán también todos los datos asociados al curso, 
+          incluyendo la planificación semanal, contenidos programáticos y actividades.
         </p>
       </div>
     </div>
   </div>
+  
   <ng-template pTemplate="footer">
-    <div class="flex gap-2 justify-end">
-      <p-button 
-        label="Cancelar" 
-        icon="pi pi-times" 
-        (onClick)="cancelDelete()"
-        [text]="true"
-        severity="secondary">
-      </p-button>
-      <p-button 
-        label="Eliminar" 
-        icon="pi pi-trash" 
-        (onClick)="confirmDelete()"
-        severity="danger">
-      </p-button>
+    <div class="flex justify-end gap-2">
+      <button
+        type="button"
+        class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+        (click)="cancelDelete()"
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors flex items-center gap-2"
+        (click)="confirmDelete()"
+      >
+        <i class="pi pi-trash"></i>
+        Eliminar
+      </button>
     </div>
   </ng-template>
 </p-dialog>
