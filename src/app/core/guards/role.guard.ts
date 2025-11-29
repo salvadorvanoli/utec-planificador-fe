@@ -51,7 +51,7 @@ export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
         '[RoleGuard] User does not have required roles',
         { required: requiredRoles, userHas: userRoles }
       );
-      router.navigate(['/home'], {
+      router.navigate(['/option-page'], {
         queryParams: { error: 'insufficient_permissions' }
       });
       return false;

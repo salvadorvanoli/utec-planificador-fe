@@ -1,16 +1,16 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
 /**
  * Interceptor que:
  * 1. Agrega credenciales (cookies) a todas las peticiones HTTP
- * 2. Maneja errores 401 (no autenticado) y 403 (sin permisos)
- * 3. Redirige apropiadamente según el tipo de error
+ * 2. Maneja errores 401 (no autenticado) redirigiendo a /login
+ * 3. Limpia la sesión cuando se detecta un 401
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const router = inject(Router);
+  const authService = inject(AuthService);
 
   // Agregar credenciales a todas las peticiones
   const clonedRequest = req.clone({
@@ -23,24 +23,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401 && !req.url.includes('/auth/login')) {
         console.warn('[AuthInterceptor] 401 Unauthorized - Session expired or not authenticated');
         
-        // Limpiar almacenamiento local
-        localStorage.clear();
-        sessionStorage.clear();
-        
-        // Redirigir a home (página pública)
-        router.navigate(['/home'], {
-          queryParams: { error: 'session_expired' }
-        });
-      }
-      
-      // 403: Autenticado pero sin permisos suficientes
-      else if (error.status === 403) {
-        console.warn('[AuthInterceptor] 403 Forbidden - Insufficient permissions');
-        
-        // Redirigir a home con mensaje de error
-        router.navigate(['/home'], {
-          queryParams: { error: 'insufficient_permissions' }
-        });
+        // Limpiar sesión completa y redirigir a login
+        authService.clearSession();
       }
 
       // Re-lanzar el error para que los componentes puedan manejarlo si es necesario

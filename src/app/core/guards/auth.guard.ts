@@ -7,7 +7,7 @@ import { map, catchError, of } from 'rxjs';
  * Guard básico de autenticación.
  * Verifica que el usuario esté autenticado antes de permitir acceso a rutas protegidas.
  * 
- * Si no está autenticado, redirige a /home (página pública).
+ * Si no está autenticado, redirige a /login para mayor seguridad.
  */
 export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
@@ -18,13 +18,13 @@ export const authGuard: CanActivateFn = () => {
       if (isAuthenticated) {
         return true;
       }
-      console.warn('[AuthGuard] User not authenticated, redirecting to home');
-      router.navigate(['/home']);
+      console.warn('[AuthGuard] User not authenticated, redirecting to login');
+      router.navigate(['/login']);
       return false;
     }),
     catchError(() => {
       console.error('[AuthGuard] Error checking authentication status');
-      router.navigate(['/home']);
+      router.navigate(['/login']);
       return of(false);
     })
   );

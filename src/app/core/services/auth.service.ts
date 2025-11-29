@@ -40,6 +40,19 @@ export class AuthService {
     sessionStorage.clear();
   }
 
+  /**
+   * Clears the session and redirects to /login
+   * Used when the session expires or is invalidated (401)
+   */
+  clearSession(): void {
+    this.clearAllState();
+    this.router.navigate(['/login']);
+  }
+
+  /**
+   * Logs out the user by calling the backend logout endpoint
+   * and redirects to /home
+   */
   logout(): void {
     this.http.post(`${this.apiUrl}/logout`, {}, {
       withCredentials: true

@@ -33,7 +33,7 @@ export const courseAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) 
   
   if (!courseIdParam) {
     console.warn('[CourseAccessGuard] No courseId in route parameters');
-    router.navigate(['/home']);
+    router.navigate(['/option-page']);
     return false;
   }
 
@@ -41,7 +41,7 @@ export const courseAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) 
   
   if (isNaN(courseId) || courseId <= 0) {
     console.warn('[CourseAccessGuard] Invalid courseId:', courseIdParam);
-    router.navigate(['/home']);
+    router.navigate(['/option-page']);
     return false;
   }
 
@@ -61,7 +61,7 @@ export const courseAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) 
           
           if (!userId) {
             console.warn('[CourseAccessGuard] No userId available');
-            router.navigate(['/home']);
+            router.navigate(['/option-page']);
             return false;
           }
 
@@ -72,7 +72,7 @@ export const courseAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) 
               '[CourseAccessGuard] Teacher does not own this course',
               { userId, courseId }
             );
-            router.navigate(['/home'], {
+            router.navigate(['/option-page'], {
               queryParams: { error: 'not_your_course' }
             });
             return false;
@@ -83,13 +83,13 @@ export const courseAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) 
         catchError((error) => {
           console.error('[CourseAccessGuard] Error fetching course:', error);
           
-          // Si es 403 o 404, redirigir a home
+          // Si es 403 o 404, redirigir a option-page
           if (error.status === 403 || error.status === 404) {
-            router.navigate(['/home'], {
+            router.navigate(['/option-page'], {
               queryParams: { error: 'course_not_accessible' }
             });
           } else {
-            router.navigate(['/home']);
+            router.navigate(['/option-page']);
           }
           
           return of(false);

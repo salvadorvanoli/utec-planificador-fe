@@ -124,6 +124,27 @@ describe('AuthService', () => {
     });
   });
 
+  describe('clearSession', () => {
+    it('should clear state and redirect to login', () => {
+      service.clearSession();
+
+      expect(service.isAuthenticated()).toBe(false);
+      expect(service.currentUser()).toBe(null);
+      expect(positionService.clearAllState).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith(['/login']);
+    });
+
+    it('should clear localStorage and sessionStorage', () => {
+      localStorage.setItem('test', 'value');
+      sessionStorage.setItem('test', 'value');
+
+      service.clearSession();
+
+      expect(localStorage.length).toBe(0);
+      expect(sessionStorage.length).toBe(0);
+    });
+  });
+
   describe('checkAuthStatus', () => {
     it('should update state when authenticated', (done) => {
       service.checkAuthStatus().subscribe({
