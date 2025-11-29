@@ -61,14 +61,9 @@ export class Login {
       error: (error: { status: number; error?: { message?: string } }) => {
         this.isLoading.set(false);
 
-        // Manejar diferentes tipos de errores
-        if (error.status === 401) {
-          this.errorMessage.set('Credenciales inválidas. Por favor, verifica tu correo y contraseña.');
-        } else if (error.status === 400) {
-          this.errorMessage.set('Datos inválidos. Por favor, verifica los campos.');
-        } else {
-          this.errorMessage.set('Error al iniciar sesión. Por favor, intenta nuevamente.');
-        }
+        // Usar el mensaje del backend si está disponible
+        const errorMsg = error.error?.message || 'Error al iniciar sesión. Por favor, intenta nuevamente.';
+        this.errorMessage.set(errorMsg);
       }
     });
   }

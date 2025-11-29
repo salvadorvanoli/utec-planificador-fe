@@ -158,7 +158,7 @@ export class AddActivity {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo cargar los datos de la actividad'
+          detail: err.error?.message || 'No se pudo cargar los datos de la actividad'
         });
       }
     });
@@ -251,7 +251,7 @@ export class AddActivity {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: `No se pudo ${actId !== null ? 'actualizar' : 'crear'} la actividad`
+          detail: err.error?.message || `No se pudo ${actId !== null ? 'actualizar' : 'crear'} la actividad`
         });
         this.isSaving.set(false);
       }

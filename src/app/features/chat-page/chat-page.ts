@@ -76,7 +76,7 @@ export class ChatPage {
           this.messages.update(msgs => {
             const filtered = msgs.filter(m => !m.inProgress);
             const errorMessage: ChatMessage = {
-              text: 'Lo siento, ha ocurrido un error al procesar tu mensaje. Por favor, intenta nuevamente.',
+              text: error.error?.message || 'Lo siento, ha ocurrido un error al procesar tu mensaje. Por favor, intenta nuevamente.',
               isBot: true,
               timestamp: new Date()
             };
@@ -143,7 +143,7 @@ export class ChatPage {
           this.messages.update(msgs => {
             const filtered = msgs.filter(m => !m.inProgress);
             const errorMessage: ChatMessage = {
-              text: 'Lo siento, ha ocurrido un error al obtener las sugerencias. Por favor, intenta nuevamente.',
+              text: error.error?.message || 'Lo siento, ha ocurrido un error al obtener las sugerencias. Por favor, intenta nuevamente.',
               isBot: true,
               timestamp: new Date()
             };
@@ -151,6 +151,10 @@ export class ChatPage {
           });
         }
       });
+  }
+
+  onSessionCleared(): void {
+    this.messages.set([]);
   }
 
   private formatSuggestions(courseName: string, analysis: string, suggestions: string): string {

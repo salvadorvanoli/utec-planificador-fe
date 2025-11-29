@@ -79,7 +79,7 @@ export class AddContent {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo cargar los datos del contenido'
+          detail: error.error?.message || 'No se pudo cargar los datos del contenido'
         });
       }
     });
@@ -144,7 +144,7 @@ export class AddContent {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: `No se pudo ${isEdit ? 'actualizar' : 'crear'} el contenido programático`
+          detail: error.error?.message || `No se pudo ${isEdit ? 'actualizar' : 'crear'} el contenido programático`
         });
         this.isSaving.set(false);
       }

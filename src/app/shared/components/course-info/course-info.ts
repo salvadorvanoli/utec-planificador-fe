@@ -234,7 +234,7 @@ export class CourseInfo implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo eliminar el ODS',
+          detail: err.error?.message || 'No se pudo eliminar el ODS',
           life: 3000
         });
       }
@@ -288,7 +288,7 @@ export class CourseInfo implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo eliminar el principio',
+          detail: err.error?.message || 'No se pudo eliminar el principio',
           life: 3000
         });
       }
@@ -340,7 +340,7 @@ export class CourseInfo implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo agregar el ODS',
+          detail: err.error?.message || 'No se pudo agregar el ODS',
           life: 3000
         });
       }
@@ -392,7 +392,7 @@ export class CourseInfo implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo agregar el principio',
+          detail: err.error?.message || 'No se pudo agregar el principio',
           life: 3000
         });
       }
@@ -440,7 +440,7 @@ export class CourseInfo implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo actualizar el sistema de calificación parcial',
+          detail: err.error?.message || 'No se pudo actualizar el sistema de calificación parcial',
           life: 3000
         });
       }
@@ -497,7 +497,7 @@ export class CourseInfo implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudieron actualizar las horas',
+          detail: err.error?.message || 'No se pudieron actualizar las horas',
           life: 3000
         });
       }
@@ -538,7 +538,7 @@ export class CourseInfo implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo actualizar la vinculación a líneas de investigación',
+          detail: err.error?.message || 'No se pudo actualizar la vinculación a líneas de investigación',
           life: 3000
         });
       }
@@ -579,7 +579,7 @@ export class CourseInfo implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo actualizar la vinculación con el sector productivo',
+          detail: err.error?.message || 'No se pudo actualizar la vinculación con el sector productivo',
           life: 3000
         });
       }
@@ -620,7 +620,7 @@ export class CourseInfo implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo actualizar la descripción',
+          detail: err.error?.message || 'No se pudo actualizar la descripción',
           life: 3000
         });
       }
