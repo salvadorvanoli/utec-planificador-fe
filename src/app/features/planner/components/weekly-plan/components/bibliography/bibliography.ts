@@ -1,16 +1,19 @@
-import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-bibliography',
-  imports: [FormsModule, ButtonModule, InputTextModule],
+  imports: [FormsModule, ButtonModule, InputTextModule, DialogModule],
   templateUrl: './bibliography.html',
   styleUrl: './bibliography.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Bibliography {
+  private readonly messageService = inject(MessageService);
   references = input<string[]>([]);
   isDisabled = input<boolean>(false);
   
@@ -21,6 +24,8 @@ export class Bibliography {
   // Estado local
   newReference = signal('');
   isAdding = signal(false);
+  showDeleteModal = signal(false);
+  referenceToDelete = signal<string | null>(null);
   
   startAdding(): void {
     this.isAdding.set(true);
@@ -40,12 +45,20 @@ export class Bibliography {
     }
     
     if (reference.length > 500) {
-      alert('La referencia no puede superar los 500 caracteres');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validación',
+        detail: 'La referencia no puede superar los 500 caracteres'
+      });
       return;
     }
     
     if (this.references().includes(reference)) {
-      alert('Esta referencia ya existe');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validación',
+        detail: 'Esta referencia ya existe'
+      });
       return;
     }
     
@@ -55,9 +68,22 @@ export class Bibliography {
   }
   
   onDeleteReference(reference: string): void {
-    if (confirm('¿Estás seguro de que deseas eliminar esta referencia?')) {
+    this.referenceToDelete.set(reference);
+    this.showDeleteModal.set(true);
+  }
+
+  confirmDeleteReference(): void {
+    const reference = this.referenceToDelete();
+    if (reference) {
       this.deleteReference.emit(reference);
+      this.showDeleteModal.set(false);
+      this.referenceToDelete.set(null);
     }
+  }
+
+  cancelDeleteReference(): void {
+    this.showDeleteModal.set(false);
+    this.referenceToDelete.set(null);
   }
 }
 

@@ -11,10 +11,13 @@ import { Tooltip } from 'primeng/tooltip';
 import { ChangeHistory } from './components/change-history/change-history';
 import { ReutilizePlan } from './components/reutilize-plan/reutilize-plan';
 import { EnumOption } from '@app/shared/components/select/select';
+import { Toast } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-planner',
-  imports: [WeeklyPlan, SectionHeader, Titulo, CourseInfo, Tooltip, ChangeHistory, ReutilizePlan],
+  imports: [WeeklyPlan, SectionHeader, Titulo, CourseInfo, Tooltip, ChangeHistory, ReutilizePlan, Toast],
+  providers: [MessageService],
   templateUrl: './planner.html',
   styleUrl: './planner.scss'
 })
@@ -24,6 +27,7 @@ export class Planner implements OnInit {
   private readonly pdfService = inject(PdfService);
   private readonly router = inject(Router);
   private readonly positionService = inject(PositionService);
+  private readonly messageService = inject(MessageService);
   
   readonly InfoType = InfoType;
   
@@ -32,7 +36,9 @@ export class Planner implements OnInit {
   showHistoryModal = signal(false);
   showReutilizeModal = signal(false);
   isGeneratingPdf = signal(false);
+  isCopyingPlanning = signal(false);
   pastCourses = signal<EnumOption[]>([]);
+  planningReloadTrigger = signal(0); // Trigger para forzar recarga de weekly-plan
 
   ngOnInit(): void {
     const courseId = this.route.snapshot.paramMap.get('courseId');
@@ -156,12 +162,60 @@ export class Planner implements OnInit {
   }
 
   closeReutilizeModal(): void {
-    this.showReutilizeModal.set(false);
+    // Don't close if copying is in progress
+    if (!this.isCopyingPlanning()) {
+      this.showReutilizeModal.set(false);
+    }
   }
 
-  handleReutilizeConfirm(courseId: string): void {
-    console.log('Reutilizar planificación del curso:', courseId);
-    // TODO: Implementar la lógica para reutilizar la planificación
+  handleReutilizeConfirm(sourceCourseId: string): void {
+    const targetCourseId = this.courseData()?.id;
+    
+    if (!targetCourseId) {
+      console.error('[Planner] No target course ID available');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se pudo identificar el curso destino',
+        life: 5000
+      });
+      return;
+    }
+
+    console.log('[Planner] Copying planning from course', sourceCourseId, 'to', targetCourseId);
+    this.isCopyingPlanning.set(true);
+
+    this.courseService.copyPlanningFromSourceCourse(targetCourseId, +sourceCourseId).subscribe({
+      next: (updatedCourse) => {
+        console.log('[Planner] Planning copied successfully:', updatedCourse);
+        this.isCopyingPlanning.set(false);
+        this.showReutilizeModal.set(false);
+        
+        // Update local course data with the response
+        this.courseData.set(updatedCourse);
+        
+        // Show success message
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Planificación aplicada',
+          detail: 'La planificación se copió correctamente',
+          life: 3000
+        });
+        
+        // Increment trigger to force reload of weekly-plan component
+        this.planningReloadTrigger.update(v => v + 1);
+      },
+      error: (error) => {
+        console.error('[Planner] Error copying planning:', error);
+        this.isCopyingPlanning.set(false);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error?.message || 'No se pudo copiar la planificación',
+          life: 5000
+        });
+      }
+    });
   }
 
   async downloadPdf(): Promise<void> {
@@ -176,10 +230,18 @@ export class Planner implements OnInit {
 
     try {
       await this.pdfService.generateCoursePdf(courseId);
-      console.log('PDF generado exitosamente');
+      this.messageService.add({
+        severity: 'success',
+        summary: 'PDF generado',
+        detail: 'El PDF se ha generado exitosamente'
+      });
     } catch (error) {
       console.error('Error al generar PDF:', error);
-      alert('Error al generar el PDF. Por favor, intenta nuevamente.');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al generar el PDF. Por favor, intenta nuevamente.'
+      });
     } finally {
       this.isGeneratingPdf.set(false);
     }

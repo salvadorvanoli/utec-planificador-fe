@@ -258,4 +258,18 @@ export class CourseService {
       tap(response => console.log('[CourseService] Past courses response:', response))
     );
   }
+
+  /**
+   * Copies planning from source course to target course
+   * @param targetCourseId ID of the course to copy planning to
+   * @param sourceCourseId ID of the course to copy planning from
+   * @returns Observable with the updated course
+   */
+  copyPlanningFromSourceCourse(targetCourseId: number, sourceCourseId: number): Observable<Course> {
+    const url = `${this.apiUrl}/${targetCourseId}/copy-planning/${sourceCourseId}`;
+    console.log(`[CourseService] POST copy planning from ${sourceCourseId} to ${targetCourseId}`);
+    return this.http.post<Course>(url, {}).pipe(
+      tap(response => console.log('[CourseService] Planning copied successfully:', response))
+    );
+  }
 }

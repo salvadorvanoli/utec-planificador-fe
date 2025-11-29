@@ -1,32 +1,77 @@
-<p-dialog 
-  [visible]="visible()" 
+<p-dialog
+  [visible]="visible()"
   (visibleChange)="onVisibleChange($event)"
   [modal]="true"
+  [header]="'Reutilizar planificación'"
+  [style]="{ width: '90%', 'max-width': '700px' }"
+  styleClass="reutilize-plan-modal"
   [draggable]="false"
   [resizable]="false"
-  [style]="{ width: '32rem' }"
-  header="Reutilizar planificación"
+  appendTo="body"
+  [baseZIndex]="20000"
 >
-  <div class="flex flex-col gap-4">
-    <app-select
-      [options]="courses()"
-      [placeholder]="'Seleccionar curso'"
-      [label]="'Curso'"
-      [selectedValue]="selectedCourse()"
-      (onSelectionChange)="handleCourseChange($event)"
-    />
-  </div>
+  <div class="p-6">
+    <!-- Información explicativa -->
+    <div class="info-box bg-white rounded-lg border-2 border-gray-300 p-4 mb-6">
+      <div class="info-header mb-3">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="pi pi-info-circle text-blue-500 text-xl"></i>
+          <h3 class="info-title text-lg font-semibold text-gray-800">Información</h3>
+        </div>
+        <div class="info-separator"></div>
+      </div>
+      
+      <div class="info-body text-sm text-gray-700 space-y-2">
+        <p>Esta funcionalidad te permite copiar toda la planificación de un curso anterior al curso actual.</p>
+        <div class="flex items-start gap-2 mt-3 p-3 bg-orange-50 border border-orange-200 rounded">
+          <i class="pi pi-exclamation-triangle text-orange-500 flex-shrink-0 mt-0.5"></i>
+          <p class="text-sm">
+            <span class="font-semibold">Advertencia:</span> Esta acción reemplazará completamente la planificación actual. Asegúrate de seleccionar el curso correcto.
+          </p>
+        </div>
+      </div>
+    </div>
 
-  <ng-template #footer>
-    <p-button 
-      label="Cancelar" 
-      severity="secondary" 
-      (onClick)="closeModal()"
-    />
-    <p-button 
-      label="Confirmar" 
-      (onClick)="confirmSelection()"
-      [disabled]="!selectedCourse()"
-    />
-  </ng-template>
+    <!-- Formulario de selección -->
+    <div class="selection-form bg-gray-50 rounded-lg p-4 border border-gray-200">
+      <h4 class="text-sm font-semibold text-gray-700 mb-3">Seleccionar curso origen</h4>
+      
+      @if (isLoading()) {
+        <div class="text-center py-8">
+          <i class="pi pi-spinner pi-spin text-blue-500 text-3xl"></i>
+          <p class="text-gray-600 mt-3">Aplicando planificación...</p>
+        </div>
+      } @else {
+        <div class="mb-4">
+          <app-select
+            [options]="courses()"
+            [placeholder]="'Seleccionar curso anterior'"
+            [label]="'Curso anterior'"
+            [selectedValue]="selectedCourse()"
+            (onSelectionChange)="handleCourseChange($event)"
+          />
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="flex justify-end gap-3 mt-4">
+          <button
+            type="button"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+            (click)="closeModal()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+            (click)="confirmSelection()"
+            [disabled]="!selectedCourse()"
+          >
+            <i class="pi pi-check mr-2"></i>
+            Aplicar planificación
+          </button>
+        </div>
+      }
+    </div>
+  </div>
 </p-dialog>

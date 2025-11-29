@@ -8,10 +8,13 @@ import { PaginatorState } from 'primeng/paginator';
 import { Skeleton } from 'primeng/skeleton';
 import { Router, ActivatedRoute } from '@angular/router';
 import { buildContextQueryParams } from '@app/shared/utils/context-encoder';
+import { Toast } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-content-panel',
-  imports: [CourseCard, Searchbar, Paginator, Skeleton],
+  imports: [CourseCard, Searchbar, Paginator, Skeleton, Toast],
+  providers: [MessageService],
   templateUrl: './content-panel.html',
   styleUrl: './content-panel.scss'
 })
@@ -109,5 +112,11 @@ export class ContentPanel {
     });
 
     this.router.navigate(['/assign-page'], { queryParams });
+  }
+  
+  handleCourseDeleted(courseId: number): void {
+    console.log('[ContentPanel] Course deleted, reloading courses:', courseId);
+    // Recargar los cursos sin hacer reload completo de la página
+    this.loadCourses();
   }
 }

@@ -5,6 +5,7 @@ import { ContentSection } from './components/content-section/content-section';
 import { ActivitySection } from './components/activity-section/activity-section';
 import { Bibliography } from './components/bibliography/bibliography';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DialogModule } from 'primeng/dialog';
 import { WeeklyPlanningService, WeeklyPlanningResponse, ProgrammaticContentService, ActivityService } from '@app/core/services';
 import { inject } from '@angular/core';
 import { ProgrammaticContent, Activity } from '@app/core/models';
@@ -14,7 +15,7 @@ import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-weekly-plan',
-  imports: [ Container, WeekTitle, ContentSection, ActivitySection, Bibliography, ProgressSpinnerModule ],
+  imports: [ Container, WeekTitle, ContentSection, ActivitySection, Bibliography, ProgressSpinnerModule, DialogModule ],
   templateUrl: './weekly-plan.html',
   styleUrl: './weekly-plan.scss'
 })
@@ -28,6 +29,7 @@ export class WeeklyPlan {
   courseId = input.required<number>();
   courseStartDate = input.required<string>();
   courseEndDate = input.required<string>();
+  reloadTrigger = input<number>(0); // Señal para forzar recarga
   
   // Señales de estado
   isLoading = signal(true);
@@ -37,6 +39,12 @@ export class WeeklyPlan {
   currentWeekNumber = signal(1); // Por defecto semana 1
   weekStartDate = signal<string>('');
   weekEndDate = signal<string>('');
+  
+  // Modales de confirmación
+  showDeleteContentModal = signal(false);
+  showDeleteActivityModal = signal(false);
+  contentToDelete = signal<number | null>(null);
+  activityToDelete = signal<number | null>(null);
   
   // Computed para obtener las actividades del contenido seleccionado
   selectedActivities = computed(() => {
@@ -59,6 +67,15 @@ export class WeeklyPlan {
       const id = this.courseId();
       if (id) {
         console.log('[WeeklyPlan] CourseId received:', id);
+        this.loadWeeklyPlanning(this.currentWeekNumber());
+      }
+    });
+    
+    // Effect para forzar recarga cuando cambia reloadTrigger
+    effect(() => {
+      const trigger = this.reloadTrigger();
+      if (trigger > 0) {
+        console.log('[WeeklyPlan] Reload triggered:', trigger);
         this.loadWeeklyPlanning(this.currentWeekNumber());
       }
     });
@@ -198,9 +215,13 @@ export class WeeklyPlan {
   // Método para manejar la eliminación de un contenido programático
   handleContentDeleted(contentId: number): void {
     console.log('[WeeklyPlan] Delete content requested:', contentId);
-    
-    // Confirmar antes de eliminar
-    if (confirm('¿Estás seguro de que deseas eliminar este contenido programático? Se eliminarán también todas sus actividades.')) {
+    this.contentToDelete.set(contentId);
+    this.showDeleteContentModal.set(true);
+  }
+
+  confirmDeleteContent(): void {
+    const contentId = this.contentToDelete();
+    if (contentId) {
       this.programmaticContentService.deleteProgrammaticContent(contentId).subscribe({
         next: () => {
           console.log('[WeeklyPlan] Content deleted successfully:', contentId);
@@ -218,17 +239,26 @@ export class WeeklyPlan {
           
           // Recargar la planificación
           this.loadWeeklyPlanning(this.currentWeekNumber());
+          this.showDeleteContentModal.set(false);
+          this.contentToDelete.set(null);
         },
         error: (error) => {
           console.error('[WeeklyPlan] Error deleting content:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'No se pudo eliminar el contenido programático'
+            detail: error.error?.message || 'No se pudo eliminar el contenido programático'
           });
+          this.showDeleteContentModal.set(false);
+          this.contentToDelete.set(null);
         }
       });
     }
+  }
+
+  cancelDeleteContent(): void {
+    this.showDeleteContentModal.set(false);
+    this.contentToDelete.set(null);
   }
   
   // Método para manejar cuando se crea una nueva actividad
@@ -279,9 +309,13 @@ export class WeeklyPlan {
   // Método para manejar la eliminación de una actividad
   handleActivityDeleted(activityId: number): void {
     console.log('[WeeklyPlan] Delete activity requested:', activityId);
-    
-    // Confirmar antes de eliminar
-    if (confirm('¿Estás seguro de que deseas eliminar esta actividad?')) {
+    this.activityToDelete.set(activityId);
+    this.showDeleteActivityModal.set(true);
+  }
+
+  confirmDeleteActivity(): void {
+    const activityId = this.activityToDelete();
+    if (activityId) {
       this.activityService.deleteActivity(activityId).subscribe({
         next: () => {
           console.log('[WeeklyPlan] Activity deleted successfully:', activityId);
@@ -294,17 +328,26 @@ export class WeeklyPlan {
           
           // Recargar el contenido actual
           this.handleActivityCreated();
+          this.showDeleteActivityModal.set(false);
+          this.activityToDelete.set(null);
         },
         error: (error) => {
           console.error('[WeeklyPlan] Error deleting activity:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'No se pudo eliminar la actividad'
+            detail: error.error?.message || 'No se pudo eliminar la actividad'
           });
+          this.showDeleteActivityModal.set(false);
+          this.activityToDelete.set(null);
         }
       });
     }
+  }
+
+  cancelDeleteActivity(): void {
+    this.showDeleteActivityModal.set(false);
+    this.activityToDelete.set(null);
   }
   
   // Método para manejar la adición de una referencia bibliográfica
@@ -353,15 +396,10 @@ export class WeeklyPlan {
       error: (error) => {
         console.error('[WeeklyPlan] Error adding reference:', error);
         
-        let errorMessage = 'No se pudo agregar la referencia bibliográfica';
-        if (error.status === 400) {
-          errorMessage = 'La referencia ya existe o supera los 500 caracteres';
-        }
-        
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: errorMessage
+          detail: error.error?.message || 'No se pudo agregar la referencia bibliográfica'
         });
       }
     });
@@ -415,7 +453,7 @@ export class WeeklyPlan {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo eliminar la referencia bibliográfica'
+          detail: error.error?.message || 'No se pudo eliminar la referencia bibliográfica'
         });
       }
     });

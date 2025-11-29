@@ -56,3 +56,117 @@
     </app-container>
   }
 </div>
+
+<!-- Modal de confirmación para eliminar contenido -->
+<p-dialog 
+  [(visible)]="showDeleteContentModal" 
+  [modal]="true" 
+  [closable]="true"
+  [header]="'Eliminar contenido programático'"
+  [style]="{ width: '90%', 'max-width': '600px' }"
+  styleClass="delete-confirmation-modal"
+  [draggable]="false"
+  [resizable]="false"
+  appendTo="body"
+  [baseZIndex]="20000"
+>
+  <div class="p-6">
+    <!-- Información explicativa -->
+    <div class="info-box bg-white rounded-lg border-2 border-gray-300 p-4 mb-6">
+      <div class="info-header mb-3">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="pi pi-info-circle text-blue-500 text-xl"></i>
+          <h3 class="info-title text-lg font-semibold text-gray-800">Información</h3>
+        </div>
+        <div class="info-separator"></div>
+      </div>
+      
+      <div class="info-body text-sm text-gray-700 space-y-2">
+        <p>Esta acción eliminará permanentemente el contenido programático seleccionado.</p>
+        <div class="flex items-start gap-2 mt-3 p-3 bg-orange-50 border border-orange-200 rounded">
+          <i class="pi pi-exclamation-triangle text-orange-500 flex-shrink-0 mt-0.5"></i>
+          <p class="text-sm">
+            <span class="font-semibold">Advertencia:</span> Se eliminarán también todas las actividades asociadas a este contenido.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmación de eliminación -->
+    <div class="selection-form bg-gray-50 rounded-lg p-4 border border-gray-200">
+      <h4 class="text-sm font-semibold text-gray-700 mb-3">¿Confirmar eliminación?</h4>
+      
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+          (click)="cancelDeleteContent()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors flex items-center gap-2"
+          (click)="confirmDeleteContent()"
+        >
+          <i class="pi pi-trash mr-2"></i>
+          Eliminar contenido
+        </button>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<!-- Modal de confirmación para eliminar actividad -->
+<p-dialog 
+  [(visible)]="showDeleteActivityModal" 
+  [modal]="true" 
+  [closable]="true"
+  [header]="'Eliminar actividad'"
+  [style]="{ width: '90%', 'max-width': '600px' }"
+  styleClass="delete-confirmation-modal"
+  [draggable]="false"
+  [resizable]="false"
+  appendTo="body"
+  [baseZIndex]="20000"
+>
+  <div class="p-6">
+    <!-- Información explicativa -->
+    <div class="info-box bg-white rounded-lg border-2 border-gray-300 p-4 mb-6">
+      <div class="info-header mb-3">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="pi pi-info-circle text-blue-500 text-xl"></i>
+          <h3 class="info-title text-lg font-semibold text-gray-800">Información</h3>
+        </div>
+        <div class="info-separator"></div>
+      </div>
+      
+      <div class="info-body text-sm text-gray-700">
+        <p>Esta acción eliminará permanentemente la actividad seleccionada.</p>
+      </div>
+    </div>
+
+    <!-- Confirmación de eliminación -->
+    <div class="selection-form bg-gray-50 rounded-lg p-4 border border-gray-200">
+      <h4 class="text-sm font-semibold text-gray-700 mb-3">¿Confirmar eliminación?</h4>
+      
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+          (click)="cancelDeleteActivity()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors flex items-center gap-2"
+          (click)="confirmDeleteActivity()"
+        >
+          <i class="pi pi-trash mr-2"></i>
+          Eliminar actividad
+        </button>
+      </div>
+    </div>
+  </div>
+</p-dialog>

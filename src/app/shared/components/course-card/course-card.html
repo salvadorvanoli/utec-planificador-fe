@@ -124,50 +124,61 @@
   [(visible)]="showDeleteModal" 
   [modal]="true" 
   [closable]="true"
-  [header]="'Confirmar eliminación'"
-  [style]="{ width: '90%', 'max-width': '550px' }"
+  [header]="'Eliminar curso'"
+  [style]="{ width: '90%', 'max-width': '700px' }"
   styleClass="delete-confirmation-modal"
   [draggable]="false"
   [resizable]="false"
   appendTo="body"
   [baseZIndex]="20000"
 >
-  <div class="p-4">
-    <div class="flex items-start gap-4 mb-4">
-      <div class="flex-shrink-0">
-        <i class="pi pi-exclamation-triangle text-yellow-500 text-4xl"></i>
+  <div class="p-6">
+    <!-- Información explicativa -->
+    <div class="info-box bg-white rounded-lg border-2 border-gray-300 p-4 mb-6">
+      <div class="info-header mb-3">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="pi pi-info-circle text-blue-500 text-xl"></i>
+          <h3 class="info-title text-lg font-semibold text-gray-800">Información</h3>
+        </div>
+        <div class="info-separator"></div>
       </div>
-      <div class="flex flex-col gap-3">
-        <p class="text-lg font-semibold text-gray-800">
-          ¿Estás seguro de que deseas eliminar este curso?
-        </p>
-        <p class="text-gray-600">
-          Esta acción no se puede deshacer. Se eliminarán también todos los datos asociados al curso, 
-          incluyendo la planificación semanal, contenidos programáticos y actividades.
-        </p>
+      
+      <div class="info-body text-sm text-gray-700 space-y-2">
+        <p>Esta acción eliminará permanentemente el curso seleccionado.</p>
+        <div class="flex items-start gap-2 mt-3 p-3 bg-orange-50 border border-orange-200 rounded">
+          <i class="pi pi-exclamation-triangle text-orange-500 flex-shrink-0 mt-0.5"></i>
+          <p class="text-sm">
+            <span class="font-semibold">Advertencia:</span> Esta acción no se puede deshacer. Se perderá toda la planificación del curso, incluyendo contenidos programáticos y actividades.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmación de eliminación -->
+    <div class="selection-form bg-gray-50 rounded-lg p-4 border border-gray-200">
+      <h4 class="text-sm font-semibold text-gray-700 mb-3">¿Confirmar eliminación?</h4>
+      
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          (click)="cancelDelete()"
+          [disabled]="isDeletingCourse()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          (click)="confirmDelete()"
+          [disabled]="isDeletingCourse()"
+        >
+          <i [class]="isDeletingCourse() ? 'pi pi-spinner pi-spin mr-2' : 'pi pi-trash mr-2'"></i>
+          {{ isDeletingCourse() ? 'Eliminando...' : 'Eliminar curso' }}
+        </button>
       </div>
     </div>
   </div>
-  
-  <ng-template pTemplate="footer">
-    <div class="flex justify-end gap-2">
-      <button
-        type="button"
-        class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
-        (click)="cancelDelete()"
-      >
-        Cancelar
-      </button>
-      <button
-        type="button"
-        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors flex items-center gap-2"
-        (click)="confirmDelete()"
-      >
-        <i class="pi pi-trash"></i>
-        Eliminar
-      </button>
-    </div>
-  </ng-template>
 </p-dialog>
 
 <!-- Toast para mensajes -->

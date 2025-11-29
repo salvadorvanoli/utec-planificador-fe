@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, effect, Component, input, signal, inject, computed } from '@angular/core';
+import { ChangeDetectionStrategy, effect, Component, input, signal, inject, computed, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -35,7 +35,11 @@ export class CourseCard {
   readonly assignState = signal(this.assign());
   isLoading = signal(true);
   readonly showDeleteModal = signal(false);
+  readonly isDeletingCourse = signal(false);
   readonly isGeneratingPdf = signal(false);
+  
+  // Output para notificar al padre cuando se elimina un curso
+  readonly onCourseDeleted = output<number>();
 
   readonly hasTeachers = computed(() => {
     const courseData = this.course();
@@ -294,13 +298,20 @@ export class CourseCard {
   }
 
   confirmDelete(): void {
+    if (this.isDeletingCourse()) {
+      return;
+    }
+
     const courseData = this.course();
     if (!courseData?.id) {
       console.warn('[CourseCard] No course ID available for deletion');
       return;
     }
 
-    this.courseService.deleteCourse(courseData.id).subscribe({
+    const courseId = courseData.id;
+    this.isDeletingCourse.set(true);
+    
+    this.courseService.deleteCourse(courseId).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -309,8 +320,10 @@ export class CourseCard {
           life: 3000
         });
         this.showDeleteModal.set(false);
-        // Reload page to refresh the course list
-        window.location.reload();
+        this.isDeletingCourse.set(false);
+        
+        // Notificar al padre para que recargue la lista
+        this.onCourseDeleted.emit(courseId);
       },
       error: (error) => {
         console.error('[CourseCard] Error deleting course:', error);
@@ -321,6 +334,7 @@ export class CourseCard {
           life: 5000
         });
         this.showDeleteModal.set(false);
+        this.isDeletingCourse.set(false);
       }
     });
   }

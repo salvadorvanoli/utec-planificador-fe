@@ -1,3 +1,5 @@
+<p-toast position="top-right" />
+
 <app-section-header
     [color]="'blue'"
     [showIcon]="true"
@@ -12,6 +14,18 @@
 
 <div class="flex items-center gap-2 mb-8">
   <app-titulo class="w-full sm:w-[460px] text-left" [color]="'blue'" [texto]="'Planificación semanal'"></app-titulo>
+  
+  <button 
+    class="mt-4 sm:mt-7 w-[36px] h-[36px] sm:w-[46px] sm:h-[46px] rounded-full flex items-center justify-center bg-[#00A9E0] hover:scale-110 transition-transform duration-300"
+    aria-label="Reutilizar planificación"
+    pTooltip="Reutilizar planificación de curso anterior"
+    tooltipPosition="top"
+    [disabled]="pastCourses().length === 0"
+    [class.opacity-50]="pastCourses().length === 0"
+    [class.cursor-not-allowed]="pastCourses().length === 0"
+    (click)="openReutilizeModal()">
+    <i class="pi pi-copy text-white text-base sm:text-xl"></i>
+  </button>
   
   <button 
     class="mt-4 sm:mt-7 w-[36px] h-[36px] sm:w-[46px] sm:h-[46px] rounded-full flex items-center justify-center bg-[#00A9E0] hover:scale-110 transition-transform duration-300"
@@ -39,6 +53,7 @@
     [courseId]="courseData()!.id"
     [courseStartDate]="courseData()!.startDate"
     [courseEndDate]="courseData()!.endDate"
+    [reloadTrigger]="planningReloadTrigger()"
   ></app-weekly-plan>
 }
 
@@ -51,6 +66,7 @@
 <app-reutilize-plan
   [visible]="showReutilizeModal()"
   [courses]="pastCourses()"
+  [isLoading]="isCopyingPlanning()"
   (onClose)="closeReutilizeModal()"
   (onConfirm)="handleReutilizeConfirm($event)">
 </app-reutilize-plan>

@@ -2,6 +2,7 @@ import { Component, input, inject, signal } from '@angular/core';
 import { ColorBlock } from '../../../../shared/components/color-block/color-block';
 import { ButtonComponent } from '../../../../shared/components/button/button';
 import { AiAgentService, PdfService } from '@app/core/services';
+import { MessageService } from 'primeng/api';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -15,6 +16,7 @@ export class ReportPanel {
 
   private readonly aiAgentService = inject(AiAgentService);
   private readonly pdfService = inject(PdfService);
+  private readonly messageService = inject(MessageService);
   readonly isGenerating = signal<boolean>(false);
 
   async generateReport(): Promise<void> {
@@ -32,10 +34,18 @@ export class ReportPanel {
       this.isGenerating.set(true);
       const response = await firstValueFrom(this.aiAgentService.generateReport({ courseId: id }));
       await this.pdfService.generateAiReportPdf(id, response);
-      console.log('[ReportPanel] Report PDF generated');
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Reporte generado',
+        detail: 'El reporte se ha generado exitosamente'
+      });
     } catch (error) {
       console.error('[ReportPanel] Error generating report:', error);
-      alert('Error al generar el reporte. Por favor, intenta nuevamente.');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al generar el reporte. Por favor, intenta nuevamente.'
+      });
     } finally {
       this.isGenerating.set(false);
     }

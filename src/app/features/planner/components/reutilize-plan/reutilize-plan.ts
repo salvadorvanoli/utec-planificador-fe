@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal, inject } from '@angular/core';
 import { Dialog } from 'primeng/dialog';
-import { Button } from 'primeng/button';
 import { Selector } from '@app/shared/components/select/select';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-reutilize-plan',
-  imports: [Dialog, Button, Selector],
+  imports: [Dialog, Selector],
+  providers: [MessageService],
   templateUrl: './reutilize-plan.html',
   styleUrl: './reutilize-plan.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -13,6 +14,7 @@ import { Selector } from '@app/shared/components/select/select';
 export class ReutilizePlan {
   readonly visible = input<boolean>(false);
   readonly courses = input<any[]>([]);
+  readonly isLoading = input<boolean>(false);
   
   readonly onClose = output<void>();
   readonly onConfirm = output<string>();
