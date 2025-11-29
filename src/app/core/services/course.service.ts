@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { Course, CourseBasicResponse, CourseRequest, CoursePdfData, CourseStatistics, PageResponse, PeriodResponse, MyCourseSummary } from '../models';
+import { Course, CourseBasicResponse, CourseRequest, CoursePdfData, CourseStatistics, PageResponse, PeriodResponse, MyCourseSummary, CourseDetailedInfo, TeacherPastCourse } from '../models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -29,6 +29,18 @@ export class CourseService {
     console.log(`[CourseService] GET course by ID: ${id}`);
     return this.http.get<Course>(`${this.apiUrl}/${id}`).pipe(
       tap(response => console.log('[CourseService] Response:', response))
+    );
+  }
+
+  /**
+   * Retrieves detailed information about a course
+   * @param id Course ID
+   * @returns Observable with the detailed course information
+   */
+  getDetailedInfo(id: number): Observable<CourseDetailedInfo> {
+    console.log(`[CourseService] GET detailed info for course: ${id}`);
+    return this.http.get<CourseDetailedInfo>(`${this.apiUrl}/${id}/detailed-info`).pipe(
+      tap(response => console.log('[CourseService] Detailed info response:', response))
     );
   }
 
@@ -230,6 +242,20 @@ export class CourseService {
     const url = `${this.apiUrl}/campus/${campusId}/my-courses`;
     return this.http.get<MyCourseSummary[]>(url).pipe(
       tap(response => console.log('[CourseService] My courses response:', response))
+    );
+  }
+
+  /**
+   * Retrieves past courses for a teacher by curricular unit
+   * @param teacherId Teacher/User ID
+   * @param curricularUnitId Curricular Unit ID
+   * @returns Observable with the array of TeacherPastCourse
+   */
+  getTeacherPastCourses(teacherId: number, curricularUnitId: number): Observable<TeacherPastCourse[]> {
+    const url = `${this.apiUrl}/teacher/${teacherId}/curricular-unit/${curricularUnitId}`;
+    console.log(`[CourseService] GET past courses for teacher ${teacherId} and curricular unit ${curricularUnitId}`);
+    return this.http.get<TeacherPastCourse[]>(url).pipe(
+      tap(response => console.log('[CourseService] Past courses response:', response))
     );
   }
 }

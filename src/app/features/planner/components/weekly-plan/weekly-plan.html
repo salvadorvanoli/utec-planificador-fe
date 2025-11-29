@@ -48,9 +48,10 @@
         <!-- Componente de bibliografía -->
         <app-bibliography 
           [references]="bibliographicReferences()"
+          [isDisabled]="!weeklyPlanningId() || weeklyPlanningId() === 0"
           (addReference)="handleAddReference($event)"
-          (deleteReference)="handleDeleteReference($event)"
-        ></app-bibliography>
+          (deleteReference)="handleDeleteReference($event)">
+        </app-bibliography>
       </div>
     </app-container>
   }

@@ -77,7 +77,15 @@ $border-radius: 15px;
 
 // Asegurar que el panel del DatePicker se vea correctamente
 ::ng-deep .p-datepicker {
-  z-index: 21000 !important;
+  z-index: 99999 !important;
+}
+
+::ng-deep .p-datepicker-panel {
+  z-index: 99999 !important;
+}
+
+::ng-deep .p-datepicker-overlay {
+  z-index: 99999 !important;
 }
 
 // Caja de horarios
@@ -121,7 +129,7 @@ $border-radius: 15px;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
   background: linear-gradient(135deg, #a5e5fa 0%, #8ddbf7 100%);
-  color: white;
+  color: rgb(87, 86, 86);
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 500;

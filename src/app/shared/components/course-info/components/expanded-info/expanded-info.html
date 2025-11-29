@@ -80,6 +80,7 @@
         [title]="'Áreas de dominio'"
         [tags]="domainAreasTags()"
         [enumOptions]="domainAreasOptions()"
+        [readonly]="true"
         (onRemoveTag)="removeDomainAreaTag($event)"
         (onAddTag)="addDomainAreaTag($event)"
       />
@@ -88,24 +89,22 @@
         [title]="'Competencias profesionales'"
         [tags]="professionalCompetenciesTags()"
         [enumOptions]="professionalCompetenciesOptions()"
+        [readonly]="true"
         (onRemoveTag)="removeProfessionalCompetencyTag($event)"
         (onAddTag)="addProfessionalCompetencyTag($event)"
       />
     </div>
+  </div>
 
-
+  <ng-template pTemplate="footer">
     <div class="flex justify-end">
       <button
         type="button"
-        class="px-4 py-2 bg-[#00A9E0] text-white rounded hover:bg-[#0090b8] transition-colors"
+        class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
         (click)="closeDialog()"
       >
         Cerrar
       </button>
     </div>
-  </div>
-
-
-    
- 
+  </ng-template>
 </p-dialog>

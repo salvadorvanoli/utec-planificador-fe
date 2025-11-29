@@ -410,7 +410,7 @@ describe('CourseService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${apiUrl}?page=0&size=10&userId=${userId}&campusId=${campusId}&period=${period}&searchText=${searchText}`
+        `${apiUrl}?page=0&size=10&userId=${userId}&campusId=${campusId}&period=${period}&searchText=${encodeURIComponent(searchText)}`
       );
       expect(req.request.method).toBe('GET');
       req.flush(mockResponse);

@@ -46,7 +46,7 @@ export class ButtonComponent {
   readonly buttonBgHoverColor = computed(() => {
     switch (this.color()) {
       case 'blue':
-        return '#0090b8';
+        return '#33BAEB';
       case 'red':
         return '#c50e0a';
       case 'white':

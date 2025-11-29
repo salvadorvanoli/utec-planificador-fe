@@ -114,19 +114,29 @@ export class OfficeHours {
       return;
     }
 
+    // Validar que la fecha sea posterior a la actual
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Resetear horas para comparar solo fechas
+    const selectedDate = new Date(date);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      console.warn('[OfficeHours] La fecha debe ser posterior a la actual');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Fecha inválida',
+        detail: 'La fecha debe ser posterior a la fecha actual',
+        life: 3000
+      });
+      return;
+    }
+
     // Convertir Date a formato YYYY-MM-DD
     const formattedDate = date.toISOString().split('T')[0];
     
-    // Convertir HH:MM a número entero (hora y minuto)
-    const [startHourStr, startMinuteStr] = start.split(':');
-    const [endHourStr, endMinuteStr] = end.split(':');
-    
-    const startHour = parseInt(startHourStr, 10);
-    const startMinute = parseInt(startMinuteStr, 10);
-    const endHour = parseInt(endHourStr, 10);
-    const endMinute = parseInt(endMinuteStr, 10);
-
-    // Validar que la hora de inicio sea menor que la hora de fin (formato 24 horas)
+    // Validar que la hora de inicio sea menor que la hora de fin
+    const [startHour, startMinute] = start.split(':').map(Number);
+    const [endHour, endMinute] = end.split(':').map(Number);
     const startTimeInMinutes = startHour * 60 + startMinute;
     const endTimeInMinutes = endHour * 60 + endMinute;
 
@@ -143,8 +153,8 @@ export class OfficeHours {
 
     const request: OfficeHoursRequest = {
       date: formattedDate,
-      startHour: startHour,
-      endHour: endHour,
+      startTime: start,
+      endTime: end,
       courseId: this.courseId()
     };
 
@@ -196,9 +206,6 @@ export class OfficeHours {
       year: 'numeric'
     });
     
-    const startHour = officeHours.startHour.toString().padStart(2, '0');
-    const endHour = officeHours.endHour.toString().padStart(2, '0');
-    
-    return `${formattedDate} ${startHour}:00 - ${endHour}:00`;
+    return `${formattedDate} ${officeHours.startTime} - ${officeHours.endTime}`;
   }
 }

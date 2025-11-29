@@ -4,6 +4,7 @@ export * from './campus';
 export * from './chart';
 export * from './context';
 export * from './course';
+export type { CourseDetailedInfo } from './course';
 export * from './course-statistics';
 export * from './curricular-unit';
 export * from './modification';

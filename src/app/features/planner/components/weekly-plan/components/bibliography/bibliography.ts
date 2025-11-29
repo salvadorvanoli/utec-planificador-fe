@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 })
 export class Bibliography {
   references = input<string[]>([]);
+  isDisabled = input<boolean>(false);
   
   // Outputs para comunicar acciones al componente padre
   addReference = output<string>();

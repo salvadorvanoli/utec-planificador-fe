@@ -5,11 +5,15 @@
 1. [Introducción](#introducción)
 2. [Configuración del Entorno de Testing](#configuración-del-entorno-de-testing)
 3. [Ejecutar Tests](#ejecutar-tests)
-4. [Estructura de Tests](#estructura-de-tests)
-5. [Tipos de Tests](#tipos-de-tests)
-6. [Patrones y Mejores Prácticas](#patrones-y-mejores-prácticas)
-7. [Ejemplos por Categoría](#ejemplos-por-categoría)
-8. [Solución de Problemas Comunes](#solución-de-problemas-comunes)
+4. [Estadísticas de Tests](#estadísticas-de-tests)
+5. [Estructura de Tests](#estructura-de-tests)
+6. [Tipos de Tests](#tipos-de-tests)
+7. [Patrones y Mejores Prácticas](#patrones-y-mejores-prácticas)
+8. [Ejemplos por Categoría](#ejemplos-por-categoría)
+9. [Solución de Problemas Comunes](#solución-de-problemas-comunes)
+10. [Comandos Útiles](#comandos-útiles)
+11. [Cobertura de Código](#cobertura-de-código)
+12. [Recursos Adicionales](#recursos-adicionales)
 
 ---
 
@@ -20,9 +24,10 @@ Este proyecto utiliza **Jasmine** como framework de testing y **Karma** como tes
 ### Tecnologías Utilizadas
 
 - **Jasmine**: Framework de testing BDD (Behavior-Driven Development)
-- **Karma**: Test runner que ejecuta los tests en navegadores reales
-- **Angular Testing Utilities**: Herramientas de testing proporcionadas por Angular
-- **Chrome Headless**: Navegador sin interfaz gráfica para CI/CD
+- **Karma v6.4.4**: Test runner que ejecuta los tests en navegadores reales
+- **Angular Testing Utilities**: Herramientas de testing proporcionadas por Angular (`@angular/core/testing`, `@angular/common/http/testing`)
+- **Chrome 142.0**: Navegador para desarrollo (Windows 10)
+- **ChromeHeadless**: Navegador sin interfaz gráfica para CI/CD
 
 ---
 
@@ -32,10 +37,16 @@ Este proyecto utiliza **Jasmine** como framework de testing y **Karma** como tes
 
 #### `karma.conf.js`
 Configuración principal de Karma que define:
-- Navegadores a usar (Chrome, ChromeHeadless)
-- Frameworks (Jasmine, Angular CLI)
-- Plugins y reportes
-- Timeouts y configuración de ejecución
+- **Navegadores**: Chrome (desarrollo), ChromeHeadless (CI/CD)
+- **Frameworks**: Jasmine, @angular-devkit/build-angular
+- **Plugins**: 
+  - karma-jasmine
+  - karma-chrome-launcher
+  - karma-jasmine-html-reporter
+  - karma-coverage
+  - @angular-devkit/build-angular/plugins/karma
+- **Cobertura de código**: Configurado con umbrales mínimos del 50% en statements, branches, functions y lines
+- **Reportes**: HTML, text-summary, lcovonly
 
 #### `tsconfig.spec.json`
 Configuración de TypeScript específica para tests:
@@ -63,19 +74,94 @@ Archivo de inicialización que configura el entorno de testing de Angular antes 
 # Ejecutar tests en modo watch (desarrollo)
 npm test
 
-# Ejecutar tests una sola vez en Chrome Headless (CI/CD)
+# Ejecutar tests una sola vez en Chrome Headless
 npm run test:headless
 
 # Ejecutar tests con cobertura de código
 npm run test:coverage
+
+# Ejecutar tests en CI/CD con configuración optimizada
+npm run test:ci
+```
+
+### Opciones Adicionales
+
+```bash
+# Ejecutar tests sin watch y con cobertura
+npm test -- --no-watch --code-coverage
+
+# Ejecutar un archivo específico
+npm test -- --include='**/auth.service.spec.ts'
 ```
 
 ### Salida de Tests
 
 Cuando todos los tests pasan, verás:
 ```
-Chrome Headless 142.0.0.0 (Windows 10): Executed 75 of 75 SUCCESS (0.308 secs / 0.271 secs)
-TOTAL: 75 SUCCESS
+Chrome 142.0.0.0 (Windows 10): Executed 79 of 79 SUCCESS (0.412 secs / 0.354 secs)
+TOTAL: 79 SUCCESS
+```
+
+---
+
+## Estadísticas de Tests
+
+**Última actualización:** 26 de noviembre de 2025
+
+### Resumen General
+- **Total de archivos de test:** 12
+- **Total de tests ejecutados:** 79
+- **Tests exitosos:** 79 (100%)
+- **Tests fallidos:** 0
+- **Tiempo de ejecución:** ~0.4 segundos
+
+### Distribución por Categoría
+
+| Categoría | Archivos | Descripción |
+|-----------|----------|-------------|
+| **Componentes** | 6 | Tests de componentes UI (button, color-picker, multiselect, expanded-info, title-and-background, home) |
+| **Servicios** | 2 | Tests de servicios (AuthService, CourseService) |
+| **Guards** | 1 | Tests de guards de navegación (authGuard) |
+| **Interceptors** | 1 | Tests de interceptores HTTP (authInterceptor) |
+| **Páginas** | 2 | Tests de páginas (Home, Login) |
+| **App** | 1 | Test del componente principal de la aplicación |
+
+### Archivos de Test en el Proyecto
+
+```
+src/app/
+├── app.spec.ts
+├── core/
+│   ├── guards/
+│   │   └── auth.guard.spec.ts
+│   ├── interceptors/
+│   │   └── auth.interceptor.spec.ts
+│   └── services/
+│       ├── auth.service.spec.ts
+│       └── course.service.spec.ts
+├── features/
+│   └── planner/
+│       └── components/
+│           └── color-picker/
+│               └── color-picker.spec.ts
+├── pages/
+│   ├── home/
+│   │   ├── home.spec.ts
+│   │   └── components/
+│   │       └── title-and-background/
+│   │           └── title-and-background.spec.ts
+│   └── login/
+│       └── login.spec.ts
+└── shared/
+    └── components/
+        ├── button/
+        │   └── button.spec.ts
+        ├── course-info/
+        │   └── components/
+        │       └── expanded-info/
+        │           └── expanded-info.spec.ts
+        └── multiselect/
+            └── multiselect.spec.ts
 ```
 
 ---
@@ -175,7 +261,6 @@ import { ButtonComponent } from './button';
 describe('ButtonComponent', () => {
   let component: ButtonComponent;
   let fixture: ComponentFixture<ButtonComponent>;
-  let debugElement: DebugElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -184,7 +269,6 @@ describe('ButtonComponent', () => {
 
     fixture = TestBed.createComponent(ButtonComponent);
     component = fixture.componentInstance;
-    debugElement = fixture.debugElement;
     fixture.detectChanges();
   });
 
@@ -257,7 +341,7 @@ it('should render button with correct label', () => {
   fixture.componentRef.setInput('label', testLabel);
   fixture.detectChanges();
 
-  const buttonElement = debugElement.query(By.css('button'));
+  const buttonElement = fixture.debugElement.query(By.css('button'));
   expect(buttonElement).toBeTruthy();
   expect(buttonElement.nativeElement.textContent.trim()).toBe(testLabel);
 });
@@ -266,7 +350,7 @@ it('should apply CSS classes conditionally', () => {
   fixture.componentRef.setInput('active', true);
   fixture.detectChanges();
 
-  const element = debugElement.nativeElement;
+  const element = fixture.debugElement.nativeElement;
   expect(element.classList.contains('active')).toBe(true);
 });
 ```
@@ -318,26 +402,29 @@ describe('Login Form', () => {
 
 ### 2. Tests de Servicios
 
+#### Testing de Servicios HTTP
+
 ```typescript
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { AuthService } from './auth.service';
+import { CourseService } from './course.service';
 
-describe('AuthService', () => {
-  let service: AuthService;
+describe('CourseService', () => {
+  let service: CourseService;
   let httpMock: HttpTestingController;
+  const apiUrl = 'http://localhost:8080/api/v1/courses';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        AuthService,
+        CourseService,
         provideHttpClient(),
         provideHttpClientTesting()
       ]
     });
 
-    service = TestBed.inject(AuthService);
+    service = TestBed.inject(CourseService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -349,36 +436,63 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should send login request', () => {
-    const mockCredentials = { email: 'test@test.com', password: 'pass123' };
-    const mockResponse = { token: 'abc123', user: { id: 1, email: 'test@test.com' } };
+  it('should send GET request with query parameters', (done) => {
+    const userId = 123;
+    const campusId = 1;
+    const searchText = 'Programación';
+    const mockResponse = { /* mock data */ };
 
-    service.login(mockCredentials).subscribe(response => {
-      expect(response).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne(`${service['apiUrl']}/auth/login`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(mockCredentials);
-    req.flush(mockResponse);
-  });
-
-  it('should handle login error', () => {
-    const mockCredentials = { email: 'test@test.com', password: 'wrong' };
-
-    service.login(mockCredentials).subscribe({
-      error: (error) => {
-        expect(error.status).toBe(401);
+    service.getCourses(userId, campusId, '2025-1', searchText, 0, 10).subscribe({
+      next: (response) => {
+        expect(response).toEqual(mockResponse);
+        done();
       }
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/auth/login`);
-    req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
+    // Importante: Angular codifica automáticamente caracteres especiales en URLs
+    const req = httpMock.expectOne(
+      `${apiUrl}?page=0&size=10&userId=${userId}&campusId=${campusId}&period=2025-1&searchText=${encodeURIComponent(searchText)}`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+  });
+
+  it('should send POST request to create resource', (done) => {
+    const mockRequest = { name: 'New Course' };
+    const mockResponse = { id: 1, ...mockRequest };
+
+    service.createCourse(mockRequest).subscribe({
+      next: (response) => {
+        expect(response).toEqual(mockResponse);
+        done();
+      }
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(mockRequest);
+    req.flush(mockResponse);
+  });
+
+  it('should handle 404 error', (done) => {
+    const courseId = 999;
+
+    service.getCourseById(courseId).subscribe({
+      error: (error: any) => {
+        expect(error.status).toBe(404);
+        done();
+      }
+    });
+
+    const req = httpMock.expectOne(`${apiUrl}/${courseId}`);
+    req.flush('Not Found', { status: 404, statusText: 'Not Found' });
   });
 });
 ```
 
 ### 3. Tests de Guards
+
+Los guards funcionales se prueban usando `TestBed.runInInjectionContext()`:
 
 ```typescript
 import { TestBed } from '@angular/core/testing';
@@ -392,6 +506,7 @@ describe('authGuard', () => {
   let router: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
+    // Crear spies de los servicios que necesita el guard
     const authServiceSpy = jasmine.createSpyObj('AuthService', ['checkAuthStatus']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
@@ -422,8 +537,26 @@ describe('authGuard', () => {
     });
   });
 
-  it('should deny activation and redirect to login when not authenticated', (done) => {
+  it('should deny activation and redirect to login', (done) => {
     authService.checkAuthStatus.and.returnValue(of(false));
+
+    TestBed.runInInjectionContext(() => {
+      const result = authGuard({} as any, {} as any);
+
+      if (typeof result === 'object' && result !== null && 'subscribe' in result) {
+        result.subscribe((canActivate) => {
+          expect(canActivate).toBe(false);
+          expect(router.navigate).toHaveBeenCalledWith(['/login']);
+          done();
+        });
+      }
+    });
+  });
+
+  it('should handle errors gracefully', (done) => {
+    authService.checkAuthStatus.and.returnValue(
+      throwError(() => new Error('Network error'))
+    );
 
     TestBed.runInInjectionContext(() => {
       const result = authGuard({} as any, {} as any);
@@ -441,6 +574,8 @@ describe('authGuard', () => {
 ```
 
 ### 4. Tests de Interceptors
+
+Los interceptores funcionales se prueban configurándolos con `withInterceptors()`:
 
 ```typescript
 import { TestBed } from '@angular/core/testing';
@@ -469,6 +604,7 @@ describe('authInterceptor', () => {
     httpMock = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
 
+    // Limpiar storage antes de cada test
     localStorage.clear();
     sessionStorage.clear();
   });
@@ -499,6 +635,32 @@ describe('authInterceptor', () => {
     const req = httpMock.expectOne(testUrl);
     req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
   });
+
+  it('should clear storage on 401 error', () => {
+    localStorage.setItem('test', 'value');
+    sessionStorage.setItem('test', 'value');
+
+    httpClient.get('/api/data').subscribe({
+      error: () => {
+        expect(localStorage.length).toBe(0);
+        expect(sessionStorage.length).toBe(0);
+      }
+    });
+
+    const req = httpMock.expectOne('/api/data');
+    req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
+  });
+
+  it('should not redirect for 401 on login endpoint', () => {
+    httpClient.post('/auth/login', {}).subscribe({
+      error: () => {
+        expect(router.navigate).not.toHaveBeenCalled();
+      }
+    });
+
+    const req = httpMock.expectOne('/auth/login');
+    req.flush('Invalid credentials', { status: 401, statusText: 'Unauthorized' });
+  });
 });
 ```
 
@@ -506,165 +668,117 @@ describe('authInterceptor', () => {
 
 ## Patrones y Mejores Prácticas
 
-### 1. Patrón AAA (Arrange-Act-Assert)
+### 1. Uso de Spies (Jasmine Spies)
+
+Los spies permiten simular y verificar el comportamiento de funciones:
 
 ```typescript
-it('should calculate total price correctly', () => {
-  // Arrange: Preparar el escenario
-  const items = [
-    { name: 'Item 1', price: 10 },
-    { name: 'Item 2', price: 20 }
-  ];
-  component.items.set(items);
-  
-  // Act: Ejecutar la acción
-  const total = component.calculateTotal();
-  
-  // Assert: Verificar el resultado
-  expect(total).toBe(30);
-});
-```
+describe('Component with service dependency', () => {
+  it('should call service method', () => {
+    const serviceSpy = jasmine.createSpyObj('MyService', ['getData']);
+    serviceSpy.getData.and.returnValue(of({ data: 'test' }));
 
-### 2. Uso de Spies y Mocks
+    // Usar el spy en el componente
+    component.service = serviceSpy;
+    component.loadData();
 
-```typescript
-describe('Component with Dependencies', () => {
-  let mockService: jasmine.SpyObj<MyService>;
-
-  beforeEach(() => {
-    // Crear un spy del servicio
-    mockService = jasmine.createSpyObj('MyService', ['getData', 'saveData']);
-    mockService.getData.and.returnValue(of({ data: 'test' }));
-
-    TestBed.configureTestingModule({
-      imports: [MyComponent],
-      providers: [
-        { provide: MyService, useValue: mockService }
-      ]
-    });
-  });
-
-  it('should call service on init', () => {
-    expect(mockService.getData).toHaveBeenCalled();
-  });
-
-  it('should handle service error', () => {
-    mockService.getData.and.returnValue(throwError(() => new Error('Error')));
-    // Test error handling
+    expect(serviceSpy.getData).toHaveBeenCalled();
+    expect(serviceSpy.getData).toHaveBeenCalledTimes(1);
   });
 });
 ```
 
-### 3. Testing Asíncrono
+### 2. Tests Asíncronos
+
+El proyecto usa callbacks `done()` para tests asíncronos:
 
 ```typescript
-import { fakeAsync, tick, waitForAsync } from '@angular/core/testing';
-
-// Con fakeAsync y tick
-it('should update after timeout', fakeAsync(() => {
-  component.delayedUpdate();
-  tick(1000); // Avanza el tiempo 1 segundo
-  expect(component.value()).toBe('updated');
-}));
-
-// Con async/await
-it('should load data asynchronously', async () => {
-  await component.loadData();
-  expect(component.data()).toBeDefined();
-});
-
-// Con done callback
-it('should emit event', (done) => {
-  component.dataLoaded.subscribe(data => {
-    expect(data).toBeTruthy();
-    done();
-  });
-  component.loadData();
-});
-```
-
-### 4. Testing de Routing
-
-```typescript
-import { provideRouter } from '@angular/router';
-import { Router } from '@angular/router';
-
-describe('Navigation', () => {
-  let router: Router;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [MyComponent],
-      providers: [
-        provideRouter([
-          { path: 'home', component: HomeComponent },
-          { path: 'login', component: LoginComponent }
-        ])
-      ]
-    });
-
-    router = TestBed.inject(Router);
-  });
-
-  it('should navigate to home', async () => {
-    await router.navigate(['/home']);
-    expect(router.url).toBe('/home');
+it('should handle async operation', (done) => {
+  service.getData().subscribe({
+    next: (data) => {
+      expect(data).toBeTruthy();
+      done(); // Marca el test como completado
+    },
+    error: (error) => {
+      fail('Should not have failed');
+      done();
+    }
   });
 });
 ```
 
-### 5. Testing de Directivas
+### 3. Limpieza de Estado
+
+Siempre limpia el estado entre tests:
 
 ```typescript
-import { Component, DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { MyDirective } from './my-directive';
+beforeEach(() => {
+  localStorage.clear();
+  sessionStorage.clear();
+});
 
-@Component({
-  template: '<div appMyDirective [config]="config"></div>',
-  imports: [MyDirective]
-})
-class TestComponent {
-  config = { enabled: true };
-}
+afterEach(() => {
+  httpMock.verify(); // Para tests HTTP
+});
+```
 
-describe('MyDirective', () => {
-  let fixture: ComponentFixture<TestComponent>;
-  let directive: MyDirective;
-  let element: DebugElement;
+### 4. Organización con `describe()` anidados
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TestComponent);
-    element = fixture.debugElement.query(By.directive(MyDirective));
-    directive = element.injector.get(MyDirective);
-    fixture.detectChanges();
+Agrupa tests relacionados para mejor organización:
+
+```typescript
+describe('CourseService', () => {
+  describe('CRUD Operations', () => {
+    it('should create course', () => { /* ... */ });
+    it('should read course', () => { /* ... */ });
+    it('should update course', () => { /* ... */ });
+    it('should delete course', () => { /* ... */ });
   });
 
-  it('should apply directive', () => {
-    expect(directive).toBeTruthy();
+  describe('Error Handling', () => {
+    it('should handle 404 error', () => { /* ... */ });
+    it('should handle network error', () => { /* ... */ });
   });
 });
 ```
 
-### 6. Testing de Pipes
+### 5. Manejo de Caracteres Especiales en URLs
+
+Al probar peticiones HTTP con parámetros que contienen caracteres especiales, usa `encodeURIComponent()`:
 
 ```typescript
-import { MyPipe } from './my-pipe';
+const searchText = 'Programación';
+const req = httpMock.expectOne(
+  `${apiUrl}?searchText=${encodeURIComponent(searchText)}`
+);
+// Angular codifica automáticamente: Programaci%C3%B3n
+```
 
-describe('MyPipe', () => {
-  let pipe: MyPipe;
+### 6. Testing de Standalone Components
 
-  beforeEach(() => {
-    pipe = new MyPipe();
-  });
+Todos los componentes en este proyecto son standalone, se importan directamente:
 
-  it('should transform value', () => {
-    expect(pipe.transform('hello')).toBe('HELLO');
-  });
+```typescript
+await TestBed.configureTestingModule({
+  imports: [MyStandaloneComponent, CommonModule, ReactiveFormsModule]
+}).compileComponents();
+```
 
-  it('should handle null values', () => {
-    expect(pipe.transform(null)).toBe('');
+### 7. Evitar Código Duplicado
+
+Crea helpers y fixtures reutilizables:
+
+```typescript
+const mockCourse = {
+  id: 1,
+  name: 'Test Course',
+  // ... otros campos
+};
+
+// Reutilizar en múltiples tests
+it('test 1', () => {
+  service.getCourse(1).subscribe(course => {
+    expect(course).toEqual(mockCourse);
   });
 });
 ```
@@ -673,310 +787,154 @@ describe('MyPipe', () => {
 
 ## Ejemplos por Categoría
 
-### Componente Simple con Signals
+### Tests Implementados en el Proyecto
 
-```typescript
-// button.ts
-import { Component, input, output } from '@angular/core';
+#### 1. Componentes UI
+- **ButtonComponent**: Tests de inputs (color, label, font), outputs (onClick), y renderizado DOM
+- **ColorPickerComponent**: Tests de selección de color y emisión de eventos
+- **MultiSelector**: Tests de selección múltiple
+- **ExpandedInfo**: Tests de visualización de información expandida
+- **TitleAndBackground**: Tests de título y fondo
 
-@Component({
-  selector: 'app-button',
-  template: '<button (click)="handleClick()">{{ label() }}</button>'
-})
-export class ButtonComponent {
-  readonly label = input<string>('Button');
-  readonly onClick = output<void>();
+#### 2. Servicios
+- **AuthService**: Tests de login, logout, verificación de estado de autenticación
+- **CourseService**: Tests completos de CRUD, paginación, filtros, manejo de errores
 
-  handleClick(): void {
-    this.onClick.emit();
-  }
-}
+#### 3. Guards
+- **authGuard**: Tests de autorización, redirección a login, manejo de errores
 
-// button.spec.ts
-describe('ButtonComponent', () => {
-  it('should emit onClick when button is clicked', () => {
-    let clicked = false;
-    component.onClick.subscribe(() => clicked = true);
-    
-    const button = debugElement.query(By.css('button'));
-    button.nativeElement.click();
-    
-    expect(clicked).toBe(true);
-  });
-});
-```
+#### 4. Interceptors
+- **authInterceptor**: Tests de agregado de credentials, manejo de 401, limpieza de storage
 
-### Servicio con HTTP
+#### 5. Páginas
+- **Home**: Tests del componente de página principal
+- **Login**: Tests de formulario de login, validaciones
 
-```typescript
-// course.service.ts
-export class CourseService {
-  private readonly http = inject(HttpClient);
-  
-  getCourses(params: CourseParams): Observable<CoursePage> {
-    return this.http.get<CoursePage>(`${this.apiUrl}/courses`, { params });
-  }
-}
-
-// course.service.spec.ts
-describe('CourseService', () => {
-  it('should fetch courses with correct params', () => {
-    const mockParams = { page: 0, size: 10 };
-    const mockResponse = { content: [], totalElements: 0 };
-
-    service.getCourses(mockParams).subscribe(response => {
-      expect(response).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne(request => 
-      request.url.includes('/courses') &&
-      request.params.get('page') === '0' &&
-      request.params.get('size') === '10'
-    );
-    expect(req.request.method).toBe('GET');
-    req.flush(mockResponse);
-  });
-});
-```
-
-### Componente con Formulario
-
-```typescript
-// login.ts
-export class Login {
-  readonly loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(8)])
-  });
-
-  getEmailError(): string {
-    const emailControl = this.loginForm.get('email');
-    if (emailControl?.hasError('required') && emailControl?.touched) {
-      return 'El correo es requerido';
-    }
-    if (emailControl?.hasError('email') && emailControl?.touched) {
-      return 'Ingresa un correo válido';
-    }
-    return '';
-  }
-}
-
-// login.spec.ts
-describe('Login Form Validation', () => {
-  it('should return email required error', () => {
-    const emailControl = component.loginForm.get('email');
-    emailControl?.markAsTouched();
-    emailControl?.setValue('');
-    
-    expect(component.getEmailError()).toBe('El correo es requerido');
-  });
-
-  it('should return email format error', () => {
-    const emailControl = component.loginForm.get('email');
-    emailControl?.markAsTouched();
-    emailControl?.setValue('invalid-email');
-    
-    expect(component.getEmailError()).toBe('Ingresa un correo válido');
-  });
-
-  it('should not return error for valid email', () => {
-    const emailControl = component.loginForm.get('email');
-    emailControl?.markAsTouched();
-    emailControl?.setValue('test@example.com');
-    
-    expect(component.getEmailError()).toBe('');
-  });
-});
-```
+#### 6. App
+- **AppComponent**: Tests del componente raíz de la aplicación
 
 ---
 
 ## Solución de Problemas Comunes
 
-### Error: "Property 'X' is protected/private"
+### 1. Error: "Expected one matching request, found none"
 
-**Problema**: No se puede acceder a propiedades protegidas/privadas en tests.
+**Problema**: La URL esperada no coincide con la URL real.
 
-**Solución**:
+**Solución**: Verifica el encoding de caracteres especiales:
 ```typescript
 // ❌ Incorrecto
-export class MyComponent {
-  protected readonly title = signal('Title');
-}
+const req = httpMock.expectOne(`${apiUrl}?search=Programación`);
 
 // ✅ Correcto
-export class MyComponent {
-  readonly title = signal('Title'); // Por defecto es public
-}
+const req = httpMock.expectOne(`${apiUrl}?search=${encodeURIComponent('Programación')}`);
 ```
 
-### Error: "ng-reflect-* attribute is null"
+### 2. Error: "Expected no open requests, found 1"
 
-**Problema**: Los atributos `ng-reflect-*` solo aparecen en modo desarrollo.
+**Problema**: No se manejó una petición HTTP en el test.
 
-**Solución**: Buscar el elemento real renderizado:
-```typescript
-// ❌ Incorrecto
-const label = button.nativeElement.getAttribute('ng-reflect-label');
-
-// ✅ Correcto
-const buttonElement = debugElement.query(By.css('button'));
-const label = buttonElement.nativeElement.textContent.trim();
-```
-
-### Error: "Expected spy to have been called"
-
-**Problema**: El spy no está siendo llamado como se esperaba.
-
-**Solución**: Verificar que `detectChanges()` se haya llamado:
-```typescript
-component.someInput.set('value');
-fixture.detectChanges(); // ← Importante
-expect(mockService.method).toHaveBeenCalled();
-```
-
-### Error: "HttpTestingController.verify() failed"
-
-**Problema**: Hay peticiones HTTP pendientes sin responder.
-
-**Solución**:
+**Solución**: Asegúrate de llamar a `httpMock.verify()` en `afterEach()` y de manejar todas las peticiones:
 ```typescript
 afterEach(() => {
-  httpMock.verify(); // Esto fallará si hay peticiones sin respuesta
+  httpMock.verify();
 });
 
-it('should make request', () => {
+it('test', () => {
   service.getData().subscribe();
   const req = httpMock.expectOne('/api/data');
-  req.flush(mockData); // ← Asegurarse de responder todas las peticiones
+  req.flush(mockData); // No olvides esto
 });
 ```
 
-### Error: "Can't resolve all parameters"
+### 3. Error: "has no exported member 'X'"
 
-**Problema**: TestBed no puede inyectar dependencias.
+**Problema**: Nombre de clase/export incorrecto.
 
-**Solución**: Proveer todas las dependencias necesarias:
+**Solución**: Verifica que el nombre de la clase en el archivo `.spec.ts` coincida con el del archivo `.ts`:
 ```typescript
-beforeEach(() => {
-  TestBed.configureTestingModule({
-    imports: [MyComponent],
-    providers: [
-      provideHttpClient(),
-      provideRouter([]),
-      MyService, // ← Proveer servicios necesarios
-      { provide: OtherService, useValue: mockService }
-    ]
-  });
-});
+// ✅ Correcto
+import { MultiSelector } from './multiselect';
+// Nombre de la clase es MultiSelector, no Multiselect
 ```
 
-### Tests Asíncronos que Fallan
+### 4. Warnings de archivos 404
 
-**Problema**: Los tests terminan antes de que se complete la operación asíncrona.
+**Warnings como**: `404: /base/media/utec_txt_light.ttf`
 
-**Solución**: Usar las utilidades correctas:
+**Solución**: Estos son warnings normales de fuentes y assets que no afectan los tests. Pueden ignorarse o configurarse en `karma.conf.js`.
+
+### 5. Tests que fallan intermitentemente
+
+**Problema**: Tests asíncronos sin manejo correcto.
+
+**Solución**: Usa el callback `done()` y maneja tanto success como error:
 ```typescript
-// Opción 1: done callback
-it('should work', (done) => {
-  service.asyncOperation().subscribe(result => {
-    expect(result).toBeTruthy();
-    done(); // ← Indica que el test terminó
+it('async test', (done) => {
+  service.getData().subscribe({
+    next: (data) => {
+      expect(data).toBeTruthy();
+      done();
+    },
+    error: (error) => {
+      fail('Should not error');
+      done();
+    }
   });
 });
-
-// Opción 2: async/await
-it('should work', async () => {
-  const result = await firstValueFrom(service.asyncOperation());
-  expect(result).toBeTruthy();
-});
-
-// Opción 3: fakeAsync
-it('should work', fakeAsync(() => {
-  service.asyncOperation().subscribe();
-  tick(1000);
-  expect(component.data()).toBeTruthy();
-}));
 ```
 
 ---
 
-## Cobertura de Tests
-
-### Ver Reporte de Cobertura
+## Comandos Útiles
 
 ```bash
+# Ver cobertura en navegador
 npm run test:coverage
+# Luego abrir: ./coverage/utec-planificador-fe/index.html
+
+# Ejecutar tests específicos (modificar el archivo spec temporalmente)
+# Cambiar 'describe' por 'fdescribe' o 'it' por 'fit'
+
+# Ejecutar en modo headless para CI/CD
+npm run test:ci
+
+# Ejecutar tests en modo debug
+npm test
+# Luego abrir: http://localhost:9876/debug.html
 ```
-
-Esto generará un reporte en `coverage/` mostrando:
-- **Statements**: % de líneas ejecutadas
-- **Branches**: % de ramas condicionales probadas
-- **Functions**: % de funciones ejecutadas
-- **Lines**: % de líneas de código cubiertas
-
-### Objetivo de Cobertura
-
-- **Mínimo recomendado**: 80%
-- **Óptimo**: 90%+
-- **Crítico** (guards, interceptors, servicios core): 100%
 
 ---
 
-## Integración Continua (CI)
+## Cobertura de Código
 
-### GitHub Actions / GitLab CI
+El proyecto está configurado con umbrales mínimos de cobertura del **50%** en:
+- Statements
+- Branches  
+- Functions
+- Lines
 
-```yaml
-test:
-  script:
-    - npm ci
-    - npm run test:headless
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage/cobertura-coverage.xml
+Los reportes de cobertura se generan en: `./coverage/utec-planificador-fe/`
+
+Para ver el reporte de cobertura:
+```bash
+npm run test:coverage
+# Abrir: coverage/utec-planificador-fe/index.html
 ```
 
 ---
 
 ## Recursos Adicionales
 
-- [Angular Testing Guide](https://angular.dev/guide/testing)
-- [Jasmine Documentation](https://jasmine.github.io/)
+- [Documentación oficial de Jasmine](https://jasmine.github.io/)
+- [Angular Testing Guide](https://angular.io/guide/testing)
 - [Karma Configuration](https://karma-runner.github.io/latest/config/configuration-file.html)
-- [Testing with Signals](https://angular.dev/guide/signals#testing)
+- [HTTP Testing en Angular](https://angular.io/guide/http-test-requests)
 
 ---
 
-## Resumen de Comandos
-
-```bash
-# Desarrollo
-npm test                    # Tests en modo watch
-npm run test:headless      # Tests headless (CI)
-npm run test:coverage      # Tests con cobertura
-
-# Crear un nuevo test
-ng generate component my-component --skip-tests=false
-ng generate service my-service --skip-tests=false
-```
-
----
-
-## Convenciones del Proyecto
-
-1. **Cada archivo debe tener su test**: `*.ts` → `*.spec.ts`
-2. **Organización**: Tests junto al código que prueban
-3. **Naming**: Usar nombres descriptivos en los `it()` y `describe()`
-4. **Standalone**: Usar standalone components en TestBed
-5. **Signals**: Usar `signal()`, `computed()`, `input()`, `output()`
-6. **Limpieza**: Usar `afterEach()` para limpiar recursos
-7. **Independencia**: Cada test debe ser independiente
-8. **Legibilidad**: Código de tests debe ser claro y fácil de entender
-
----
-
-**Última actualización**: 14 de noviembre de 2025
+**Última actualización**: 26 de noviembre de 2025  
+**Versión de Angular**: 19.x  
+**Total de tests**: 79 exitosos  
+**Estado del proyecto**: ✅ Todos los tests pasando
 

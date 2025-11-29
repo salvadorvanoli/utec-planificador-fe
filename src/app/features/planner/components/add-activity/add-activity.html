@@ -26,16 +26,6 @@
       </p-floatlabel>
     </div>
 
-    <!-- Color picker -->
-    <div class="row w-full mt-4">
-      <label class="block text-sm font-medium mb-2">Color de la actividad</label>
-      <app-color-picker 
-        [selectedColor]="selectedColor()" 
-        [activity]="true"
-        (onColorChange)="onColorChange($event)">
-      </app-color-picker>
-    </div>
-
     <!-- Procesos cognitivos -->
     <div class="row w-full mt-4">
       <label class="block text-sm font-medium mb-1">Procesos cognitivos</label>
@@ -81,54 +71,56 @@
     </div>
     
 
-    <div class="row mt-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full items-start auto-rows-auto">
-        <div class="select-col">
-          <div class="flex flex-col gap-2">
-           
-
-            <p-floatlabel variant="in">
-              <input pInputText id="in_label_first_b" [(ngModel)]="durationInMinutes" type="number" autocomplete="off" class="w-full" />
-              <label for="in_label_first_b">Duración (en minutos)</label>
-            </p-floatlabel>
-          </div>
-        </div>
-
-        <!-- Segunda columna: select -->
-        <div class="select-col">
-          <label class="block text-sm font-medium mb-1">Modalidad</label>
-          <app-select
-            [options]="learningModalities()"
-            [selectedValue]="selectedLearningModality()"
-            (onSelectionChange)="selectedLearningModality.set($event)">
-          </app-select>
-        </div>
-      </div>
+    <!-- Duración -->
+    <div class="row w-full mt-4">
+      <p-floatlabel variant="in" class="w-full">
+        <input pInputText id="in_label_first_b" [(ngModel)]="durationInMinutes" type="number" autocomplete="off" class="w-full" />
+        <label for="in_label_first_b">Duración (en minutos)</label>
+      </p-floatlabel>
     </div>
 
-    <!-- Botones -->
-    <div class="row mt-4">
-      <div class="flex gap-2 justify-end">
-        <app-button
-          label="Cancelar"
-          [color]="'red'"
-          fontFamily="'UTEC Text Light', Arial, sans-serif"
-          fontWeight="300"
-          fontSize="1rem"
-          (click)="visibleChange.emit(false)"
-          >
-        </app-button>
-        <app-button
-          label="Guardar"
-          [color]="'blue'"
-          fontFamily="'UTEC Text Light', Arial, sans-serif"
-          fontWeight="300"
-          fontSize="1rem"
-          (click)="saveActivity()"
-          >
-        </app-button>
-      </div>
+    <!-- Modalidad -->
+    <div class="row w-full mt-4">
+      <label class="block text-sm font-medium mb-1">Modalidad</label>
+      <app-select
+        [options]="learningModalities()"
+        [selectedValue]="selectedLearningModality()"
+        (onSelectionChange)="selectedLearningModality.set($event)">
+      </app-select>
+    </div>
+
+    <!-- Color picker -->
+    <div class="row w-full mt-4">
+      <label class="block text-sm font-medium mb-2">Color de la actividad</label>
+      <app-color-picker 
+        [selectedColor]="selectedColor()" 
+        [activity]="true"
+        (onColorChange)="onColorChange($event)">
+      </app-color-picker>
     </div>
   </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-end">
+      <app-button
+        label="Cancelar"
+        [color]="'red'"
+        fontFamily="'UTEC Text Light', Arial, sans-serif"
+        fontWeight="300"
+        fontSize="1rem"
+        (click)="visibleChange.emit(false)"
+        >
+      </app-button>
+      <app-button
+        label="Guardar"
+        [color]="'blue'"
+        fontFamily="'UTEC Text Light', Arial, sans-serif"
+        fontWeight="300"
+        fontSize="1rem"
+        (click)="saveActivity()"
+        >
+      </app-button>
+    </div>
+  </ng-template>
 </p-dialog>
 

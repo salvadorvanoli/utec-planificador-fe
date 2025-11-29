@@ -16,6 +16,7 @@ export class TagsBox {
   title = input.required<string>();
   tags = input<string[]>([]);
   enumOptions = input<EnumResponse[]>([]);
+  readonly = input<boolean>(false);
   
   onRemoveTag = output<string>();
   onAddTag = output<string>();

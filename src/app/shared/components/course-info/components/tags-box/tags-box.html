@@ -1,14 +1,16 @@
 <div class="preview-rect bg-white rounded-lg p-4">
   <div class="preview-header">
     <div class="preview-title">{{ title() }}</div>
-    <button 
-      class="add-button"
-      (click)="openModal()"
-      aria-label="Agregar elemento"
-      type="button"
-    >
-      <i class="pi pi-plus"></i>
-    </button>
+    @if (!readonly()) {
+      <button 
+        class="add-button"
+        (click)="openModal()"
+        aria-label="Agregar elemento"
+        type="button"
+      >
+        <i class="pi pi-plus"></i>
+      </button>
+    }
     <div class="preview-sep" aria-hidden="true"></div>
   </div>
   <div class="preview-body mt-3">
@@ -16,14 +18,16 @@
       @for (tag of tags(); track tag) {
         <span class="tag-item">
           {{ tag }}
-          <button 
-            class="remove-tag-button"
-            (click)="removeTag(tag)"
-            aria-label="Eliminar tag"
-            type="button"
-          >
-            <i class="pi pi-times"></i>
-          </button>
+          @if (!readonly()) {
+            <button 
+              class="remove-tag-button"
+              (click)="removeTag(tag)"
+              aria-label="Eliminar tag"
+              type="button"
+            >
+              <i class="pi pi-times"></i>
+            </button>
+          }
         </span>
       }
       @empty {

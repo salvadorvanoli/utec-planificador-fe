@@ -65,8 +65,8 @@ export class PdfService {
           <h2 style="color: #666; font-size: 18px;">Ficha de Información del Curso</h2>
         </div>
 
-        <div style="margin-bottom: 20px;">
-          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px;">
+        <div style="margin-bottom: 20px; page-break-inside: avoid;">
+          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px; page-break-after: avoid;">
             Información General
           </h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
@@ -93,8 +93,8 @@ export class PdfService {
           </table>
         </div>
 
-        <div style="margin-bottom: 20px;">
-          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px;">
+        <div style="margin-bottom: 20px; page-break-inside: avoid;">
+          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px; page-break-after: avoid;">
             Fechas
           </h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
@@ -109,8 +109,8 @@ export class PdfService {
           </table>
         </div>
 
-        <div style="margin-bottom: 20px;">
-          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px;">
+        <div style="margin-bottom: 20px; page-break-inside: avoid;">
+          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px; page-break-after: avoid;">
             Docentes
           </h3>
           <ul style="list-style: none; padding: 0; margin-top: 10px;">
@@ -123,8 +123,8 @@ export class PdfService {
           </ul>
         </div>
 
-        <div style="margin-bottom: 20px;">
-          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px;">
+        <div style="margin-bottom: 20px; page-break-inside: avoid;">
+          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px; page-break-after: avoid;">
             Horas por Formato
           </h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
@@ -137,8 +137,8 @@ export class PdfService {
           </table>
         </div>
 
-        <div style="margin-bottom: 20px;">
-          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px;">
+        <div style="margin-bottom: 20px; page-break-inside: avoid;">
+          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px; page-break-after: avoid;">
             Información Adicional
           </h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
@@ -156,6 +156,56 @@ export class PdfService {
             </tr>
           </table>
         </div>
+
+        ${data.weeklyPlannings && data.weeklyPlannings.length > 0 ? `
+        <div style="margin-bottom: 20px; page-break-before: always; page-break-inside: avoid;">
+          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px; page-break-after: avoid;">
+            Planificación Semanal
+          </h3>
+          ${data.weeklyPlannings.map((week: any) => `
+            <div style="margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #00A9E0; page-break-inside: avoid;">
+              <h4 style="color: #333; margin: 0 0 8px 0; page-break-after: avoid;">
+                Semana ${week.weekNumber} (${this.formatDate(week.startDate)} - ${this.formatDate(week.endDate)})
+              </h4>
+              ${week.contentTitles && week.contentTitles.length > 0 ? `
+                <div style="margin-top: 8px;">
+                  <strong style="color: #666;">Contenidos:</strong>
+                  <ul style="margin: 5px 0; padding-left: 20px;">
+                    ${week.contentTitles.map((title: string) => `
+                      <li style="margin: 3px 0; color: #333;">${title}</li>
+                    `).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+              ${week.bibliographicReferences && week.bibliographicReferences.length > 0 ? `
+                <div style="margin-top: 8px;">
+                  <strong style="color: #666;">Referencias bibliográficas:</strong>
+                  <ul style="margin: 5px 0; padding-left: 20px;">
+                    ${week.bibliographicReferences.map((ref: string) => `
+                      <li style="margin: 3px 0; color: #333; font-style: italic;">${ref}</li>
+                    `).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+        ` : ''}
+
+        ${data.bibliography && data.bibliography.length > 0 ? `
+        <div style="margin-bottom: 20px; page-break-inside: avoid;">
+          <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px; page-break-after: avoid;">
+            Bibliografía General del Curso
+          </h3>
+          <ul style="list-style: none; padding: 0; margin-top: 10px;">
+            ${data.bibliography.map((ref: string) => `
+              <li style="padding: 8px; background-color: #f5f5f5; margin-bottom: 5px; border-radius: 4px; font-style: italic;">
+                ${ref}
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+        ` : ''}
       </div>
     `;
   }
@@ -166,7 +216,7 @@ export class PdfService {
     const r = response.report;
     const fmtDate = this.formatDate(r.analysisDate);
     const sectionTitle = (t: string) => `
-      <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px;">${t}</h3>
+      <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px; page-break-after: avoid;">${t}</h3>
     `;
 
     return `
@@ -176,7 +226,7 @@ export class PdfService {
           <h2 style="color: #666; font-size: 18px;">Reporte de Calidad del Curso</h2>
         </div>
 
-        <div style="margin-bottom: 16px;">
+        <div style="margin-bottom: 16px; page-break-inside: avoid;">
           ${sectionTitle('Resumen General')}
           <table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
             <tr>
@@ -202,7 +252,7 @@ export class PdfService {
           </table>
         </div>
 
-        <div style="margin-bottom: 16px;">
+        <div style="margin-bottom: 16px; page-break-inside: avoid;">
           ${sectionTitle('Resumen Ejecutivo')}
           <table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
             <tr>
@@ -236,7 +286,7 @@ export class PdfService {
           </table>
         </div>
 
-        <div style="margin-bottom: 16px;">
+        <div style="margin-bottom: 16px; page-break-inside: avoid;">
           ${sectionTitle('Análisis Detallado')}
           <div style="margin-top: 8px;">
             <p style="margin: 6px 0;"><strong>Procesos cognitivos:</strong> ${r.detailedAnalysis.cognitiveProcesses}</p>
@@ -248,21 +298,21 @@ export class PdfService {
           </div>
         </div>
 
-        <div style="margin-bottom: 16px;">
+        <div style="margin-bottom: 16px; page-break-inside: avoid;">
           ${sectionTitle('Fortalezas')}
           <ul style="list-style: disc; padding-left: 20px; margin-top: 8px;">
             ${r.strengths.map(s => `<li style=\"margin: 4px 0;\">${s}</li>`).join('')}
           </ul>
         </div>
 
-        <div style="margin-bottom: 16px;">
+        <div style="margin-bottom: 16px; page-break-inside: avoid;">
           ${sectionTitle('Áreas de mejora')}
           <ul style="list-style: disc; padding-left: 20px; margin-top: 8px;">
             ${r.improvementAreas.map(s => `<li style=\"margin: 4px 0;\">${s}</li>`).join('')}
           </ul>
         </div>
 
-        <div style="margin-bottom: 16px;">
+        <div style="margin-bottom: 16px; page-break-inside: avoid;">
           ${sectionTitle('Recomendaciones')}
           <ul style="list-style: disc; padding-left: 20px; margin-top: 8px;">
             ${response.recommendations.map(s => `<li style=\"margin: 4px 0;\">${s}</li>`).join('')}

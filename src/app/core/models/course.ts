@@ -19,15 +19,27 @@ export interface Course {
 
 export interface CourseBasicResponse {
   id: number;
-  shift: string;
   description: string;
   startDate: string;
   endDate: string;
   curricularUnitName: string;
-  termName: string;
-  programName: string;
   teachers: UserBasicResponse[];
   lastModificationDate: string | null;
+}
+
+export interface CourseDetailedInfo {
+  courseId: number;
+  programName: string;
+  curricularUnitName: string;
+  teachers: {
+    name: string;
+    lastName: string;
+    email: string;
+  }[];
+  credits: number;
+  semesterNumber: number;
+  domainAreas: string[];
+  professionalCompetencies: string[];
 }
 
 export interface CourseRequest {
@@ -68,6 +80,14 @@ export interface CoursePdfData {
     name: string;
     credits: number;
   };
+  weeklyPlannings?: {
+    weekNumber: number;
+    startDate: string;
+    endDate: string;
+    contentTitles: string[];
+    bibliographicReferences: string[];
+  }[];
+  bibliography?: string[];
 }
 
 export interface MyCourseSummary {
@@ -75,4 +95,13 @@ export interface MyCourseSummary {
   curricularUnitName: string;
   startDate: string;
   shift: string;
+}
+
+export interface TeacherPastCourse {
+  courseId: number;
+  displayName: string;
+  curricularUnitName: string;
+  period: string;
+  campusName: string;
+  teacherId: number;
 }

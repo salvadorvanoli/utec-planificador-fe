@@ -1,3 +1,10 @@
 .bibliography-container {
   width: 100%;
 }
+
+li span {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}

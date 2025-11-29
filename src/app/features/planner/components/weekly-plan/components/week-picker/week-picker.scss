@@ -13,6 +13,11 @@
   --p-datepicker-today-background: #ffffff;
   --p-datepicker-today-color: #000000;
 
+  // Z-index para que el datepicker no se superponga a los modales
+  .p-datepicker {
+    z-index: 1000 !important;
+  }
+
   // Estilos para fechas deshabilitadas (fuera del rango del curso)
   .p-datepicker-calendar td span.p-disabled {
     opacity: 0.4 !important;
