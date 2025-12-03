@@ -1,46 +1,101 @@
-# Node modules and dependencies
+# =============================================================================
+# .dockerignore para Frontend - Planificador Docente UTEC
+# =============================================================================
+# Excluye archivos innecesarios para reducir el tamaño de la imagen Docker
+# y evitar filtración de información sensible.
+# =============================================================================
+
+# === Control de versiones ===
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# === Node.js y dependencias ===
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Build output
+# === Build output ===
 dist/
 .angular/
 build/
+.next/
+.nuxt/
+out/
 
-# Testing
+# === Testing ===
 coverage/
 .nyc_output/
+e2e/results/
+e2e/screenshots/
+karma.conf.js
+jasmine.json
 
-# IDE
+# === IDEs y editores ===
 .idea/
 .vscode/
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
 
-# OS files
+# === Sistema operativo ===
 .DS_Store
 Thumbs.db
+desktop.ini
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 
-# Git
-.git/
-.gitignore
-.github/
-
-# Documentation
-*.md
-docs/
-
-# Environment files (keep for reference but don't copy)
+# === Variables de entorno (CRÍTICO) ===
+.env
+.env.*
+!.env.example
 .env.local
 .env.*.local
 
-# Logs
+# === Docker ===
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# === Documentación ===
+*.md
+docs/
+README.md
+CONTRIBUTING.md
+
+# === Logs ===
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Misc
+# === Archivos temporales ===
+*.tmp
+*.bak
+*.backup
+tmp/
+temp/
+
+# === Scripts de desarrollo ===
+scripts/
+
+# === CI/CD ===
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+azure-pipelines.yml
+
+# === Configuración local ===
 .editorconfig
 .postcssrc.json
+.prettierrc
+.eslintrc*
+.stylelintrc*
+tsconfig.spec.json

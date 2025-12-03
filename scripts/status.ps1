@@ -57,4 +57,20 @@ Write-Host ""
 Write-Host "[Endpoints]" -ForegroundColor Blue
 Write-Host "  Frontend:     http://localhost:4200" -ForegroundColor White
 Write-Host "  Backend API:  http://localhost:8080/api" -ForegroundColor White
+
+Write-Host ""
+Write-Host "[Uso de Recursos]" -ForegroundColor Blue
+try {
+    $stats = docker stats --no-stream --format "table {{.Name}}`t{{.CPUPerc}}`t{{.MemUsage}}`t{{.NetIO}}" | Select-String "frontend"
+    if ($stats) {
+        Write-Host $stats -ForegroundColor White
+    }
+    else {
+        Write-Host "  Contenedor no encontrado" -ForegroundColor Red
+    }
+}
+catch {
+    Write-Host "  No disponible" -ForegroundColor Yellow
+}
+
 Write-Host ""

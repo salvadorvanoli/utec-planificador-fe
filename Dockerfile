@@ -33,19 +33,43 @@ RUN npm run build -- --configuration production
 # -----------------------------------------------------------------------------
 # STAGE 2: PRODUCTION WITH NGINX
 # -----------------------------------------------------------------------------
-FROM nginx:1.27-alpine
+FROM nginx:1.27-alpine AS production
+
+# Metadatos de la imagen
+LABEL maintainer="UTEC Planificador Team"
+LABEL description="Frontend del Planificador Docente - Angular + NGINX"
+LABEL version="1.0.0"
+LABEL org.opencontainers.image.title="UTEC Planificador Frontend"
+LABEL org.opencontainers.image.description="Interfaz web para el sistema de planificación docente de UTEC"
+LABEL org.opencontainers.image.vendor="Universidad Tecnológica del Uruguay"
+LABEL org.opencontainers.image.version="1.0.0"
+LABEL org.opencontainers.image.source="https://github.com/salvadorvanoli/utec-planificador-fe"
 
 # Install curl for healthcheck
 RUN apk add --no-cache curl
+
+# Crear usuario no-root para NGINX
+RUN addgroup -g 101 -S nginx || true && \
+    adduser -S -D -H -u 101 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx || true
 
 # Remove default NGINX configuration
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy built Angular application from builder stage
-COPY --from=builder /app/dist/utec-planificador-fe/browser /usr/share/nginx/html
+COPY --from=builder --chown=nginx:nginx /app/dist/utec-planificador-fe/browser /usr/share/nginx/html
 
 # Copy custom NGINX configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY --chown=nginx:nginx nginx.conf /etc/nginx/nginx.conf
+
+# Asegurar permisos correctos
+RUN chown -R nginx:nginx /var/cache/nginx && \
+    chown -R nginx:nginx /var/log/nginx && \
+    chown -R nginx:nginx /etc/nginx/conf.d && \
+    touch /var/run/nginx.pid && \
+    chown -R nginx:nginx /var/run/nginx.pid
+
+# Cambiar a usuario no-root
+USER nginx
 
 # Expose port 80 for HTTP traffic
 EXPOSE 80

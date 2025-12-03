@@ -3,8 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: ${BUILD_TARGET:-production}
     
-    container_name: utec-planificador-frontend
+    container_name: ${COMPOSE_PROJECT_NAME:-planificador}-frontend
     restart: unless-stopped
     
     labels:
@@ -12,16 +13,31 @@ services:
       - "com.utec.component=frontend"
       - "com.utec.environment=development"
       - "com.utec.framework=angular"
+      - "com.utec.version=1.0.0"
     
     ports:
-      - "4200:80"
+      - "${FRONTEND_PORT:-4200}:80"
     
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV:-production}
+      - BACKEND_API_URL=${BACKEND_API_URL:-http://localhost:8080/api}
+    
+    networks:
+      - frontend-network
+      - utec-shared
     
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 5s
+      interval: ${HEALTHCHECK_INTERVAL:-30s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-3s}
+      retries: ${HEALTHCHECK_RETRIES:-3}
+      start_period: ${HEALTHCHECK_START_PERIOD:-5s}
+
+networks:
+  frontend-network:
+    driver: bridge
+    name: ${COMPOSE_PROJECT_NAME:-planificador}-frontend-network
+  
+  utec-shared:
+    external: true
+    name: utec-shared-network

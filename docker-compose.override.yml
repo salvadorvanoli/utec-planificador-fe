@@ -1,0 +1,15 @@
+# Development overrides (auto-merged with docker-compose.yml)
+services:
+  frontend:
+    environment:
+      - NODE_ENV=development
+      - BACKEND_API_URL=${BACKEND_API_URL:-http://localhost:8080/api}
+    
+    labels:
+      - "com.utec.environment=development"
+    
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"

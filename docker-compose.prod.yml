@@ -6,19 +6,32 @@ services:
     
     environment:
       - NODE_ENV=production
+      - BACKEND_API_URL=${BACKEND_API_URL:-http://localhost:8080/api}
     
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-        labels: "service=frontend,environment=production"
+    labels:
+      - "com.utec.environment=production"
+    
+    security_opt:
+      - no-new-privileges:true
     
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 512M
+          cpus: ${FRONTEND_CPU_LIMIT:-1}
+          memory: ${FRONTEND_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.5'
-          memory: 256M
+          cpus: ${FRONTEND_CPU_RESERVATION:-0.5}
+          memory: ${FRONTEND_MEMORY_RESERVATION:-256M}
+      
+      restart_policy:
+        condition: ${RESTART_POLICY_CONDITION:-on-failure}
+        delay: ${RESTART_POLICY_DELAY:-5s}
+        max_attempts: ${RESTART_POLICY_MAX_ATTEMPTS:-3}
+        window: ${RESTART_POLICY_WINDOW:-120s}
+    
+    logging:
+      driver: ${LOG_DRIVER:-json-file}
+      options:
+        max-size: ${LOG_MAX_SIZE:-10m}
+        max-file: ${LOG_MAX_FILE:-3}
+        labels: "service=frontend,environment=production"

@@ -4,7 +4,15 @@
 # =============================================================================
 # Inicia el frontend del Planificador Docente UTEC
 # Angular + NGINX
+# 
+# Uso:
+#   .\scripts\start.ps1              # Inicia en modo desarrollo
+#   .\scripts\start.ps1 -Production  # Inicia en modo producción
 # =============================================================================
+
+param(
+    [switch]$Production = $false
+)
 
 $ErrorActionPreference = "Stop"
 
@@ -29,6 +37,24 @@ catch {
     exit 1
 }
 
+# Verificar/Crear red compartida
+$sharedNetworkName = "utec-shared-network"
+try {
+    $networkExists = docker network ls --format "{{.Name}}" | Select-String -Pattern "^$sharedNetworkName$" -Quiet
+    
+    if (-not $networkExists) {
+        Write-Host "[INFO] Creando red compartida: $sharedNetworkName" -ForegroundColor Yellow
+        docker network create $sharedNetworkName | Out-Null
+        Write-Host "[OK] Red compartida creada" -ForegroundColor Green
+    }
+    else {
+        Write-Host "[OK] Red compartida disponible: $sharedNetworkName" -ForegroundColor Green
+    }
+}
+catch {
+    Write-Host "[ADVERTENCIA] No se pudo verificar/crear la red compartida" -ForegroundColor Yellow
+}
+
 Write-Host ""
 Write-Host "[IMPORTANTE] El frontend requiere que el backend esté ejecutándose" -ForegroundColor Yellow
 Write-Host "Backend esperado en: http://localhost:8080/api" -ForegroundColor Yellow
@@ -46,9 +72,20 @@ if ($confirmation -ne 's' -and $confirmation -ne 'S') {
 }
 
 Write-Host ""
-Write-Host "[PASO 1/2] Iniciando contenedor del frontend..." -ForegroundColor Blue
 
-docker-compose up -d
+# Determinar modo de ejecución
+if ($Production) {
+    Write-Host "[INFO] Iniciando en modo PRODUCCIÓN" -ForegroundColor Cyan
+    Write-Host "[INFO] Configuración: Resource limits, security options" -ForegroundColor Yellow
+    Write-Host "[PASO 1/2] Iniciando contenedor del frontend..." -ForegroundColor Blue
+    docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+}
+else {
+    Write-Host "[INFO] Iniciando en modo DESARROLLO" -ForegroundColor Yellow
+    Write-Host "[INFO] Para modo producción, usa: .\scripts\start.ps1 -Production" -ForegroundColor Gray
+    Write-Host "[PASO 1/2] Iniciando contenedor del frontend..." -ForegroundColor Blue
+    docker-compose up -d --build
+}
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
@@ -102,6 +139,15 @@ if ($frontendReady) {
     Write-Host "  Ver logs:     .\scripts\logs.ps1" -ForegroundColor White
     Write-Host "  Ver estado:   .\scripts\status.ps1" -ForegroundColor White
     Write-Host "  Detener:      .\scripts\stop.ps1" -ForegroundColor White
+    Write-Host ""
+    
+    if ($Production) {
+        Write-Host "Modo: PRODUCCIÓN (resource limits, security)" -ForegroundColor Green
+    }
+    else {
+        Write-Host "Modo: DESARROLLO" -ForegroundColor Yellow
+    }
+    
     Write-Host ""
 }
 else {
