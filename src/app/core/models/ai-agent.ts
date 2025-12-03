@@ -23,8 +23,6 @@ export interface ReportRequest {
 export interface CourseReport {
   courseId: string;
   analysisDate: string;
-  overallRating: string;
-  score: string;
   message: string;
   executiveSummary: ExecutiveSummary;
   detailedAnalysis: DetailedAnalysis;
@@ -39,7 +37,6 @@ export interface ExecutiveSummary {
   virtualHours: number;
   hybridHours: number;
   averageActivityDuration: string;
-  totalActivitiesAnalyzed: number;
 }
 
 export interface DetailedAnalysis {
@@ -55,7 +52,6 @@ export interface ReportResponse {
   success: boolean;
   report: CourseReport;
   recommendations: string[];
-  overallRating: string;
 }
 
 export interface ChatMessage {

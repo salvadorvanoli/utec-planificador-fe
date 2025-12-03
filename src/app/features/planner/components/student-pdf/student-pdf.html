@@ -103,6 +103,18 @@
         <h1>Ficha del Curso</h1>
     </div>
 
+    <div style="background: #fff8e1; border-left: 4px solid #ff9800; padding: 16px; margin-bottom: 24px; border-radius: 8px;">
+        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <strong style="color: #f57c00; font-size: 14px;">⚠️ INFORMACIÓN IMPORTANTE</strong>
+        </div>
+        <p style="margin: 0; color: #e65100; font-size: 13px; line-height: 1.6;">
+            La planificación aquí presentada corresponde a una versión preliminar del curso y puede estar sujeta a modificaciones.
+            El docente a cargo se reserva el derecho de realizar ajustes en los contenidos, metodología, cronograma y evaluaciones
+            una vez iniciada la cursada, conforme a las necesidades pedagógicas que se identifiquen durante el desarrollo del curso.
+            Se recomienda mantenerse atento a las comunicaciones oficiales del docente.
+        </p>
+    </div>
+
     @if (isLoading()) {
         <div style="text-align: center; padding: 40px; color: #738396;">
             Cargando datos del curso...
@@ -192,7 +204,7 @@
                     <div class="label" style="color: #003A70; font-size: 14px;">
                         Semana {{ week.weekNumber }} ({{ formatDate(week.startDate) }} - {{ formatDate(week.endDate) }})
                     </div>
-                    
+
                     @if (week.contentTitles && week.contentTitles.length > 0) {
                         <div style="margin-top: 8px;">
                             <div style="font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 4px;">Contenidos:</div>
@@ -203,7 +215,7 @@
                             </ul>
                         </div>
                     }
-                    
+
                     @if (week.bibliographicReferences && week.bibliographicReferences.length > 0) {
                         <div style="margin-top: 8px;">
                             <div style="font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 4px;">Referencias bibliográficas:</div>

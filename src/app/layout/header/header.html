@@ -36,7 +36,6 @@
     <div class="header-right">
       @if (authService.isAuthenticated()) {
         <span class="user-name">{{ authService.currentUser()?.fullName }}</span>
-        <i class="pi pi-user profile-icon" aria-label="Perfil de usuario" title="Perfil"></i>
         <button (click)="logout()" class="logout-button" title="Cerrar sesión">
           <i class="pi pi-sign-out"></i>
         </button>

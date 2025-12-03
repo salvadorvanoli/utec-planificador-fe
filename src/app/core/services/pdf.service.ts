@@ -65,6 +65,18 @@ export class PdfService {
           <h2 style="color: #666; font-size: 18px;">Ficha de Información del Curso</h2>
         </div>
 
+        <div style="background-color: #fff8e1; border-left: 4px solid #ff9800; padding: 15px; margin-bottom: 24px; border-radius: 4px; page-break-inside: avoid;">
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <strong style="color: #f57c00; font-size: 14px;">⚠️ INFORMACIÓN IMPORTANTE</strong>
+          </div>
+          <p style="margin: 0; color: #e65100; font-size: 13px; line-height: 1.5;">
+            La planificación aquí presentada corresponde a una versión preliminar del curso y puede estar sujeta a modificaciones.
+            El docente a cargo se reserva el derecho de realizar ajustes en los contenidos, metodología, cronograma y evaluaciones
+            una vez iniciada la cursada, conforme a las necesidades pedagógicas que se identifiquen durante el desarrollo del curso.
+            Se recomienda mantenerse atento a las comunicaciones oficiales del docente.
+          </p>
+        </div>
+
         <div style="margin-bottom: 20px; page-break-inside: avoid;">
           <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px; page-break-after: avoid;">
             Información General
@@ -158,7 +170,7 @@ export class PdfService {
         </div>
 
         ${data.weeklyPlannings && data.weeklyPlannings.length > 0 ? `
-        <div style="margin-bottom: 20px; page-break-before: always; page-break-inside: avoid;">
+        <div style="margin-bottom: 20px; margin-top: 20px; page-break-inside: avoid;">
           <h3 style="color: #00A9E0; border-bottom: 2px solid #00A9E0; padding-bottom: 5px; page-break-after: avoid;">
             Planificación Semanal
           </h3>
@@ -226,6 +238,17 @@ export class PdfService {
           <h2 style="color: #666; font-size: 18px;">Reporte de Calidad del Curso</h2>
         </div>
 
+        <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 24px; border-radius: 4px; page-break-inside: avoid;">
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <strong style="color: #856404; font-size: 14px;">⚠️ AVISO IMPORTANTE</strong>
+          </div>
+          <p style="margin: 0; color: #856404; font-size: 13px; line-height: 1.5;">
+            Este reporte ha sido generado mediante inteligencia artificial y constituye exclusivamente una herramienta de apoyo pedagógico.
+            Los resultados y recomendaciones presentados deben ser interpretados y validados por el criterio profesional del docente.
+            La decisión final sobre la implementación de cualquier sugerencia queda siempre bajo la responsabilidad del profesional de la educación.
+          </p>
+        </div>
+
         <div style="margin-bottom: 16px; page-break-inside: avoid;">
           ${sectionTitle('Resumen General')}
           <table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
@@ -236,14 +259,6 @@ export class PdfService {
             <tr style="background-color: #f5f5f5;">
               <td style="padding: 8px; font-weight: bold;">Fecha de análisis:</td>
               <td style="padding: 8px;">${fmtDate}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px; font-weight: bold;">Calificación global:</td>
-              <td style="padding: 8px;">${response.overallRating || r.overallRating}</td>
-            </tr>
-            <tr style="background-color: #f5f5f5;">
-              <td style="padding: 8px; font-weight: bold;">Puntaje:</td>
-              <td style="padding: 8px;">${r.score}</td>
             </tr>
             <tr>
               <td style="padding: 8px; font-weight: bold;">Mensaje:</td>
@@ -278,10 +293,6 @@ export class PdfService {
             <tr style="background-color: #f5f5f5;">
               <td style="padding: 8px; font-weight: bold;">Duración promedio de actividad:</td>
               <td style="padding: 8px;">${r.executiveSummary.averageActivityDuration}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px; font-weight: bold;">Total de actividades analizadas:</td>
-              <td style="padding: 8px;">${r.executiveSummary.totalActivitiesAnalyzed}</td>
             </tr>
           </table>
         </div>
