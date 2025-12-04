@@ -18,5 +18,15 @@ export class SectionHeader {
   readonly color = input<Color>('blue');
   readonly infoType = input.required<InfoTypeValue>();
   readonly showIcon = input<boolean>(false);
+  readonly customDescription = input<string | null>(null);
 
+  readonly effectiveDescription = computed(() => {
+    // Custom description takes precedence
+    const custom = this.customDescription();
+    if (custom != null && custom.trim() !== '') {
+      return custom;
+    }
+    // Fall back to infoType description
+    return this.infoType().description;
+  });
 }

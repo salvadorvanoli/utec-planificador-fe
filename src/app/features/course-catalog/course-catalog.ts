@@ -31,6 +31,36 @@ export class CourseCatalog implements OnInit {
     const context = this.positionService.selectedContext();
     return (context?.roles?.includes(Role.TEACHER) && !this.isStudentRoute()) ?? false;
   });
+
+  // Computed: generates dynamic description based on mode and authentication status
+  readonly dynamicDescription = computed(() => {
+    const currentMode = this.mode();
+    const isAuthenticated = this.authService.isAuthenticated();
+    const isStudent = this.isStudentRoute();
+
+    if (currentMode === 'planner') {
+      return 'En esta página se listan únicamente los cursos para los cuales usted es docente. Puede seleccionar un curso para acceder a su planificación, donde podrá gestionar contenidos programáticos, actividades de aprendizaje, bibliografía y evaluación.';
+    }
+
+    if (currentMode === 'info') {
+      if (isAuthenticated && !isStudent) {
+        return 'En esta página se listan todos los cursos de la sede seleccionada previamente. Puede descargar la información de cada curso, incluyendo su planificación completa, en formato PDF mediante el ícono de descarga en cada tarjeta.';
+      } else {
+        return 'En esta página se listan todos los cursos del sistema. Puede descargar la información de cada curso, incluyendo su planificación completa, en formato PDF mediante el ícono de descarga en cada tarjeta.';
+      }
+    }
+
+    if (currentMode === 'statistics') {
+      return 'En esta página se listan todos los cursos de la sede seleccionada. Puede seleccionar un curso para visualizar sus estadísticas detalladas, incluyendo distribución de horas, modalidades de aprendizaje y tipos de actividades.';
+    }
+
+    if (currentMode === 'management') {
+      return 'En esta página se listan todos los cursos de la sede seleccionada. Puede editar o eliminar cursos según sea necesario. Tenga en cuenta que eliminar un curso es una acción permanente que no se puede deshacer.';
+    }
+
+    // Default description for catalog without specific mode
+    return 'En esta página puede explorar el catálogo de unidades curriculares disponibles. Utilice los filtros para encontrar los cursos de su interés.';
+  });
   
   // Computed: determines if it should filter by teacher (planner mode + is teacher)
   readonly shouldFilterByTeacher = computed(() => {

@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject, OnInit, computed } from '@angular/core';
 import { SectionHeader } from '../../layout/section-header/section-header';
 import { InfoType } from '@app/core/enums/info';
 import { OptionPanel } from '@app/features/option-page/components/option-panel/option-panel';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PositionService } from '@app/core/services';
 import { extractContextFromUrl } from '@app/shared/utils/context-encoder';
+import { Role } from '@app/core/enums/role';
 
 type SelectionStep = 'itr' | 'campus' | 'main-menu';
 
@@ -21,6 +22,46 @@ export class OptionPage implements OnInit {
   private readonly router = inject(Router);
   readonly positionService = inject(PositionService);
   readonly step = signal<SelectionStep>('itr');
+
+  // Computed: generates dynamic description based on current step
+  readonly dynamicDescription = computed(() => {
+    const currentStep = this.step();
+
+    if (currentStep === 'itr') {
+      return 'Seleccione el Instituto Tecnológico Regional (ITR) al cual desea acceder. Puede elegir entre los ITRs donde tiene posiciones activas asignadas.';
+    }
+
+    if (currentStep === 'campus') {
+      return 'Seleccione la sede del ITR a la cual desea acceder. Cada sede puede tener diferentes cursos y configuraciones disponibles según sus roles asignados.';
+    }
+
+    if (currentStep === 'main-menu') {
+      const roles = this.positionService.availableRoles();
+      const options: string[] = [];
+
+      if (roles.includes(Role.TEACHER)) {
+        options.push('<strong>Planificador:</strong> Acceda a los cursos donde es docente para crear y gestionar sus planificaciones semanales, incluyendo contenidos, actividades y evaluación.');
+        options.push('<strong>Panel Estadístico:</strong> Visualice estadísticas detalladas de sus cursos, incluyendo distribución de horas y balance de modalidades.');
+        options.push('<strong>EduBot:</strong> Utilice el asistente de inteligencia artificial para obtener recomendaciones pedagógicas y sugerencias para sus planificaciones.');
+      }
+
+      if (roles.includes(Role.COORDINATOR) || roles.includes(Role.ANALYST)) {
+        options.push('<strong>Asignar Cursos:</strong> Gestione la asignación de docentes a los diferentes cursos de la sede seleccionada.');
+      }
+
+      if (roles.includes(Role.COORDINATOR) || roles.includes(Role.EDUCATION_MANAGER)) {
+        options.push('<strong>Información de Cursos:</strong> Consulte y descargue información completa de todos los cursos de la sede, incluyendo sus planificaciones en formato PDF.');
+      }
+
+      if (options.length > 0) {
+        return 'Seleccione la acción que desea realizar. Las opciones disponibles están basadas en sus roles:<br><br>' + options.join('<br><br>');
+      }
+
+      return 'Seleccione la acción que desea realizar según las opciones disponibles para sus roles asignados.';
+    }
+
+    return null;
+  });
 
   ngOnInit(): void {
     // Intentar procesar parámetros si las posiciones ya están cargadas

@@ -18,7 +18,11 @@
   <!-- Icono de pregunta -->
    @if(infoType() != null) {
         <div class="flex items-center justify-center">
-            <app-info-button [content]="this.infoType().content" [color]="color()"></app-info-button>
+            <app-info-button 
+              [content]="this.infoType().content" 
+              [description]="effectiveDescription()"
+              [color]="color()">
+            </app-info-button>
         </div>
     }
 </div>

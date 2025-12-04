@@ -1,12 +1,63 @@
 <div class="info-button-container">
   <button 
-    class="w-[46px] h-[46px] rounded-full flex items-center justify-center"
-    aria-label="Information"
-    pTooltip="{{ tooltipText() }}"
-    tooltipPosition="top">
+    class="w-[46px] h-[46px] rounded-full flex items-center justify-center transition-all duration-200"
+    [class.cursor-pointer]="hasDescription()"
+    [class.hover:opacity-80]="hasDescription()"
+    [class.cursor-default]="!hasDescription()"
+    [attr.aria-label]="hasDescription() ? 'Ver información detallada' : 'Información'"
+    [pTooltip]="tooltipText()"
+    tooltipPosition="top"
+    (click)="onButtonClick()">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
             [attr.fill]="color() === 'blue' ? '#00A9E0' : '#000000'"/>
     </svg>
   </button>
 </div>
+
+<!-- Modal with detailed information -->
+<p-dialog 
+  [(visible)]="showModal" 
+  [modal]="true" 
+  [closable]="true"
+  [header]="'Información'"
+  [style]="{ width: '90%', 'max-width': '700px' }"
+  styleClass="info-detail-modal"
+  [draggable]="false"
+  [resizable]="false"
+  appendTo="body"
+  [baseZIndex]="20000"
+>
+  <div class="p-6">
+    <!-- Información con estilo consistente -->
+    <div class="info-box bg-white rounded-lg border-2 border-gray-300 p-4">
+      <div class="info-header mb-3">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="pi pi-info-circle text-xl" 
+             [style.color]="color() === 'blue' ? '#00A9E0' : '#000000'"></i>
+          <h3 class="info-title text-lg font-semibold text-gray-800">Acerca de esta página</h3>
+        </div>
+        <div class="info-separator"></div>
+      </div>
+      
+      <div class="info-body text-sm text-gray-700 space-y-2">
+        <div class="leading-relaxed" [innerHTML]="description()"></div>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end">
+      <button
+        type="button"
+        class="px-4 py-2 rounded transition-colors font-medium"
+        [style.backgroundColor]="color() === 'blue' ? '#00A9E0' : '#000000'"
+        [style.color]="'white'"
+        [class.hover:opacity-90]="true"
+        (click)="closeModal()"
+      >
+        Cerrar
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
