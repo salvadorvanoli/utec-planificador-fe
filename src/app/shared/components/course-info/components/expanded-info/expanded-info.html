@@ -11,70 +11,108 @@
   [baseZIndex]="20000"
 >
   <div class="p-4">
-    <!-- Primera fila: Carrera y Docente -->
-    <div class="grid grid-cols-2 gap-4 mb-4">
+    <!-- Primera fila: Carrera y Docentes -->
+    <div class="grid md:grid-cols-2 gap-4 mb-4">
       <p-floatlabel variant="in" class="w-full">
         <input
           pInputText
-          id="carrera"
+          id="program"
           [value]="carrera()"
           [readonly]="true"
           class="w-full bg-gray-50 cursor-not-allowed"
         />
-        <label for="carrera">Carrera</label>
+        <label for="program">Carrera</label>
       </p-floatlabel>
 
       <p-floatlabel variant="in" class="w-full">
         <input
           pInputText
-          id="docente"
+          id="teachers"
           [value]="docente()"
           [readonly]="true"
           class="w-full bg-gray-50 cursor-not-allowed"
         />
-        <label for="docente">Docente</label>
+        <label for="teacher">Docentes</label>
       </p-floatlabel>
     </div>
 
     <!-- Segunda fila: Unidad Curricular | (Semestre y Créditos) -->
-    <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="grid md:grid-cols-2 gap-4 mb-4">
       <p-floatlabel variant="in" class="w-full">
         <input
           pInputText
-          id="unidad_curricular"
-          [value]="unidadCurricular()"
+          id="curricular_unit"
+          [value]="curricularUnit()"
           [readonly]="true"
           class="w-full bg-gray-50 cursor-not-allowed"
         />
-        <label for="unidad_curricular">Unidad Curricular</label>
+        <label for="curricular_unit">Unidad Curricular</label>
       </p-floatlabel>
 
       <div class="grid grid-cols-2 gap-4">
         <p-floatlabel variant="in" class="w-full">
           <input
             pInputText
-            id="semestre"
-            [value]="semestre()"
+            id="semester"
+            [value]="semester()"
             [readonly]="true"
             class="w-full bg-gray-50 cursor-not-allowed"
           />
-          <label for="semestre">Semestre</label>
+          <label for="semester">Semestre</label>
         </p-floatlabel>
 
         <p-floatlabel variant="in" class="w-full">
           <input
             pInputText
-            id="creditos"
-            [value]="creditos()"
+            id="credits"
+            [value]="credits()"
             [readonly]="true"
             class="w-full bg-gray-50 cursor-not-allowed"
           />
-          <label for="creditos">Créditos</label>
+          <label for="credits">Créditos</label>
         </p-floatlabel>
       </div>
     </div>
 
-    <!-- Tercera fila: Tags boxes -->
+    <!-- Tercera fila: Turno y Fechas -->
+    <div class="grid sm:grid-cols-2 gap-4 mb-4">
+      <p-floatlabel variant="in" class="w-full">
+        <input
+          pInputText
+          id="shift"
+          [value]="shift()"
+          [readonly]="true"
+          class="w-full bg-gray-50 cursor-not-allowed"
+        />
+        <label for="shift">Turno</label>
+      </p-floatlabel>
+
+      <div class="grid grid-cols-2 gap-4">
+        <p-floatlabel variant="in" class="w-full">
+          <input
+            pInputText
+            id="start_date"
+            [value]="startDate()"
+            [readonly]="true"
+            class="w-full bg-gray-50 cursor-not-allowed"
+          />
+          <label for="start_date">Fecha de inicio</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="in" class="w-full">
+          <input
+            pInputText
+            id="end_date"
+            [value]="endDate()"
+            [readonly]="true"
+            class="w-full bg-gray-50 cursor-not-allowed"
+          />
+          <label for="end_date">Fecha de fin</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <!-- Cuarta fila: Tags boxes -->
     <div class="grid grid-cols-2 gap-4 mt-6">
       <app-tags-box
         [title]="'Áreas de dominio'"

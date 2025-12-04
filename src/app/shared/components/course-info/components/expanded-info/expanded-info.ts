@@ -5,7 +5,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { TagsBox } from '../tags-box/tags-box';
 import { Course, CourseDetailedInfo } from '@app/core/models';
-import { EnumResponse, CourseService } from '@app/core/services';
+import { EnumResponse, EnumService, CourseService } from '@app/core/services';
 
 @Component({
   selector: 'app-expanded-info',
@@ -16,17 +16,18 @@ import { EnumResponse, CourseService } from '@app/core/services';
 })
 export class ExpandedInfo {
   private readonly courseService = inject(CourseService);
+  private readonly enumService = inject(EnumService);
   
   // Inputs y outputs
   visible = input<boolean>(false);
   courseData = input<Course | null>(null);
   onClose = output<void>();
 
-  // Signal para la información detallada
+  // Signal for detailed information
   detailedInfo = signal<CourseDetailedInfo | null>(null);
   isLoading = signal<boolean>(false);
 
-  // Signals para los campos (read-only) basados en detailed info
+  // Signals for read-only fields based on detailed info
   carrera = computed(() => this.detailedInfo()?.programName || 'No especificada');
 
   docente = computed(() => {
@@ -36,20 +37,55 @@ export class ExpandedInfo {
     
     return teachersNames;
   });
-  unidadCurricular = computed(() => this.detailedInfo()?.curricularUnitName || '');
-  semestre = computed(() => this.detailedInfo()?.semesterNumber?.toString() || '');
-  creditos = computed(() => this.detailedInfo()?.credits?.toString() || '');
+  curricularUnit = computed(() => this.detailedInfo()?.curricularUnitName || '');
+  semester = computed(() => this.detailedInfo()?.semesterNumber?.toString() || '');
+  credits = computed(() => this.detailedInfo()?.credits?.toString() || '');
 
-  // Tags para áreas de dominio y competencias profesionales
+  // Shift options for enum mapping
+  shiftOptions = signal<EnumResponse[]>([]);
+
+  // Computed signals for administrative fields (from courseData, not detailedInfo)
+  shift = computed(() => {
+    const course = this.courseData();
+    const shiftValue = course?.shift;
+    if (!shiftValue) return 'No especificado';
+    
+    const shiftEnum = this.shiftOptions().find(opt => opt.value === shiftValue);
+    return shiftEnum?.displayValue || shiftValue;
+  });
+
+  startDate = computed(() => {
+    const course = this.courseData();
+    if (!course?.startDate) return 'No especificada';
+    return new Date(course.startDate).toLocaleDateString('es-UY', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  });
+
+  endDate = computed(() => {
+    const course = this.courseData();
+    if (!course?.endDate) return 'No especificada';
+    return new Date(course.endDate).toLocaleDateString('es-UY', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  });
+
+  // Tags for domain areas and professional competencies
   domainAreasTags = signal<string[]>([]);
   professionalCompetenciesTags = signal<string[]>([]);
 
-  // Opciones de enums (por ahora vacías, listas para conectar con servicio)
+  // Enum options
   domainAreasOptions = signal<EnumResponse[]>([]);
   professionalCompetenciesOptions = signal<EnumResponse[]>([]);
 
   constructor() {
-    // Effect para cargar información detallada cuando se abre el diálogo
+    this.loadEnumOptions();
+    
+    // Effect to load detailed info when dialog opens
     effect(() => {
       const isVisible = this.visible();
       const course = this.courseData();
@@ -59,13 +95,20 @@ export class ExpandedInfo {
       }
     });
     
-    // Effect para actualizar tags cuando cambie detailedInfo
+    // Effect to update tags when detailedInfo changes
     effect(() => {
       const info = this.detailedInfo();
       if (info) {
         this.domainAreasTags.set(info.domainAreas || []);
         this.professionalCompetenciesTags.set(info.professionalCompetencies || []);
       }
+    });
+  }
+
+  private loadEnumOptions(): void {
+    this.enumService.getShifts().subscribe({
+      next: (data) => this.shiftOptions.set(data),
+      error: (err) => console.error('[ExpandedInfo] Error loading shifts:', err)
     });
   }
 
@@ -90,17 +133,17 @@ export class ExpandedInfo {
     this.onClose.emit();
   }
 
-  // Métodos para manejar tags (preparados para conectar con backend)
+  // Methods to handle tags (ready to connect with backend)
   removeDomainAreaTag(tag: string): void {
     console.log('[ExpandedInfo] Remove domain area tag:', tag);
-    // TODO: Implementar llamada al backend
+    // TODO: Implement backend call
     const currentTags = this.domainAreasTags();
     this.domainAreasTags.set(currentTags.filter(t => t !== tag));
   }
 
   addDomainAreaTag(tag: string): void {
     console.log('[ExpandedInfo] Add domain area tag:', tag);
-    // TODO: Implementar llamada al backend
+    // TODO: Implement backend call
     const currentTags = this.domainAreasTags();
     if (!currentTags.includes(tag)) {
       this.domainAreasTags.set([...currentTags, tag]);
@@ -109,14 +152,14 @@ export class ExpandedInfo {
 
   removeProfessionalCompetencyTag(tag: string): void {
     console.log('[ExpandedInfo] Remove professional competency tag:', tag);
-    // TODO: Implementar llamada al backend
+    // TODO: Implement backend call
     const currentTags = this.professionalCompetenciesTags();
     this.professionalCompetenciesTags.set(currentTags.filter(t => t !== tag));
   }
 
   addProfessionalCompetencyTag(tag: string): void {
     console.log('[ExpandedInfo] Add professional competency tag:', tag);
-    // TODO: Implementar llamada al backend
+    // TODO: Implement backend call
     const currentTags = this.professionalCompetenciesTags();
     if (!currentTags.includes(tag)) {
       this.professionalCompetenciesTags.set([...currentTags, tag]);

@@ -75,7 +75,7 @@
     </div>
   } @else {
     <div class="flex flex-col gap-3 left-column">
-      <!-- Admin fields: Shift -->
+      <!-- Admin mode: Shift and Dates (only visible and editable in admin mode) -->
       @if (isAdminMode()) {
         <div>
           <app-select 
@@ -88,10 +88,7 @@
             [placeholder]="'Seleccionar turno'"
           />
         </div>
-      }
 
-      <!-- Admin fields: Start and End Dates -->
-      @if (isAdminMode()) {
         <div class="grid grid-cols-2 gap-2">
           <app-datepicker
             id="start_date"
