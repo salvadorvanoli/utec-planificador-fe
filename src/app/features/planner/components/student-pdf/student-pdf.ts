@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseService } from '@app/core/services';
 import { CoursePdfData } from '@app/core/models';
@@ -19,6 +19,53 @@ export class StudentPdfComponent {
   courseData = signal<CoursePdfData | null>(null);
   isLoading = signal(true);
   error = signal<string | null>(null);
+
+  // Computed signals para formateo eficiente
+  teacherName = computed(() => {
+    const teachers = this.courseData()?.teachers;
+    if (!teachers || teachers.length === 0) return 'No asignado';
+    const teacher = teachers[0];
+    return `${teacher.name} ${teacher.lastName}`;
+  });
+
+  careerName = computed(() => this.courseData()?.programName || 'No especificada');
+
+  formattedWeeks = computed(() => {
+    const weeks = this.courseData()?.weeklyPlannings || [];
+    return weeks.map(week => ({
+      ...week,
+      formattedStartDate: this.formatDateInternal(week.startDate),
+      formattedEndDate: this.formatDateInternal(week.endDate)
+    }));
+  });
+
+  hoursByFormat = computed(() => {
+    const course = this.courseData();
+    if (!course?.hoursPerDeliveryFormat) {
+      return { VIRTUAL: 0, ONLINE: 0, PRESENTIAL: 0 };
+    }
+    return {
+      VIRTUAL: course.hoursPerDeliveryFormat['VIRTUAL'] || 0,
+      ONLINE: course.hoursPerDeliveryFormat['ONLINE'] || 0,
+      PRESENTIAL: course.hoursPerDeliveryFormat['PRESENTIAL'] || 0
+    };
+  });
+
+  formattedStartDate = computed(() => this.formatDateInternal(this.courseData()?.startDate));
+  
+  formattedEndDate = computed(() => this.formatDateInternal(this.courseData()?.endDate));
+
+  productiveSectorLabel = computed(() => 
+    this.getBooleanLabelInternal(this.courseData()?.involvesActivitiesWithProductiveSector)
+  );
+
+  investigationLabel = computed(() => 
+    this.getBooleanLabelInternal(this.courseData()?.isRelatedToInvestigation)
+  );
+
+  gradingSystemLabel = computed(() => this.getGradingSystemLabelInternal(this.courseData()?.partialGradingSystem));
+
+  shiftLabel = computed(() => this.getShiftLabelInternal(this.courseData()?.shift));
 
   constructor() {
     // Efecto que carga los datos cuando cambia el courseId
@@ -48,15 +95,8 @@ export class StudentPdfComponent {
     });
   }
 
-  // Helpers para formatear datos
-  getTeacherName(): string {
-    const teachers = this.courseData()?.teachers;
-    if (!teachers || teachers.length === 0) return 'No asignado';
-    const teacher = teachers[0]; // Tomamos el primer profesor
-    return `${teacher.name} ${teacher.lastName}`;
-  }
-
-  formatDate(date: string | undefined): string {
+  // Helpers privados para formateo (usados por computed)
+  private formatDateInternal(date: string | undefined): string {
     if (!date) return 'No especificada';
     return new Date(date).toLocaleDateString('es-UY', {
       day: '2-digit',
@@ -65,7 +105,8 @@ export class StudentPdfComponent {
     });
   }
 
-  getShiftLabel(shift: string | undefined): string {
+  // Métodos privados para formateo (usados por computed)
+  private getShiftLabelInternal(shift: string | undefined): string {
     const shifts: { [key: string]: string } = {
       'MORNING': 'Matutino',
       'AFTERNOON': 'Vespertino',
@@ -75,7 +116,7 @@ export class StudentPdfComponent {
     return shift ? shifts[shift] || shift : 'No especificado';
   }
 
-  getGradingSystemLabel(system: string | undefined): string {
+  private getGradingSystemLabelInternal(system: string | undefined): string {
     const systems: { [key: string]: string } = {
       'NUMERIC': 'Numérico',
       'LETTER': 'Por letras',
@@ -84,18 +125,8 @@ export class StudentPdfComponent {
     return system ? systems[system] || system : 'No especificado';
   }
 
-  getBooleanLabel(value: boolean | undefined): string {
+  private getBooleanLabelInternal(value: boolean | undefined): string {
     if (value === undefined || value === null) return 'No especificado';
     return value ? 'Sí' : 'No';
-  }
-
-  getCareerName(): string {
-    return this.courseData()?.programName || 'No especificada';
-  }
-
-  getHoursByFormat(format: string): number {
-    const course = this.courseData();
-    if (!course?.hoursPerDeliveryFormat) return 0;
-    return course.hoursPerDeliveryFormat[format] || 0;
   }
 }

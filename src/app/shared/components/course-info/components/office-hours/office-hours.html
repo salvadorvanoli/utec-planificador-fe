@@ -27,9 +27,9 @@
           </div>
         } @else {
           <div class="tags-container flex flex-wrap gap-2">
-            @for (schedule of schedules(); track schedule.id) {
+            @for (schedule of formattedSchedules(); track schedule.id) {
               <span class="schedule-tag">
-                {{ formatSchedule(schedule) }}
+                {{ schedule.formatted }}
                 <button 
                   class="remove-schedule-button"
                   (click)="removeSchedule(schedule)"

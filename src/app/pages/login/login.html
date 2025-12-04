@@ -25,8 +25,8 @@
           [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
           autocomplete="email"
         />
-        @if (getEmailError()) {
-          <span class="error-message">{{ getEmailError() }}</span>
+        @if (emailError()) {
+          <span class="error-message">{{ emailError() }}</span>
         }
       </div>
 
@@ -52,8 +52,8 @@
             <i [class]="showPassword() ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
           </button>
         </div>
-        @if (getPasswordError()) {
-          <span class="error-message">{{ getPasswordError() }}</span>
+        @if (passwordError()) {
+          <span class="error-message">{{ passwordError() }}</span>
         }
       </div>
 

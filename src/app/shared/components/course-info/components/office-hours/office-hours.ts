@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, effect, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, effect, inject, computed } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonComponent } from '@app/shared/components/button/button';
 import { DatePickerComponent } from '@app/shared/components/datepicker/datepicker';
@@ -29,6 +29,14 @@ export class OfficeHours {
   // Signal para los horarios desde el backend
   schedules = signal<OfficeHoursResponse[]>([]);
   isLoading = signal<boolean>(false);
+
+  // Computed para formatear horarios de manera eficiente
+  formattedSchedules = computed(() => {
+    return this.schedules().map(schedule => ({
+      ...schedule,
+      formatted: this.formatScheduleInternal(schedule)
+    }));
+  });
 
   // Campos del formulario
   selectedDate = signal<Date | null>(null);
@@ -197,8 +205,8 @@ export class OfficeHours {
     });
   }
 
-  // Helper para formatear horario en el template
-  formatSchedule(officeHours: OfficeHoursResponse): string {
+  // Helper privado para formatear horario
+  private formatScheduleInternal(officeHours: OfficeHoursResponse): string {
     const date = new Date(officeHours.date);
     const formattedDate = date.toLocaleDateString('es-UY', {
       day: '2-digit',

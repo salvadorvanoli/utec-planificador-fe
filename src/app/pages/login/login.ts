@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/core/services';
@@ -21,6 +21,9 @@ export class Login {
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly showPassword = signal(false);
+  
+  // Signal for form state to trigger computed updates
+  private readonly formTouched = signal(0);
 
   readonly loginForm = new FormGroup({
     email: new FormControl('', [
@@ -35,6 +38,45 @@ export class Login {
     ])
   });
 
+  // Computed error messages for performance
+  readonly emailError = computed(() => {
+    // Force recomputation when form is touched
+    this.formTouched();
+    
+    const emailControl = this.loginForm.get('email');
+    if (emailControl?.hasError('required') && emailControl?.touched) {
+      return 'El correo es requerido';
+    }
+    if (emailControl?.hasError('maxlength') && emailControl?.touched) {
+      return 'El correo no puede exceder 100 caracteres';
+    }
+    if (emailControl?.hasError('email') && emailControl?.touched) {
+      return 'Ingresa un correo válido';
+    }
+    return '';
+  });
+
+  readonly passwordError = computed(() => {
+    // Force recomputation when form is touched
+    this.formTouched();
+    
+    const passwordControl = this.loginForm.get('password');
+    if (passwordControl?.hasError('required') && passwordControl?.touched) {
+      return 'La contraseña es requerida';
+    }
+    if (passwordControl?.hasError('minlength') && passwordControl?.touched) {
+      return 'La contraseña es requerida';
+    }
+    return '';
+  });
+
+  constructor() {
+    // Update formTouched signal when form state changes
+    this.loginForm.statusChanges.subscribe(() => {
+      this.formTouched.update(v => v + 1);
+    });
+  }
+
   togglePasswordVisibility(): void {
     this.showPassword.update(value => !value);
   }
@@ -42,6 +84,7 @@ export class Login {
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
+      this.formTouched.update(v => v + 1);
       return;
     }
 
@@ -68,29 +111,5 @@ export class Login {
     });
   }
 
-  getEmailError(): string {
-    const emailControl = this.loginForm.get('email');
-    if (emailControl?.hasError('required') && emailControl?.touched) {
-      return 'El correo es requerido';
-    }
-    if (emailControl?.hasError('maxlength') && emailControl?.touched) {
-      return 'El correo no puede exceder 100 caracteres';
-    }
-    if (emailControl?.hasError('email') && emailControl?.touched) {
-      return 'Ingresa un correo válido';
-    }
-    return '';
-  }
-
-  getPasswordError(): string {
-    const passwordControl = this.loginForm.get('password');
-    if (passwordControl?.hasError('required') && passwordControl?.touched) {
-      return 'La contraseña es requerida';
-    }
-    if (passwordControl?.hasError('minlength') && passwordControl?.touched) {
-      return 'La contraseña es requerida';
-    }
-    return '';
-  }
 }
 
