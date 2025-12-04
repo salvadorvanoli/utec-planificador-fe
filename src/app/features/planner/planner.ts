@@ -12,7 +12,7 @@ import { ChangeHistory } from './components/change-history/change-history';
 import { ReutilizePlan } from './components/reutilize-plan/reutilize-plan';
 import { EnumOption } from '@app/shared/components/select/select';
 import { Toast } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-planner',
@@ -28,9 +28,10 @@ export class Planner implements OnInit {
   private readonly router = inject(Router);
   private readonly positionService = inject(PositionService);
   private readonly messageService = inject(MessageService);
-  
+  private readonly confirmationService = inject(ConfirmationService);
+
   readonly InfoType = InfoType;
-  
+
   courseData = signal<Course | null>(null);
   isLoadingCourse = signal(true);
   showHistoryModal = signal(false);
@@ -42,7 +43,7 @@ export class Planner implements OnInit {
 
   ngOnInit(): void {
     const courseId = this.route.snapshot.paramMap.get('courseId');
-    
+
     if (courseId) {
       this.loadCourseData(+courseId);
     }
@@ -50,7 +51,7 @@ export class Planner implements OnInit {
 
   private loadCourseData(courseId: number): void {
     this.isLoadingCourse.set(true);
-    
+
     this.courseService.getCourseById(courseId).subscribe({
       next: (course) => {
         this.courseData.set(course);
@@ -67,10 +68,10 @@ export class Planner implements OnInit {
   private loadPastCourses(course: Course): void {
     console.log('[Planner] ==================== START loadPastCourses ====================');
     console.log('[Planner] Full course object:', course);
-    
+
     // Obtener userId desde userPositions
     let userPositions = this.positionService.userPositions();
-    
+
     // Si no hay userPositions, cargarlas primero
     if (!userPositions) {
       console.log('[Planner] No userPositions found, loading them first...');
@@ -85,7 +86,7 @@ export class Planner implements OnInit {
       });
       return;
     }
-    
+
     this.loadPastCoursesWithData(course, userPositions.userId);
   }
 
@@ -111,11 +112,11 @@ export class Planner implements OnInit {
       next: (courses) => {
         console.log('[Planner] Received past courses:', courses);
         console.log('[Planner] Number of courses received:', courses.length);
-        
+
         if (courses.length > 0) {
           console.log('[Planner] First course structure:', courses[0]);
         }
-        
+
         // El backend devuelve courseId, no id
         // Filtrar el curso actual usando courseId
         const filteredCourses = courses.filter(c => {
@@ -125,15 +126,15 @@ export class Planner implements OnInit {
           }
           return c.courseId !== course.id;
         });
-        
+
         console.log('[Planner] Filtered courses:', filteredCourses);
-        
+
         // Convertir a EnumOption para el select usando displayName que ya viene formateado
         const options: EnumOption[] = filteredCourses.map(c => ({
           value: c.courseId.toString(),
           displayValue: c.displayName || `${c.curricularUnitName} - ${c.period}`
         }));
-        
+
         this.pastCourses.set(options);
         console.log('[Planner] Past courses loaded as options:', options);
       },
@@ -170,7 +171,7 @@ export class Planner implements OnInit {
 
   handleReutilizeConfirm(sourceCourseId: string): void {
     const targetCourseId = this.courseData()?.id;
-    
+
     if (!targetCourseId) {
       console.error('[Planner] No target course ID available');
       this.messageService.add({
@@ -190,10 +191,10 @@ export class Planner implements OnInit {
         console.log('[Planner] Planning copied successfully:', updatedCourse);
         this.isCopyingPlanning.set(false);
         this.showReutilizeModal.set(false);
-        
+
         // Update local course data with the response
         this.courseData.set(updatedCourse);
-        
+
         // Show success message
         this.messageService.add({
           severity: 'success',
@@ -201,7 +202,7 @@ export class Planner implements OnInit {
           detail: 'La planificación se copió correctamente',
           life: 3000
         });
-        
+
         // Increment trigger to force reload of weekly-plan component
         this.planningReloadTrigger.update(v => v + 1);
       },
@@ -220,30 +221,41 @@ export class Planner implements OnInit {
 
   async downloadPdf(): Promise<void> {
     const courseId = this.courseData()?.id;
-    
+
     if (!courseId) {
       console.error('No course ID available');
       return;
     }
 
-    this.isGeneratingPdf.set(true);
+    this.confirmationService.confirm({
+      header: 'Confirmar descarga de planificación',
+      message: 'Se generará y descargará un archivo PDF con la planificación del curso. ¿Desea continuar?',
+      icon: 'pi pi-file-pdf',
+      acceptLabel: 'Descargar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-primary',
+      rejectButtonStyleClass: 'p-button-text',
+      accept: async () => {
+        this.isGeneratingPdf.set(true);
 
-    try {
-      await this.pdfService.generateCoursePdf(courseId);
-      this.messageService.add({
-        severity: 'success',
-        summary: 'PDF generado',
-        detail: 'El PDF se ha generado exitosamente'
-      });
-    } catch (error) {
-      console.error('Error al generar PDF:', error);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Error al generar el PDF. Por favor, intenta nuevamente.'
-      });
-    } finally {
-      this.isGeneratingPdf.set(false);
-    }
+        try {
+          await this.pdfService.generateCoursePdf(courseId);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'PDF generado',
+            detail: 'El PDF se ha generado exitosamente'
+          });
+        } catch (error) {
+          console.error('Error al generar PDF:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al generar el PDF. Por favor, intenta nuevamente.'
+          });
+        } finally {
+          this.isGeneratingPdf.set(false);
+        }
+      }
+    });
   }
 }
