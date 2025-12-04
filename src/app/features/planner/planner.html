@@ -60,6 +60,7 @@
 <app-change-history 
   [visible]="showHistoryModal()"
   [courseId]="courseData()?.id ?? 0"
+  [courseStartDate]="courseData()?.startDate ?? ''"
   (onClose)="closeHistoryModal()">
 </app-change-history>
 

@@ -19,17 +19,25 @@
       </div>
     } @else if (modifications().length > 0) {
       <div class="logs-list space-y-3">
-        @for (modification of modifications(); track modification.id) {
+        @for (modification of modificationsWithStyles(); track modification.id) {
           <div class="log-item flex items-start gap-3 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
             <div 
-              [class]="'log-icon flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ' + getModificationBgColor(modification.type)">
-              <i [class]="'pi text-lg ' + getModificationIcon(modification.type) + ' ' + getModificationColor(modification.type)"></i>
+              [class]="'log-icon flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ' + modification.bgColor">
+              <i [class]="'pi text-lg ' + modification.icon + ' ' + modification.color"></i>
             </div>
             
             <div class="log-content flex-1">
-              <p class="log-description text-gray-800 font-medium mb-1">
-                {{ modification.description }}
-              </p>
+              <div class="flex items-start gap-2 mb-1">
+                <p class="log-description text-gray-800 font-medium flex-1">
+                  {{ modification.description }}
+                </p>
+                @if (isPostStartModification(modification.id)) {
+                  <span class="px-2 py-0.5 text-xs font-semibold bg-orange-100 text-orange-700 rounded-full border border-orange-300 flex items-center gap-1 whitespace-nowrap">
+                    <i class="pi pi-exclamation-triangle text-[10px]"></i>
+                    Post-inicio
+                  </span>
+                }
+              </div>
               <div class="flex items-center gap-4 text-sm text-gray-500">
                 <span>
                   <i class="pi pi-calendar mr-1"></i>

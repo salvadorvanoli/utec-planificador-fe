@@ -1,4 +1,4 @@
-import { Component, input, output, signal, effect, inject } from '@angular/core';
+import { Component, input, output, signal, effect, inject, computed } from '@angular/core';
 import { Dialog } from 'primeng/dialog';
 import { Paginator, PaginatorState } from 'primeng/paginator';
 import { DatePipe } from '@angular/common';
@@ -16,6 +16,7 @@ export class ChangeHistory {
 
   visible = input.required<boolean>();
   courseId = input.required<number>();
+  courseStartDate = input.required<string>(); // formato YYYY-MM-DD
   onClose = output<void>();
 
   // Datos de modificaciones
@@ -27,6 +28,32 @@ export class ChangeHistory {
   first = signal(0);
   rows = signal(10);
 
+  // Set of modification IDs that are post-start (computed for performance)
+  postStartModificationIds = computed(() => {
+    const startDate = new Date(this.courseStartDate());
+    startDate.setHours(0, 0, 0, 0);
+
+    return new Set(
+      this.modifications()
+        .filter(mod => {
+          const modificationDate = new Date(mod.modificationDate);
+          modificationDate.setHours(0, 0, 0, 0);
+          return modificationDate >= startDate;
+        })
+        .map(mod => mod.id)
+    );
+  });
+
+  // Computed para modificaciones con estilos precalculados
+  modificationsWithStyles = computed(() => {
+    return this.modifications().map(mod => ({
+      ...mod,
+      icon: this.getModificationIconInternal(mod.type),
+      color: this.getModificationColorInternal(mod.type),
+      bgColor: this.getModificationBgColorInternal(mod.type)
+    }));
+  });
+
   constructor() {
     // Cargar datos cuando se abre el modal
     effect(() => {
@@ -36,7 +63,7 @@ export class ChangeHistory {
     });
   }
 
-  getModificationIcon(type: ModificationType): string {
+  private getModificationIconInternal(type: ModificationType): string {
     const icons = {
       'CREATE': 'pi-plus-circle',
       'UPDATE': 'pi-pen-to-square',
@@ -45,7 +72,7 @@ export class ChangeHistory {
     return icons[type] || 'pi-history';
   }
 
-  getModificationColor(type: ModificationType): string {
+  private getModificationColorInternal(type: ModificationType): string {
     const colors = {
       'CREATE': 'text-green-600',
       'UPDATE': 'text-yellow-600',
@@ -54,13 +81,17 @@ export class ChangeHistory {
     return colors[type] || 'text-[#00A9E0]';
   }
 
-  getModificationBgColor(type: ModificationType): string {
+  private getModificationBgColorInternal(type: ModificationType): string {
     const bgColors = {
       'CREATE': 'bg-green-100',
       'UPDATE': 'bg-yellow-100',
       'DELETE': 'bg-red-100'
     };
     return bgColors[type] || 'bg-[#00A9E0]/20';
+  }
+
+  isPostStartModification(modificationId: number): boolean {
+    return this.postStartModificationIds().has(modificationId);
   }
 
   private loadModifications(): void {
