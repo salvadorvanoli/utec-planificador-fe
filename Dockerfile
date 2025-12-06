@@ -48,9 +48,8 @@ LABEL org.opencontainers.image.source="https://github.com/salvadorvanoli/utec-pl
 # Install curl for healthcheck
 RUN apk add --no-cache curl
 
-# Crear usuario no-root para NGINX
-RUN addgroup -g 101 -S nginx || true && \
-    adduser -S -D -H -u 101 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx || true
+# Note: nginx user already exists in nginx:alpine image (uid=101, gid=101)
+# No need to create it again
 
 # Remove default NGINX configuration
 RUN rm -rf /usr/share/nginx/html/*
