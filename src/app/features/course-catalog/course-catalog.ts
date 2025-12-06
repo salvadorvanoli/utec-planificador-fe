@@ -31,6 +31,21 @@ export class CourseCatalog implements OnInit {
     return (context?.roles?.includes(Role.TEACHER)) ?? false;
   });
 
+  // Computed: verify if user should see only their courses in statistics mode
+  // True if user has TEACHER but does NOT have COORDINATOR or EDUCATION_MANAGER
+  // (ANALYST doesn't grant access to all campus courses in statistics mode)
+  readonly hasOnlyTeacherRole = computed(() => {
+    const context = this.positionService.selectedContext();
+    if (!context?.roles || context.roles.length === 0) return false;
+    
+    const hasTeacher = context.roles.includes(Role.TEACHER);
+    const hasCoordinator = context.roles.includes(Role.COORDINATOR);
+    const hasEducationManager = context.roles.includes(Role.EDUCATION_MANAGER);
+    
+    // User should see only their courses if they have TEACHER but lack privileged roles
+    return hasTeacher && !hasCoordinator && !hasEducationManager;
+  });
+
   // Computed: generates dynamic description based on mode and authentication status
   readonly dynamicDescription = computed(() => {
     const currentMode = this.mode();
@@ -172,13 +187,36 @@ export class CourseCatalog implements OnInit {
 
     const permanentFilters: { campusId?: number; userId?: number } = {};
 
-    // Mode statistics or management: Permanent campus filter
-    if (currentMode === 'statistics' || currentMode === 'management') {
+    // Mode statistics: Permanent campus filter + userId if user has ONLY TEACHER role
+    if (currentMode === 'statistics') {
       if (context.campus?.id) {
         permanentFilters.campusId = context.campus.id;
-        console.log(`[CourseCatalog] ${currentMode} mode: Setting permanent campus filter:`, context.campus.id);
+        console.log(`[CourseCatalog] statistics mode: Setting permanent campus filter:`, context.campus.id);
+        
+        // If user has ONLY TEACHER role (no admin roles), filter by userId automatically
+        if (this.hasOnlyTeacherRole()) {
+          const userPositions = this.positionService.userPositions();
+          if (userPositions?.userId) {
+            permanentFilters.userId = userPositions.userId;
+            console.log('[CourseCatalog] statistics mode: User has ONLY TEACHER role, setting permanent userId filter:', userPositions.userId);
+          }
+        } else {
+          console.log('[CourseCatalog] statistics mode: User has administrative roles, showing all campus courses');
+        }
       } else {
-        console.error(`[CourseCatalog] ${currentMode} mode requires a campus in context`);
+        console.error(`[CourseCatalog] statistics mode requires a campus in context`);
+        this.router.navigate(['/option-page']);
+        return;
+      }
+    }
+
+    // Mode management: Permanent campus filter only
+    if (currentMode === 'management') {
+      if (context.campus?.id) {
+        permanentFilters.campusId = context.campus.id;
+        console.log(`[CourseCatalog] management mode: Setting permanent campus filter:`, context.campus.id);
+      } else {
+        console.error(`[CourseCatalog] management mode requires a campus in context`);
         this.router.navigate(['/option-page']);
         return;
       }
