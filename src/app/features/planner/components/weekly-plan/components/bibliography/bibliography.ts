@@ -16,6 +16,7 @@ export class Bibliography {
   private readonly messageService = inject(MessageService);
   references = input<string[]>([]);
   isDisabled = input<boolean>(false);
+  isReadOnly = input<boolean>(false); // Controls if add/delete buttons are disabled
   
   // Outputs para comunicar acciones al componente padre
   addReference = output<string>();

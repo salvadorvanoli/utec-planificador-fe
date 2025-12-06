@@ -51,7 +51,8 @@ export class Header {
   }
 
   goToStudentPortal(): void {
-    const queryParams = buildContextQueryParams({ mode: 'info' });
+    // Navigate to student portal with download mode in queryParams
+    const queryParams = buildContextQueryParams({ mode: 'download' });
     this.router.navigate(['/student/courses'], { queryParams });
   }
 

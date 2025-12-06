@@ -19,6 +19,12 @@ export class ColorPicker {
   // Input para determinar si es para actividad o contenido
   activity = input<boolean>(true);
   
+  // Input para deshabilitar el selector
+  disabled = input<boolean>(false);
+  
+  // Input para modo readonly (solo lectura con apariencia normal)
+  readonly = input<boolean>(false);
+  
   // Output para emitir cuando cambie el color
   onColorChange = output<string>();
   

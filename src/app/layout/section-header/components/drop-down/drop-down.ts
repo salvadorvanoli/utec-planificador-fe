@@ -43,8 +43,9 @@ export class DropDown {
     { route: '/course-catalog', breadcrumb: ['home', 'menu', 'catalog'] },
     { route: '/planner', breadcrumb: ['home', 'menu', 'catalog', 'planner'] },
     { route: '/statistics-page', breadcrumb: ['home', 'menu', 'catalog', 'statistics'] },
+    { route: '/course-details', breadcrumb: ['home', 'menu', 'catalog', 'details'] },
     { route: '/chat-page', breadcrumb: ['home', 'menu', 'chat'] },
-    { route: '/assign-page', breadcrumb: ['home', 'menu', 'itr', 'assign'] },
+    { route: '/assign-page', breadcrumb: ['home', 'menu', 'catalog', 'assign'] },
   ];
 
   private readonly allOptions: MenuOption[] = [
@@ -52,6 +53,7 @@ export class DropDown {
     { id: 'menu', name: 'Menu', icon: 'pi pi-bars' },
     { id: 'catalog', name: 'Catalog', icon: 'pi pi-search' },
     { id: 'planner', name: 'Planner', icon: 'pi pi-calendar' },
+    { id: 'details', name: 'Details', icon: 'pi pi-info-circle' },
     { id: 'chat', name: 'Chat', icon: 'pi pi-comment' },
     { id: 'statistics', name: 'Statistics', icon: 'pi pi-chart-bar' },
     { id: 'itr', name: 'ITR', icon: 'pi pi-map-marker' },
@@ -63,6 +65,7 @@ export class DropDown {
     menu: { path: '/option-page', contextData: { step: 'main-menu' } },
     catalog: { path: '/course-catalog', contextData: { mode: 'info' } },
     planner: { path: '/planner' },
+    details: { path: '/course-details' },
     statistics: { path: '/statistics-page' },
     chat: { path: '/chat-page' },
     itr: { path: '/option-page', contextData: { step: 'campus' } },
@@ -162,8 +165,12 @@ export class DropDown {
         config = { route: '/planner', breadcrumb: ['home', 'menu', 'catalog', 'planner'] };
       } else if (normalizedUrl.startsWith('/statistics-page')) {
         config = { route: '/statistics-page', breadcrumb: ['home', 'menu', 'catalog', 'statistics'] };
+      } else if (normalizedUrl.startsWith('/course-details')) {
+        config = { route: '/course-details', breadcrumb: ['home', 'menu', 'catalog', 'details'] };
       } else if (normalizedUrl.startsWith('/course-catalog')) {
         config = { route: '/course-catalog', breadcrumb: ['home', 'menu', 'catalog'] };
+      } else if (normalizedUrl.startsWith('/assign-page')) {
+        config = { route: '/assign-page', breadcrumb: ['home', 'menu', 'catalog', 'assign'] };
       }
     }
 
@@ -196,7 +203,7 @@ export class DropDown {
         currentParams.forEach((value, key) => queryParams[key] = value);
         const contextParams = extractContextFromUrl(queryParams);
 
-      const protectedRoutes = ['/course-catalog', '/planner', '/statistics-page', '/chat-page', '/assign-page'];
+      const protectedRoutes = ['/course-catalog', '/planner', '/statistics-page', '/course-details', '/chat-page', '/assign-page', '/pdf-preview'];
 
       if (routeConfig.path === '/option-page') {
         if (id === 'menu' && contextParams?.itrId && contextParams?.campusId) {
@@ -231,7 +238,15 @@ export class DropDown {
         if (contextParams?.itrId && contextParams?.campusId) {
           // Si el target es el catálogo, preservar el mode según la página actual
           const currentPath = this.router.url.split('?')[0];
-          const modeFromCurrent = currentPath.startsWith('/planner') ? 'planner' : currentPath.startsWith('/statistics-page') ? 'statistics' : undefined;
+          const modeFromCurrent = currentPath.startsWith('/planner') 
+            ? 'planner' 
+            : currentPath.startsWith('/statistics-page') 
+            ? 'statistics' 
+            : currentPath.startsWith('/course-details')
+            ? 'info'
+            : currentPath.startsWith('/assign-page')
+            ? 'management'
+            : undefined;
           
           // Determinar el mode: prioridad a modeFromCurrent, luego contextData, luego ninguno
           const mode = routeConfig.path === '/course-catalog' 

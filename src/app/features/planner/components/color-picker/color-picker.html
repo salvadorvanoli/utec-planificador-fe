@@ -5,7 +5,10 @@
       class="color-circle"
       [style.background-color]="color.hex"
       [class.selected]="selectedColor() === color.hex"
-      (click)="selectColor(color.hex)"
+      [class.disabled]="disabled()"
+      [class.readonly]="readonly()"
+      (click)="!(disabled() || readonly()) && selectColor(color.hex)"
+      [disabled]="disabled() || readonly()"
       [title]="color.name"
     >
       @if (selectedColor() === color.hex) {

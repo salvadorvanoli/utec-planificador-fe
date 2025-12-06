@@ -17,6 +17,7 @@ export class ContentCard {
   readonly titulo = input<string>('Título por defecto');
   readonly descripcion = input<string>('Descripción por defecto');
   readonly isSelected = input<boolean>(false);
+  readonly isReadOnly = input<boolean>(false);
   
   readonly onDelete = output<number>();
   readonly onEdit = output<number>();

@@ -18,6 +18,7 @@ export class ActivitySection implements AfterViewInit {
   activities = input<Activity[]>([]);
   showActivities = input<boolean>(false);
   programmaticContentId = input<number | null>(null);
+  isReadOnly = input<boolean>(false); // Controls if create/edit/delete buttons are disabled
   
   onActivityCreated = output<void>();
   onActivityDeleted = output<number>();

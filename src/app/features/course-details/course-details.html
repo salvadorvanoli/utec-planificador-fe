@@ -1,0 +1,56 @@
+<p-toast position="top-right" />
+
+<app-section-header
+    [color]="'blue'"
+    [showIcon]="true"
+    [infoType]="InfoType.COURSE_DETAILS"
+/>
+
+<app-course-info 
+  [courseData]="courseData()" 
+  [isLoading]="isLoadingCourse()"
+  [isAdminMode]="false"
+  [isReadOnly]="true"
+></app-course-info>
+
+<div class="flex items-center gap-2 mb-8">
+  <app-titulo class="w-full sm:w-[460px] text-left" [color]="'blue'" [texto]="'Planificación semanal'"></app-titulo>
+  
+  <button 
+    class="mt-4 sm:mt-7 w-[36px] h-[36px] sm:w-[46px] sm:h-[46px] rounded-full flex items-center justify-center bg-[#00A9E0] hover:scale-110 transition-transform duration-300"
+    aria-label="Historial de cambios"
+    pTooltip="Historial de cambios"
+    tooltipPosition="top"
+    (click)="openHistoryModal()">
+    <i class="pi pi-history text-white text-base sm:text-xl"></i>
+  </button>
+  
+  <button 
+    class="mt-4 sm:mt-7 w-[36px] h-[36px] sm:w-[46px] sm:h-[46px] rounded-full flex items-center justify-center bg-[#00A9E0] hover:scale-110 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+    [class.animate-pulse]="isGeneratingPdf()"
+    aria-label="Descargar PDF"
+    [pTooltip]="isGeneratingPdf() ? 'Generando PDF...' : 'Descargar PDF'"
+    tooltipPosition="top"
+    [disabled]="isGeneratingPdf()"
+    (click)="downloadPdf()">
+    <i [class]="isGeneratingPdf() ? 'pi pi-spin pi-spinner text-white text-base sm:text-xl' : 'pi pi-download text-white text-base sm:text-xl'"></i>
+  </button>
+</div>
+  
+@if (courseData()) {
+  <app-weekly-plan 
+    [courseId]="courseData()!.id"
+    [courseStartDate]="courseData()!.startDate"
+    [courseEndDate]="courseData()!.endDate"
+    [isReadOnly]="true"
+  ></app-weekly-plan>
+}
+
+<app-change-history 
+  [visible]="showHistoryModal()"
+  [courseId]="courseData()?.id ?? 0"
+  [courseStartDate]="courseData()?.startDate ?? ''"
+  (onClose)="closeHistoryModal()">
+</app-change-history>
+
+<p-confirmDialog></p-confirmDialog>

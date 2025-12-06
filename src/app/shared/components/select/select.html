@@ -7,9 +7,9 @@
       optionLabel="name" 
       [placeholder]="placeholder()" 
       appendTo="body"
-      [disabled]="disabled()"
+      [disabled]="disabled() || readonly()"
       emptyMessage="No se encontraron resultados"
-      class="w-full md:w-56"
+      [class]="'w-full md:w-56' + (readonly() ? ' readonly-select' : '')"
     />
     <label for="dd-city">{{ label() }}</label>
   </p-iftalabel>
@@ -21,8 +21,8 @@
     optionLabel="name" 
     [placeholder]="placeholder()" 
     appendTo="body"
-    [disabled]="disabled()"
+    [disabled]="disabled() || readonly()"
     emptyMessage="No se encontraron resultados"
-    class="w-full md:w-56"
+    [class]="'w-full md:w-56' + (readonly() ? ' readonly-select' : '')"
   />
 }

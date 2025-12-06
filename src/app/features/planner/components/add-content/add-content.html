@@ -2,7 +2,7 @@
   [visible]="visible()"
   (visibleChange)="visibleChange.emit($event)"
   modal="true"
-  [header]="isEditMode() ? 'Editar Contenido Programático' : 'Agregar Contenido Programático'"
+  [header]="isReadOnly() ? 'Detalles del Contenido Programático' : (isEditMode() ? 'Editar Contenido Programático' : 'Agregar Contenido Programático')"
   styleClass="w-9/10"
   [draggable]="false"
   [resizable]="false"
@@ -12,7 +12,7 @@
     <!-- Título -->
     <div class="row w-full">
       <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="in_label_title" [(ngModel)]="title" autocomplete="off" class="w-full" />
+        <input pInputText id="in_label_title" [(ngModel)]="title" autocomplete="off" class="w-full" [readonly]="isReadOnly()" />
         <label for="in_label_title">Título del contenido</label>
       </p-floatlabel>
     </div>
@@ -20,7 +20,7 @@
     <!-- Descripción -->
     <div class="row w-full mt-4">
       <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="in_label_content" [(ngModel)]="content" autocomplete="off" class="w-full" />
+        <input pInputText id="in_label_content" [(ngModel)]="content" autocomplete="off" class="w-full" [readonly]="isReadOnly()" />
         <label for="in_label_content">Descripción del contenido</label>
       </p-floatlabel>
     </div>
@@ -31,31 +31,44 @@
       <app-color-picker 
         [selectedColor]="selectedColor()" 
         [activity]="false"
+        [readonly]="isReadOnly()"
         (onColorChange)="onColorChange($event)">
       </app-color-picker>
     </div>
   </div>
 
   <ng-template pTemplate="footer">
-    <div class="flex gap-2 justify-end">
-      <app-button
-        label="Cancelar"
-        [color]="'red'"
-        fontFamily="'UTEC Text Light', Arial, sans-serif"
-        fontWeight="300"
-        fontSize="1rem"
-        (click)="visibleChange.emit(false)"
+    @if (isReadOnly()) {
+      <div class="flex gap-2 justify-end">
+        <button
+          type="button"
+          class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+          (click)="visibleChange.emit(false)"
         >
-      </app-button>
-      <app-button
-        label="Guardar"
-        [color]="'blue'"
-        fontFamily="'UTEC Text Light', Arial, sans-serif"
-        fontWeight="300"
-        fontSize="1rem"
-        (click)="saveContent()"
-        >
-      </app-button>
-    </div>
+          Cerrar
+        </button>
+      </div>
+    } @else {
+      <div class="flex gap-2 justify-end">
+        <app-button
+          label="Cancelar"
+          [color]="'red'"
+          fontFamily="'UTEC Text Light', Arial, sans-serif"
+          fontWeight="300"
+          fontSize="1rem"
+          (click)="visibleChange.emit(false)"
+          >
+        </app-button>
+        <app-button
+          label="Guardar"
+          [color]="'blue'"
+          fontFamily="'UTEC Text Light', Arial, sans-serif"
+          fontWeight="300"
+          fontSize="1rem"
+          (click)="saveContent()"
+          >
+        </app-button>
+      </div>
+    }
   </ng-template>
 </p-dialog>

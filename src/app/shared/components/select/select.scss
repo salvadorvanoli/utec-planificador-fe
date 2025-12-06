@@ -80,3 +80,18 @@
     overflow-wrap: break-word !important;
   }
 }
+
+// Estilos para modo readonly - mantener apariencia normal
+:host ::ng-deep .p-select.readonly-select.p-disabled {
+  opacity: 1 !important;
+  background-color: #ffffff !important;
+  cursor: default !important;
+  
+  .p-select-label {
+    color: #000000 !important;
+  }
+  
+  .p-select-dropdown {
+    opacity: 0.6 !important;
+  }
+}

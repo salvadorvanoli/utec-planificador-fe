@@ -2,7 +2,7 @@
   [visible]="visible()"
   (visibleChange)="visibleChange.emit($event)"
   [modal]="true"
-  [header]="isEditMode() ? 'Editar Actividad' : 'Agregar Actividad'"
+  [header]="isReadOnly() ? 'Detalles de la Actividad' : (isEditMode() ? 'Editar Actividad' : 'Agregar Actividad')"
   [style]="{ width: '90%', 'max-width': '1100px' }"
   styleClass="add-activity-modal"
   [draggable]="false"
@@ -13,7 +13,7 @@
     <!-- Título (nuevo campo) -->
     <div class="row w-full">
       <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="in_label_title" [(ngModel)]="title" autocomplete="off" class="w-full" />
+        <input pInputText id="in_label_title" [(ngModel)]="title" autocomplete="off" class="w-full" [readonly]="isReadOnly()" />
         <label for="in_label_title">Título de la actividad</label>
       </p-floatlabel>
     </div>
@@ -21,7 +21,7 @@
     <!-- Objetivo del aprendizaje -->
     <div class="row w-full mt-4">
       <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="in_label_desc" [(ngModel)]="description" autocomplete="off" class="w-full" />
+        <input pInputText id="in_label_desc" [(ngModel)]="description" autocomplete="off" class="w-full" [readonly]="isReadOnly()" />
         <label for="in_label_desc">Descripción de la actividad</label>
       </p-floatlabel>
     </div>
@@ -33,17 +33,19 @@
         [options]="cognitiveProcesses()"
         [selectedValues]="selectedCognitiveProcesses()"
         [placeholder]="'Seleccionar procesos'"
+        [readonly]="isReadOnly()"
         (onSelectionChange)="selectedCognitiveProcesses.set($event)">
       </app-multiselect>
     </div>
 
-    <!-- Competencias trasversales -->
+    <!-- Competencias transversales -->
     <div class="row w-full mt-4">
-      <label class="block text-sm font-medium mb-1">Competencias trasversales</label>
+      <label class="block text-sm font-medium mb-1">Competencias transversales</label>
       <app-multiselect 
         [options]="transversalCompetencies()"
         [selectedValues]="selectedTransversalCompetencies()"
         [placeholder]="'Seleccionar competencias'"
+        [readonly]="isReadOnly()"
         (onSelectionChange)="selectedTransversalCompetencies.set($event)">
       </app-multiselect>
     </div>
@@ -55,6 +57,7 @@
         [options]="teachingStrategies()"
         [selectedValues]="selectedTeachingStrategies()"
         [placeholder]="'Seleccionar estrategias'"
+        [readonly]="isReadOnly()"
         (onSelectionChange)="selectedTeachingStrategies.set($event)">
       </app-multiselect>
     </div>
@@ -66,6 +69,7 @@
         [options]="learningResources()"
         [selectedValues]="selectedLearningResources()"
         [placeholder]="'Seleccionar recursos'"
+        [readonly]="isReadOnly()"
         (onSelectionChange)="selectedLearningResources.set($event)">
       </app-multiselect>
     </div>
@@ -74,7 +78,7 @@
     <!-- Duración -->
     <div class="row w-full mt-4">
       <p-floatlabel variant="in" class="w-full">
-        <input pInputText id="in_label_first_b" [(ngModel)]="durationInMinutes" type="number" autocomplete="off" class="w-full" />
+        <input pInputText id="in_label_first_b" [(ngModel)]="durationInMinutes" type="number" autocomplete="off" class="w-full" [readonly]="isReadOnly()" />
         <label for="in_label_first_b">Duración (en minutos)</label>
       </p-floatlabel>
     </div>
@@ -85,6 +89,7 @@
       <app-select
         [options]="learningModalities()"
         [selectedValue]="selectedLearningModality()"
+        [readonly]="isReadOnly()"
         (onSelectionChange)="selectedLearningModality.set($event)">
       </app-select>
     </div>
@@ -95,32 +100,45 @@
       <app-color-picker 
         [selectedColor]="selectedColor()" 
         [activity]="true"
+        [readonly]="isReadOnly()"
         (onColorChange)="onColorChange($event)">
       </app-color-picker>
     </div>
   </div>
 
   <ng-template pTemplate="footer">
-    <div class="flex gap-2 justify-end">
-      <app-button
-        label="Cancelar"
-        [color]="'red'"
-        fontFamily="'UTEC Text Light', Arial, sans-serif"
-        fontWeight="300"
-        fontSize="1rem"
-        (click)="visibleChange.emit(false)"
+    @if (isReadOnly()) {
+      <div class="flex gap-2 justify-end">
+        <button
+          type="button"
+          class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+          (click)="visibleChange.emit(false)"
         >
-      </app-button>
-      <app-button
-        label="Guardar"
-        [color]="'blue'"
-        fontFamily="'UTEC Text Light', Arial, sans-serif"
-        fontWeight="300"
-        fontSize="1rem"
-        (click)="saveActivity()"
-        >
-      </app-button>
-    </div>
+          Cerrar
+        </button>
+      </div>
+    } @else {
+      <div class="flex gap-2 justify-end">
+        <app-button
+          label="Cancelar"
+          [color]="'red'"
+          fontFamily="'UTEC Text Light', Arial, sans-serif"
+          fontWeight="300"
+          fontSize="1rem"
+          (click)="visibleChange.emit(false)"
+          >
+        </app-button>
+        <app-button
+          label="Guardar"
+          [color]="'blue'"
+          fontFamily="'UTEC Text Light', Arial, sans-serif"
+          fontWeight="300"
+          fontSize="1rem"
+          (click)="saveActivity()"
+          >
+        </app-button>
+      </div>
+    }
   </ng-template>
 </p-dialog>
 

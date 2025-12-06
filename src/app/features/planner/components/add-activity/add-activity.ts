@@ -34,6 +34,9 @@ export class AddActivity {
   // Input para recibir el ID de la actividad a editar (null para crear nueva)
   readonly activityId = input<number | null>(null);
   
+  // Input para modo readonly (solo visualización)
+  readonly isReadOnly = input<boolean>(false);
+  
   // Output para notificar cuando se crea o edita una actividad
   readonly onActivityCreated = output<void>();
   
@@ -170,6 +173,12 @@ export class AddActivity {
   }
   
   saveActivity(): void {
+    // Block operation in read-only mode
+    if (this.isReadOnly()) {
+      console.warn('[AddActivity] Cannot save activity in read-only mode');
+      return;
+    }
+
     if (!this.title().trim()) {
       this.messageService.add({
         severity: 'warn',

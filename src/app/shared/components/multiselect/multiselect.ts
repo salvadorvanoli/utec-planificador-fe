@@ -30,6 +30,9 @@ export class MultiSelector implements OnInit {
     readonly showClear = input<boolean>(true);
     readonly filter = input<boolean>(true);
     readonly filterPlaceholder = input<string>('Buscar');
+    readonly disabled = input<boolean>(false);
+    
+    readonly readonly = input<boolean>(false);
     
     readonly options = input<EnumOption[]>([]);
     

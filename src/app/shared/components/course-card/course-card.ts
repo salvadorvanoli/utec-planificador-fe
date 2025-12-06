@@ -4,6 +4,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Skeleton } from 'primeng/skeleton';
 import { Dialog } from 'primeng/dialog';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ButtonModule } from 'primeng/button';
 import { Course, CourseBasicResponse } from '@app/core/models';
 import { extractContextFromUrl, buildContextQueryParams } from '@app/shared/utils/context-encoder';
@@ -13,8 +14,8 @@ import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-course-card',
-  imports: [CheckboxModule, FormsModule, Skeleton, Dialog, ButtonModule, Toast],
-  providers: [MessageService],
+  imports: [CheckboxModule, FormsModule, Skeleton, Dialog, ButtonModule, Toast, ConfirmDialog],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './course-card.html',
   styleUrl: './course-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -32,7 +33,7 @@ export class CourseCard {
   readonly assign = input<boolean>(false);
   readonly docente = input<boolean>(false);
   readonly course = input<Course | CourseBasicResponse | null>(null);
-  readonly mode = input<'planner' | 'statistics' | 'info' | 'management' | null>(null);
+  readonly mode = input<'planner' | 'statistics' | 'info' | 'download' | 'management' | null>(null);
   readonly assignState = signal(this.assign());
   isLoading = signal(true);
   readonly showDeleteModal = signal(false);
@@ -180,7 +181,7 @@ export class CourseCard {
     return 'Sin fecha';
   });
 
-  shouldShowPdfIcon = () => this.mode() === 'info';
+  shouldShowPdfIcon = () => this.mode() === 'download';
 
   constructor() {
     effect(() => {
@@ -190,6 +191,7 @@ export class CourseCard {
 
   handleCardClick(): void {
     const mode = this.mode();
+    console.log('[CourseCard] handleCardClick - mode:', mode);
 
     // In management mode, disable card click - only buttons should work
     if (mode === 'management') {
@@ -203,7 +205,14 @@ export class CourseCard {
       return;
     }
 
-    // Extract current context from URL to preserve it in navigation
+    // Download mode doesn't require context (public access)
+    if (mode === 'download') {
+      console.log('[CourseCard] Mode is download, calling downloadCoursePdf()');
+      this.downloadCoursePdf();
+      return;
+    }
+
+    // For other modes, extract context from URL to preserve it in navigation
     const currentParams = this.route.snapshot.queryParams;
     const contextParams = extractContextFromUrl(currentParams);
 
@@ -212,19 +221,20 @@ export class CourseCard {
       return;
     }
 
-    // Build query params with context
+    // Build query params with context AND courseId (encrypted)
     const queryParams = buildContextQueryParams({
       itrId: contextParams.itrId,
-      campusId: contextParams.campusId
+      campusId: contextParams.campusId,
+      courseId: courseData.id
     });
 
     if (mode === 'planner') {
-      this.router.navigate(['/planner', courseData.id], { queryParams });
+      this.router.navigate(['/planner'], { queryParams });
     } else if (mode === 'statistics') {
-      this.router.navigate(['/statistics-page', courseData.id], { queryParams });
+      this.router.navigate(['/statistics-page'], { queryParams });
     } else if (mode === 'info') {
-      // Download PDF for the course
-      this.downloadCoursePdf();
+      // Navigate to read-only course details page
+      this.router.navigate(['/course-details'], { queryParams });
     }
   }
 
@@ -262,14 +272,25 @@ export class CourseCard {
             detail: 'El PDF se ha descargado correctamente',
             life: 3000
           });
-        } catch (error) {
+        } catch (error: any) {
           console.error('[CourseCard] Error al generar PDF:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'No se pudo generar el PDF. Por favor, intenta nuevamente.',
-            life: 5000
-          });
+          
+          // Si es 401 y estamos en modo download (público), mostrar mensaje más específico
+          if (error?.status === 401 && this.mode() === 'download') {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Acceso restringido',
+              detail: 'Este contenido no está disponible públicamente. Por favor, inicia sesión para acceder.',
+              life: 5000
+            });
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'No se pudo generar el PDF. Por favor, intenta nuevamente.',
+              life: 5000
+            });
+          }
         } finally {
           this.isGeneratingPdf.set(false);
         }

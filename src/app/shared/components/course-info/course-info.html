@@ -12,6 +12,7 @@
         (blur)="onDescriptionChange()"
         autocomplete="off"
         class="w-full"
+        [readonly]="isReadOnly()"
       />
       <label for="course_description">Descripción</label>
     </p-floatlabel>
@@ -121,6 +122,7 @@
             class="w-full"
             type="number"
             min="0"
+            [readonly]="isReadOnly()"
           />
           <label for="input_virtual_hours">Horas virtuales</label>
         </p-floatlabel>
@@ -135,6 +137,7 @@
             class="w-full"
             type="number"
             min="0"
+            [readonly]="isReadOnly()"
           />
           <label for="input_in_person_hours">Horas presenciales</label>
         </p-floatlabel>
@@ -149,6 +152,7 @@
           [options]="scpOptions()"
           [selectedValue]="partialGradingSystem()"
           (onSelectionChange)="onScpChange($event)"
+          [readonly]="isReadOnly()"
         />
       </div>
 
@@ -162,6 +166,7 @@
           [options]="yesNoOptions()"
           [selectedValue]="selectedProductiveSector()"
           (onSelectionChange)="onProductiveSectorChange($event)"
+          [readonly]="isReadOnly()"
         />
       </div>
 
@@ -175,6 +180,7 @@
           [options]="yesNoOptions()"
           [selectedValue]="selectedInvestigation()"
           (onSelectionChange)="onInvestigationChange($event)"
+          [readonly]="isReadOnly()"
         />
       </div>
     </div>
@@ -186,6 +192,7 @@
           [title]="'ODS vinculados'" 
           [tags]="odsTags()"
           [enumOptions]="odsOptions()"
+          [readonly]="isReadOnly()"
           (onRemoveTag)="removeOdsTag($event)"
           (onAddTag)="addOdsTag($event)"
         />
@@ -194,6 +201,7 @@
           [title]="'Principios del diseño universal del aprendizaje'" 
           [tags]="principlesTags()"
           [enumOptions]="principlesOptions()"
+          [readonly]="isReadOnly()"
           (onRemoveTag)="removePrincipleTag($event)"
           (onAddTag)="addPrincipleTag($event)"
         />
@@ -223,6 +231,7 @@
   <app-office-hours
     [visible]="showOfficeHoursModal()"
     [courseId]="courseData()!.id"
+    [isReadOnly]="isReadOnly()"
     (onClose)="closeOfficeHoursModal()"
   />
 }

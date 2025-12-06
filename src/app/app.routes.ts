@@ -26,7 +26,7 @@ export const routes: Routes = [
     children: [
       { 
         path: 'courses', 
-        loadComponent: () => import('./features/course-catalog/course-catalog').then(m => m.CourseCatalog) 
+        loadComponent: () => import('./features/course-catalog/course-catalog').then(m => m.CourseCatalog)
       }
     ]
   },
@@ -52,9 +52,19 @@ export const routes: Routes = [
         canActivate: [contextGuard] 
       },
 
+      // Course Details: Read-only view of course information (COORDINATOR/EDUCATION_MANAGER only)
+      { 
+        path: 'course-details', 
+        loadComponent: () => import('./features/course-details/course-details').then(m => m.CourseDetails),
+        canActivate: [contextGuard, roleGuard, courseAccessGuard],
+        data: { 
+          requiredRoles: [Role.COORDINATOR, Role.EDUCATION_MANAGER]
+        }
+      },
+
       // Planner: Solo TEACHERS pueden acceder Y solo a sus propios cursos
       { 
-        path: 'planner/:courseId', 
+        path: 'planner', 
         loadComponent: () => import('./features/planner/planner').then(m => m.Planner),
         canActivate: [contextGuard, roleGuard, courseAccessGuard],
         data: { 
@@ -63,13 +73,13 @@ export const routes: Routes = [
         }
       },
 
-      // Statistics Page: TEACHERS (sus cursos) o ANALYST/COORDINATOR/EDUCATION_MANAGER (cursos de su campus)
+      // Statistics Page: TEACHERS (solo sus cursos) o COORDINATOR/EDUCATION_MANAGER (cursos del campus)
       { 
-        path: 'statistics-page/:courseId', 
+        path: 'statistics-page', 
         loadComponent: () => import('./features/statistics-page/statistics-page').then(m => m.StatisticsPage), 
-        canActivate: [contextGuard, roleGuard],
+        canActivate: [contextGuard, roleGuard, courseAccessGuard],
         data: { 
-          requiredRoles: [Role.TEACHER, Role.ANALYST, Role.COORDINATOR, Role.EDUCATION_MANAGER]
+          requiredRoles: [Role.TEACHER, Role.COORDINATOR, Role.EDUCATION_MANAGER]
         }
       },
 
@@ -83,21 +93,21 @@ export const routes: Routes = [
         }
       },
 
-      // Assign Page: Solo ANALYST o COORDINATOR
+      // Assign Page: Solo ANALYST o COORDINATOR (con validación de curso en modo edición)
       { 
         path: 'assign-page', 
         loadComponent: () => import('./features/assign-page/assign-page').then(m => m.AssignPage), 
-        canActivate: [contextGuard, roleGuard],
+        canActivate: [contextGuard, roleGuard, courseAccessGuard],
         data: { 
           requiredRoles: [Role.ANALYST, Role.COORDINATOR] 
         }
       },
 
-      // PDF Preview: Requiere contexto pero no valida roles específicos
+      // PDF Preview: Requiere contexto y acceso al curso específico
       { 
-        path: 'pdf-preview/:courseId', 
+        path: 'pdf-preview', 
         component: PdfPreview,
-        canActivate: [contextGuard]
+        canActivate: [contextGuard, courseAccessGuard]
       }
     ]
   },

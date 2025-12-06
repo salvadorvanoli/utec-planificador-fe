@@ -38,6 +38,8 @@ export class Selector implements OnInit {
     
     readonly disabled = input<boolean>(false);
     
+    readonly readonly = input<boolean>(false);
+    
     readonly onSelectionChange = output<string>();
     
     items = signal<Item[]>([]);

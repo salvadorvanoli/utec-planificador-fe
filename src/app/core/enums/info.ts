@@ -40,6 +40,12 @@ export const InfoType = {
     title: 'Chat',
     content: 'Interactúe con el asistente educativo',
     description: 'El Asistente Educativo es una herramienta de inteligencia artificial diseñada para ayudarle en tareas académicas. Puede solicitar recomendaciones para la planificación de cursos, obtener sugerencias de actividades de aprendizaje, y recibir orientación sobre mejores prácticas pedagógicas.'
+  },
+  COURSE_DETAILS: { 
+    code: 'courseDetails', 
+    title: 'Información del curso', 
+    content: 'Consulte la información completa del curso',
+    description: 'En esta página puede visualizar toda la información del curso seleccionado, incluyendo detalles generales, contenidos programáticos, planificación semanal, actividades de aprendizaje y bibliografía. Esta vista es de solo lectura y permite revisar la planificación completa sin realizar modificaciones.'
   }
 } as const;
 

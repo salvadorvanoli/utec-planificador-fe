@@ -91,7 +91,7 @@ export class PdfService {
               <td style="padding: 8px;">${data.curricularUnit.name}</td>
             </tr>
             <tr>
-              <td style="padding: 8px; font-weight: bold;">Programa:</td>
+              <td style="padding: 8px; font-weight: bold;">Carrera:</td>
               <td style="padding: 8px;">${data.programName || 'N/A'}</td>
             </tr>
             <tr style="background-color: #f5f5f5;">

@@ -24,6 +24,7 @@ export class OfficeHours {
   // Inputs y outputs
   visible = input<boolean>(false);
   courseId = input.required<number>();
+  isReadOnly = input<boolean>(false); // Controls if the add schedule form is hidden
   onClose = output<void>();
 
   // Signal para los horarios desde el backend
@@ -72,6 +73,12 @@ export class OfficeHours {
   }
 
   removeSchedule(officeHours: OfficeHoursResponse): void {
+    // Block operation in read-only mode
+    if (this.isReadOnly()) {
+      console.warn('[OfficeHours] Cannot remove schedule in read-only mode');
+      return;
+    }
+
     console.log('[OfficeHours] Remove schedule:', officeHours);
     this.isLoading.set(true);
 
@@ -107,6 +114,12 @@ export class OfficeHours {
   }
 
   addSchedule(): void {
+    // Block operation in read-only mode
+    if (this.isReadOnly()) {
+      console.warn('[OfficeHours] Cannot add schedule in read-only mode');
+      return;
+    }
+
     const date = this.selectedDate();
     const start = this.startTime();
     const end = this.endTime();

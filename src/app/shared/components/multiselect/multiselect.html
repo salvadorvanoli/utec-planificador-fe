@@ -8,7 +8,8 @@
   [showClear]="showClear()"
   [filter]="filter()"
   [filterPlaceHolder]="filterPlaceholder()"
+  [disabled]="disabled() || readonly()"
   emptyMessage="No se encontraron resultados"
   emptyFilterMessage="No se encontraron resultados para la búsqueda"
-  class="w-full" 
+  [class]="'w-full' + (readonly() ? ' readonly-multiselect' : '')"
 />

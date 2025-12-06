@@ -15,6 +15,7 @@ export class ActivtyBullet {
   readonly title = input<string>('Título por defecto');
   readonly content = input<string>('Contenido por defecto');
   readonly colour = input<string>('#3b82f6');
+  readonly isReadOnly = input<boolean>(false);
   
   readonly onDelete = output<number>();
   readonly onEdit = output<number>();

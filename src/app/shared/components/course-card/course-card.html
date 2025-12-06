@@ -1,6 +1,6 @@
 <div class="rectangle-9 flex flex-col sm:flex-row gap-4 sm:gap-5" 
      [class.no-pointer]="mode() === 'management'"
-     [class.cursor-pointer]="mode() === 'info'"
+     [class.cursor-pointer]="mode() === 'info' || mode() === 'download'"
      [class.cursor-wait]="isGeneratingPdf()"
      (click)="handleCardClick()">
   @if (isLoading()) {
@@ -183,3 +183,6 @@
 
 <!-- Toast para mensajes -->
 <p-toast></p-toast>
+
+<!-- Confirm Dialog para confirmaciones -->
+<p-confirmDialog></p-confirmDialog>

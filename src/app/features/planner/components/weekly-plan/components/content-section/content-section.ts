@@ -15,6 +15,7 @@ export class ContentSection {
   contents = input<ProgrammaticContent[]>([]);
   selectedContentId = input<number | null>(null);
   weeklyPlanningId = input.required<number>();
+  isReadOnly = input<boolean>(false); // Controls if create/edit/delete buttons are disabled
   
   onContentSelect = output<ProgrammaticContent>();
   onContentCreated = output<void>();

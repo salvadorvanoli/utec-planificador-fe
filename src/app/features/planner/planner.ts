@@ -13,6 +13,7 @@ import { ReutilizePlan } from './components/reutilize-plan/reutilize-plan';
 import { EnumOption } from '@app/shared/components/select/select';
 import { Toast } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { extractContextFromUrl } from '@app/shared/utils/context-encoder';
 
 @Component({
   selector: 'app-planner',
@@ -42,11 +43,23 @@ export class Planner implements OnInit {
   planningReloadTrigger = signal(0); // Trigger para forzar recarga de weekly-plan
 
   ngOnInit(): void {
-    const courseId = this.route.snapshot.paramMap.get('courseId');
+    // Extract courseId from encrypted queryParams
+    this.route.queryParams.subscribe(params => {
+      const context = extractContextFromUrl(params);
+      const courseId = context?.courseId;
 
-    if (courseId) {
-      this.loadCourseData(+courseId);
-    }
+      if (courseId) {
+        this.loadCourseData(courseId);
+      } else {
+        console.warn('[Planner] No courseId found in encrypted context');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo identificar el curso',
+          life: 5000
+        });
+      }
+    });
   }
 
   private loadCourseData(courseId: number): void {

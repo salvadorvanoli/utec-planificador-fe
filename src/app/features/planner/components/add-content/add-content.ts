@@ -30,6 +30,9 @@ export class AddContent {
   // Input para recibir el ID del contenido a editar (null para crear nuevo)
   readonly contentId = input<number | null>(null);
   
+  // Input para modo readonly (solo visualización)
+  readonly isReadOnly = input<boolean>(false);
+  
   // Output para notificar cuando se crea o edita un contenido
   readonly onContentCreated = output<void>();
   
@@ -91,6 +94,12 @@ export class AddContent {
   }
   
   saveContent(): void {
+    // Block operation in read-only mode
+    if (this.isReadOnly()) {
+      console.warn('[AddContent] Cannot save content in read-only mode');
+      return;
+    }
+
     if (!this.title().trim()) {
       this.messageService.add({
         severity: 'warn',

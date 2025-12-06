@@ -6,6 +6,7 @@ import { DataPanel } from '@app/features/statistics-page/components/data-panel/d
 import { ReportPanel } from '@app/features/statistics-page/components/report-panel/report-panel';
 import { CourseService } from '@app/core/services';
 import { Course, CourseStatistics } from '@app/core/models';
+import { extractContextFromUrl } from '@app/shared/utils/context-encoder';
 
 @Component({
   selector: 'app-statistics-page',
@@ -25,16 +26,20 @@ export class StatisticsPage implements OnInit {
   isLoadingStatistics = signal(true);
 
   ngOnInit(): void {
-    const courseId = this.route.snapshot.paramMap.get('courseId');
-    
-    if (courseId) {
-      this.loadCourseData(+courseId);
-      this.loadStatisticsData(+courseId);
-    } else {
-      console.warn('[StatisticsPage] No courseId provided in route');
-      this.isLoadingCourse.set(false);
-      this.isLoadingStatistics.set(false);
-    }
+    // Extract courseId from encrypted queryParams
+    this.route.queryParams.subscribe(params => {
+      const context = extractContextFromUrl(params);
+      const courseId = context?.courseId;
+      
+      if (courseId) {
+        this.loadCourseData(courseId);
+        this.loadStatisticsData(courseId);
+      } else {
+        console.warn('[StatisticsPage] No courseId found in encrypted context');
+        this.isLoadingCourse.set(false);
+        this.isLoadingStatistics.set(false);
+      }
+    });
   }
 
   private loadCourseData(courseId: number): void {

@@ -30,6 +30,7 @@ export class WeeklyPlan {
   courseStartDate = input.required<string>();
   courseEndDate = input.required<string>();
   reloadTrigger = input<number>(0); // Señal para forzar recarga
+  isReadOnly = input<boolean>(false); // Controls if all fields are read-only
   
   // Señales de estado
   isLoading = signal(true);

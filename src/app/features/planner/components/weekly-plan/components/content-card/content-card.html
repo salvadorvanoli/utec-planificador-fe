@@ -4,8 +4,12 @@
       {{ titulo() }}
     </div>
     <div class="icons flex flex-row gap-2" aria-hidden="true">
-      <i class="pi pi-pencil" title="Editar" role="button" aria-label="Editar contenido" (click)="handleEdit($event)"></i>
-      <i class="pi pi-trash" title="Eliminar" role="button" aria-label="Eliminar contenido" (click)="handleDelete($event)"></i>
+      @if (isReadOnly()) {
+        <i class="pi pi-eye" title="Ver detalles" role="button" aria-label="Ver detalles del contenido" (click)="handleEdit($event)"></i>
+      } @else {
+        <i class="pi pi-pencil" title="Editar" role="button" aria-label="Editar contenido" (click)="handleEdit($event)"></i>
+        <i class="pi pi-trash" title="Eliminar" role="button" aria-label="Eliminar contenido" (click)="handleDelete($event)"></i>
+      }
     </div>
   </div>
 

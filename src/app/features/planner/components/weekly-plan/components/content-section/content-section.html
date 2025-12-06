@@ -8,6 +8,7 @@
         [titulo]="content.title" 
         [descripcion]="content.content"
         [isSelected]="selectedContentId() === content.id"
+        [isReadOnly]="isReadOnly()"
         (click)="selectContent(content)"
         (onDelete)="handleDelete($event)"
         (onEdit)="handleEdit($event)"
@@ -15,19 +16,21 @@
     }
   </app-card-container>
 
-  <div class="mt-4">
-    <div class="w-48 mx-auto">
-      <app-button
-        label="Agregar contenido"
-        [color]="'blue'"
-        fontFamily="'UTEC Text Light', Arial, sans-serif"
-        fontWeight="300"
-        fontSize="1rem"
-        style="width:100%;"
-        (click)="openModal()"
-      ></app-button>
+  @if (!isReadOnly()) {
+    <div class="mt-4">
+      <div class="w-48 mx-auto">
+        <app-button
+          label="Agregar contenido"
+          [color]="'blue'"
+          fontFamily="'UTEC Text Light', Arial, sans-serif"
+          fontWeight="300"
+          fontSize="1rem"
+          style="width:100%;"
+          (click)="openModal()"
+        ></app-button>
+      </div>
     </div>
-  </div>
+  }
 
 </div>
 
@@ -36,5 +39,6 @@
   (visibleChange)="modalVisible.set($event)"
   [weeklyPlanningId]="weeklyPlanningId()"
   [contentId]="editingContentId()"
+  [isReadOnly]="isReadOnly()"
   (onContentCreated)="handleContentCreated()"
 ></app-add-content>

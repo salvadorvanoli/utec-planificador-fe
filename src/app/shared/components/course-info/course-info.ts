@@ -31,9 +31,10 @@ export class CourseInfo implements OnInit {
   // Inputs
   courseData = input<Course | null>(null);
   isLoading = input<boolean>(true);
-  isAdminMode = input<boolean>(false); // New: controls if admin fields are editable
-  curricularUnitId = input<number | null>(null); // New: for course creation
-  teacherIds = input<number[]>([]); // New: teacher IDs for course creation (supports multiple teachers)
+  isAdminMode = input<boolean>(false); // Controls if admin fields are editable (teachers, unit, shift, dates)
+  isReadOnly = input<boolean>(false); // Controls if ALL fields are readonly (for course-details view)
+  curricularUnitId = input<number | null>(null); // For course creation
+  teacherIds = input<number[]>([]); // Teacher IDs for course creation (supports multiple teachers)
   
   onCourseUpdated = output<Course>();
   onCourseCreated = output<Course>(); // New: emitted when a course is created
@@ -188,8 +189,8 @@ export class CourseInfo implements OnInit {
 
   // Métodos para manejar tags
   removeOdsTag(tag: string): void {
-    // En modo admin (creación o edición), solo actualizar signals locales
-    if (this.isAdminMode()) {
+    // In read-only mode or admin mode (creation/editing), only update local signals
+    if (this.isReadOnly() || this.isAdminMode()) {
       const option = this.odsOptions().find(opt => opt.displayValue === tag);
       if (option) {
         this.selectedOds.update(current => current.filter(v => v !== option.value));
@@ -242,8 +243,8 @@ export class CourseInfo implements OnInit {
   }
 
   removePrincipleTag(tag: string): void {
-    // En modo admin (creación o edición), solo actualizar signals locales
-    if (this.isAdminMode()) {
+    // In read-only mode or admin mode (creation/editing), only update local signals
+    if (this.isReadOnly() || this.isAdminMode()) {
       const option = this.principlesOptions().find(opt => opt.displayValue === tag);
       if (option) {
         this.selectedPrinciples.update(current => current.filter(v => v !== option.value));
@@ -296,8 +297,8 @@ export class CourseInfo implements OnInit {
   }
 
   addOdsTag(value: string): void {
-    // En modo admin (creación o edición), solo actualizar signals locales
-    if (this.isAdminMode()) {
+    // In read-only mode or admin mode (creation/editing), only update local signals
+    if (this.isReadOnly() || this.isAdminMode()) {
       if (!this.selectedOds().includes(value)) {
         this.selectedOds.update(current => [...current, value]);
       }
@@ -348,8 +349,8 @@ export class CourseInfo implements OnInit {
   }
 
   addPrincipleTag(value: string): void {
-    // En modo admin (creación o edición), solo actualizar signals locales
-    if (this.isAdminMode()) {
+    // In read-only mode or admin mode (creation/editing), only update local signals
+    if (this.isReadOnly() || this.isAdminMode()) {
       if (!this.selectedPrinciples().includes(value)) {
         this.selectedPrinciples.update(current => [...current, value]);
       }
@@ -403,8 +404,8 @@ export class CourseInfo implements OnInit {
   onScpChange(value: string): void {
     this.partialGradingSystem.set(value);
     
-    // En modo admin (creación o edición), solo actualizar signal local
-    if (this.isAdminMode()) return;
+    // In read-only mode or admin mode (creation/editing), only update local signal
+    if (this.isReadOnly() || this.isAdminMode()) return;
 
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
@@ -448,8 +449,8 @@ export class CourseInfo implements OnInit {
   }
 
   onHoursChange(): void {
-    // En modo admin (creación o edición), solo actualizar signals locales
-    if (this.isAdminMode()) return;
+    // In read-only mode or admin mode (creation/editing), only update local signals
+    if (this.isReadOnly() || this.isAdminMode()) return;
     
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
@@ -506,8 +507,8 @@ export class CourseInfo implements OnInit {
 
   // Método para manejar cambio de investigación
   onInvestigationChange(value: string): void {
-    // En modo admin (creación o edición), solo actualizar signals locales
-    if (this.isAdminMode()) return;
+    // In read-only mode or admin mode (creation/editing), only update local signals
+    if (this.isReadOnly() || this.isAdminMode()) return;
 
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
@@ -547,8 +548,8 @@ export class CourseInfo implements OnInit {
   
   // Método para manejar cambio de actividades con sector productivo
   onProductiveSectorChange(value: string): void {
-    // En modo admin (creación o edición), solo actualizar signals locales
-    if (this.isAdminMode()) return;
+    // In read-only mode or admin mode (creation/editing), only update local signals
+    if (this.isReadOnly() || this.isAdminMode()) return;
 
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();
@@ -588,8 +589,8 @@ export class CourseInfo implements OnInit {
 
   // Método para manejar cambio de descripción
   onDescriptionChange(): void {
-    // En modo admin (creación o edición), solo actualizar signal local
-    if (this.isAdminMode()) return;
+    // In read-only mode or admin mode (creation/editing), only update local signal
+    if (this.isReadOnly() || this.isAdminMode()) return;
 
     const courseId = this.courseData()?.id;
     const courseData = this.courseData();

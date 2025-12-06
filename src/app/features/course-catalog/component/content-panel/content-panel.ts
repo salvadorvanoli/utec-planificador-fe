@@ -27,7 +27,7 @@ export class ContentPanel {
   private readonly positionService = inject(PositionService);
 
   readonly docente = input<boolean>(false);
-  readonly mode = input<'planner' | 'statistics' | 'info' | 'management' | null>(null);
+  readonly mode = input<'planner' | 'statistics' | 'info' | 'download' | 'management' | null>(null);
   
   readonly courses = signal<CourseBasicResponse[]>([]);
   readonly totalRecords = signal<number>(0);

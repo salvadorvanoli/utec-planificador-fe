@@ -23,31 +23,33 @@ export class CourseCatalog implements OnInit {
   private readonly positionService = inject(PositionService);
   private readonly authService = inject(AuthService);
   
-  readonly mode = signal<'planner' | 'statistics' | 'info' | 'management' | null>(null);
-  private readonly isStudentRoute = signal<boolean>(false);
+  readonly mode = signal<'planner' | 'statistics' | 'info' | 'download' | 'management' | null>(null);
   
-  // Computed: verificy if the user has the TEACHER role in the current context
+  // Computed: verify if the user has the TEACHER role in the current context
   readonly isTeacher = computed(() => {
     const context = this.positionService.selectedContext();
-    return (context?.roles?.includes(Role.TEACHER) && !this.isStudentRoute()) ?? false;
+    return (context?.roles?.includes(Role.TEACHER)) ?? false;
   });
 
   // Computed: generates dynamic description based on mode and authentication status
   readonly dynamicDescription = computed(() => {
     const currentMode = this.mode();
     const isAuthenticated = this.authService.isAuthenticated();
-    const isStudent = this.isStudentRoute();
 
     if (currentMode === 'planner') {
       return 'En esta página se listan únicamente los cursos para los cuales usted es docente. Puede seleccionar un curso para acceder a su planificación, donde podrá gestionar contenidos programáticos, actividades de aprendizaje, bibliografía y evaluación.';
     }
 
     if (currentMode === 'info') {
-      if (isAuthenticated && !isStudent) {
-        return 'En esta página se listan todos los cursos de la sede seleccionada previamente. Puede descargar la información de cada curso, incluyendo su planificación completa, en formato PDF mediante el ícono de descarga en cada tarjeta.';
+      if (isAuthenticated) {
+        return 'En esta página se listan todos los cursos de la sede seleccionada previamente. Puede seleccionar cualquier curso para visualizar su información completa, incluyendo planificación semanal, contenidos programáticos y actividades.';
       } else {
-        return 'En esta página se listan todos los cursos del sistema. Puede descargar la información de cada curso, incluyendo su planificación completa, en formato PDF mediante el ícono de descarga en cada tarjeta.';
+        return 'En esta página se listan todos los cursos del sistema. Puede seleccionar cualquier curso para visualizar su información completa, incluyendo planificación semanal, contenidos programáticos y actividades.';
       }
+    }
+
+    if (currentMode === 'download') {
+      return 'En esta página se listan todos los cursos del sistema. Puede descargar la información de cada curso, incluyendo su planificación completa, en formato PDF mediante el ícono de descarga en cada tarjeta.';
     }
 
     if (currentMode === 'statistics') {
@@ -70,38 +72,18 @@ export class CourseCatalog implements OnInit {
   // Computed: determines if campus filter should be permanent
   readonly shouldFilterByCampus = computed(() => {
     const currentMode = this.mode();
-    const isAuthenticated = this.authService.isAuthenticated();
-    const isStudent = this.isStudentRoute();
     
-    // No permanent filters on student/courses route (public access)
-    if (isStudent) {
-      return false;
-    }
-    
-    // No permanent filters when mode is not specified
-    if (!currentMode) {
-      return false;
-    }
-    
-    // Campus is permanent for statistics and planner modes
-    if (currentMode === 'statistics' || currentMode === 'planner') {
+    // Campus is permanent for statistics, planner and info modes
+    if (currentMode === 'statistics' || currentMode === 'planner' || currentMode === 'info') {
       return true;
     }
     
-    // Campus is permanent for info mode only if user is authenticated (on course-catalog route)
-    if (currentMode === 'info' && isAuthenticated) {
-      return true;
-    }
-    
+    // Download mode and no mode: no permanent filters (public access)
     return false;
   });
 
   constructor() {
-    // Detect if we're on the student/courses route (public access)
-    const currentUrl = this.router.url;
-    this.isStudentRoute.set(currentUrl.includes('/student/courses'));
-    console.log('[CourseCatalog] Is student route:', this.isStudentRoute());
-
+    // Subscribe to queryParams to extract mode from encrypted context token
     this.route.queryParams.subscribe(query => {
       console.log('[CourseCatalog] Query params:', query);
       
@@ -109,23 +91,19 @@ export class CourseCatalog implements OnInit {
       const context = extractContextFromUrl(query);
       const mode = context?.mode;
       
-      if (mode === 'planner' || mode === 'statistics' || mode === 'info' || mode === 'management') {
+      if (mode === 'planner' || mode === 'statistics' || mode === 'info' || mode === 'download' || mode === 'management') {
+        console.log('[CourseCatalog] Setting mode from queryParams:', mode);
         this.mode.set(mode);
       } else {
+        console.log('[CourseCatalog] No valid mode in queryParams');
         this.mode.set(null);
       }
     });
 
-    // Effect to monitor filter tampering (only when NOT on student route)
+    // Effect to monitor filter tampering
     effect(() => {
-      const isStudent = this.isStudentRoute();
       const currentMode = this.mode();
       const hasPermanent = this.filterStateService.hasPermanentFilters();
-      
-      // Skip validation on student/courses route (public access, no permanent filters)
-      if (isStudent) {
-        return;
-      }
       
       // Only validate permanent filters when a mode is specified
       if (currentMode && hasPermanent) {
@@ -154,13 +132,6 @@ export class CourseCatalog implements OnInit {
     const context = this.positionService.selectedContext();
     const currentMode = this.mode();
     const isAuthenticated = this.authService.isAuthenticated();
-    const isStudent = this.isStudentRoute();
-
-    // Never set permanent filters on student/courses route (public access)
-    if (isStudent) {
-      console.log('[CourseCatalog] Student route - no permanent filters will be applied');
-      return;
-    }
 
     // If no mode is specified, don't set any permanent filters
     if (!currentMode) {
@@ -168,7 +139,13 @@ export class CourseCatalog implements OnInit {
       return;
     }
 
-    // For mode info on course-catalog: only set permanent filters if user is authenticated
+    // For mode download: no permanent filters (public access)
+    if (currentMode === 'download') {
+      console.log('[CourseCatalog] Download mode - no permanent filters (public access)');
+      return;
+    }
+
+    // For mode info: only set permanent filters if user is authenticated
     if (currentMode === 'info') {
       if (!isAuthenticated) {
         console.log('[CourseCatalog] Info mode without authentication - no permanent filters');
@@ -241,13 +218,6 @@ export class CourseCatalog implements OnInit {
   
   private validateAccess(): void {
     const currentMode = this.mode();
-    const isStudent = this.isStudentRoute();
-    
-    // Always allow access on student/courses route (public access)
-    if (isStudent) {
-      console.log('[CourseCatalog] Student route - open access to all');
-      return;
-    }
     
     // Allow access when no mode is specified
     if (!currentMode) {
@@ -255,8 +225,11 @@ export class CourseCatalog implements OnInit {
       return;
     }
     
-    // Info mode is open to all
-    if (currentMode === 'info') return;
+    // Info and download modes are open to all (public access)
+    if (currentMode === 'info' || currentMode === 'download') {
+      console.log('[CourseCatalog] Public mode (' + currentMode + ') - open access to all');
+      return;
+    }
 
     const context = this.positionService.selectedContext();
     

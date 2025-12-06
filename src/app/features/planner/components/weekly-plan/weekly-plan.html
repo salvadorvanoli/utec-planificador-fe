@@ -27,6 +27,7 @@
             [contents]="programmaticContents()"
             [selectedContentId]="selectedContent()?.id || null"
             [weeklyPlanningId]="weeklyPlanningId()"
+            [isReadOnly]="isReadOnly()"
             (onContentSelect)="selectContent($event)"
             (onContentCreated)="handleContentCreated()"
             (onContentDeleted)="handleContentDeleted($event)"
@@ -38,6 +39,7 @@
             [activities]="selectedActivities()"
             [showActivities]="selectedContent() !== null"
             [programmaticContentId]="selectedContent()?.id || null"
+            [isReadOnly]="isReadOnly()"
             (onActivityCreated)="handleActivityCreated()"
             (onActivityDeleted)="handleActivityDeleted($event)"
           ></app-activity-section>
@@ -49,6 +51,7 @@
         <app-bibliography 
           [references]="bibliographicReferences()"
           [isDisabled]="!weeklyPlanningId() || weeklyPlanningId() === 0"
+          [isReadOnly]="isReadOnly()"
           (addReference)="handleAddReference($event)"
           (deleteReference)="handleDeleteReference($event)">
         </app-bibliography>

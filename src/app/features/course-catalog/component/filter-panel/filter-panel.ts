@@ -29,7 +29,7 @@ export class FilterPanel implements OnInit {
 
   readonly docente = input<boolean>(false);
   readonly docenteState = signal<boolean>(false);
-  private readonly mode = signal<'planner' | 'statistics' | 'info' | 'management' | null>(null);
+  private readonly mode = signal<'planner' | 'statistics' | 'info' | 'download' | 'management' | null>(null);
   private readonly isStudentRoute = signal<boolean>(false);
 
   // Computed: determines if campus filter is permanent (cannot be modified)
@@ -105,7 +105,7 @@ export class FilterPanel implements OnInit {
       const context = extractContextFromUrl(query);
       const mode = context?.mode;
       
-      if (mode === 'planner' || mode === 'statistics' || mode === 'info' || mode === 'management') {
+      if (mode === 'planner' || mode === 'statistics' || mode === 'info' || mode === 'download' || mode === 'management') {
         this.mode.set(mode);
       } else {
         this.mode.set(null);

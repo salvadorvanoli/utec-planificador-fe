@@ -9,6 +9,7 @@
               [title]="activity.title + ' – ' + activity.durationInMinutes + ' minutos'"  
               [content]="activity.description"  
               [colour]="activity.color"
+              [isReadOnly]="isReadOnly()"
               (onDelete)="handleDelete($event)"
               (onEdit)="handleEdit($event)">  
             </app-activity-bullet>
@@ -20,19 +21,21 @@
         }
       </div>
       
-      <div class="mt-4">
-        <div class="w-48 mx-auto">
-          <app-button
-            label="Agregar actividad"
-            [color]="'blue'"
-            fontFamily="'UTEC Text Light', Arial, sans-serif"
-            fontWeight="300"
-            fontSize="1rem"
-            style="width:100%;"
-            (click)="openModal()"
-          ></app-button>
+      @if (!isReadOnly()) {
+        <div class="mt-4">
+          <div class="w-48 mx-auto">
+            <app-button
+              label="Agregar actividad"
+              [color]="'blue'"
+              fontFamily="'UTEC Text Light', Arial, sans-serif"
+              fontWeight="300"
+              fontSize="1rem"
+              style="width:100%;"
+              (click)="openModal()"
+            ></app-button>
+          </div>
         </div>
-      </div>
+      }
     </div>
   } @else {
     <div class="w-full flex-none h-full flex items-center justify-center">
@@ -50,6 +53,7 @@
     (visibleChange)="modalVisible.set($event)"
     [programmaticContentId]="programmaticContentId()!"
     [activityId]="editingActivityId()"
+    [isReadOnly]="isReadOnly()"
     (onActivityCreated)="handleActivityCreated()"
   ></app-add-activity>
 }

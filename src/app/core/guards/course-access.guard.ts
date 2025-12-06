@@ -4,22 +4,28 @@ import { PositionService, CourseService } from '../services';
 import { Role } from '../enums/role';
 import { map, catchError, of, mergeMap, interval } from 'rxjs';
 import { take, takeWhile } from 'rxjs/operators';
+import { extractContextFromUrl } from '@app/shared/utils/context-encoder';
 
 /**
  * Guard que verifica si el usuario tiene acceso a un curso específico.
  * 
- * Reglas de acceso:
- * - TEACHER: Solo puede acceder a sus propios cursos
- * - ANALYST, COORDINATOR, EDUCATION_MANAGER: Pueden acceder a cursos en sus campus
+ * Reglas de acceso según el backend (AccessControlService):
+ * - Usuario debe tener acceso al campus del curso (todos los roles)
+ * - Si usuario tiene SOLO rol TEACHER: debe ser profesor del curso (ownership)
+ * - Roles administrativos (ANALYST, COORDINATOR, EDUCATION_MANAGER): solo necesitan acceso al campus
+ * 
+ * Modos de validación:
+ * - validateCourseOwnership=true: Valida en frontend que teacher sea dueño (para planner)
+ * - validateCourseOwnership=false/undefined: Delega validación completa al backend (para statistics, course-details)
  * 
  * Uso en rutas:
  * {
- *   path: 'planner/:courseId',
+ *   path: 'planner',
  *   component: Planner,
  *   canActivate: [authGuard, contextGuard, roleGuard, courseAccessGuard],
  *   data: { 
  *     requiredRoles: [Role.TEACHER],
- *     validateCourseOwnership: true // Para teachers
+ *     validateCourseOwnership: true  // Solo para planner
  *   }
  * }
  */
@@ -28,19 +34,27 @@ export const courseAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) 
   const courseService = inject(CourseService);
   const router = inject(Router);
 
-  // Obtener el courseId de los parámetros de la ruta
-  const courseIdParam = route.paramMap.get('courseId');
-  
-  if (!courseIdParam) {
-    console.warn('[CourseAccessGuard] No courseId in route parameters');
-    router.navigate(['/option-page']);
-    return false;
-  }
+  // Obtener el courseId de los queryParams encriptados
+  const queryParams: Record<string, any> = {};
+  route.queryParamMap.keys.forEach(key => {
+    queryParams[key] = route.queryParamMap.get(key);
+  });
 
-  const courseId = parseInt(courseIdParam, 10);
+  const contextParams = extractContextFromUrl(queryParams);
+  const courseId = contextParams?.courseId;
   
-  if (isNaN(courseId) || courseId <= 0) {
-    console.warn('[CourseAccessGuard] Invalid courseId:', courseIdParam);
+  // Para assign-page en modo creación (isEdit=false), no hay courseId y eso está bien
+  if (!courseId || courseId <= 0) {
+    const isAssignPage = route.routeConfig?.path === 'assign-page';
+    const isEditMode = contextParams?.isEdit === true;
+    
+    if (isAssignPage && !isEditMode) {
+      // assign-page en modo creación - permitir acceso sin courseId
+      console.log('[CourseAccessGuard] assign-page in creation mode, no courseId needed');
+      return true;
+    }
+    
+    console.warn('[CourseAccessGuard] No valid courseId in encrypted context');
     router.navigate(['/option-page']);
     return false;
   }
@@ -52,11 +66,11 @@ export const courseAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) 
     const userRoles = ctx.roles || [];
     const validateOwnership = route.data['validateCourseOwnership'] === true;
 
-    // Si es TEACHER y se requiere validar ownership, verificar que sea su curso
+    // MODO 1: Validación de ownership en frontend (solo para planner)
+    // Verifica que el usuario sea teacher del curso antes de cargar la página
     if (validateOwnership && userRoles.includes(Role.TEACHER)) {
       return courseService.getCourseById(courseId).pipe(
         map((course) => {
-          // Verificar que el usuario autenticado sea uno de los teachers del curso
           const userId = positionService.userPositions()?.userId;
           
           if (!userId) {
@@ -72,21 +86,21 @@ export const courseAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) 
               '[CourseAccessGuard] Teacher does not own this course',
               { userId, courseId }
             );
-            router.navigate(['/option-page'], {
-              queryParams: { error: 'not_your_course' }
+            router.navigate(['/course-catalog'], {
+              queryParams: route.queryParams
             });
             return false;
           }
 
+          console.log('[CourseAccessGuard] Ownership validated, access granted');
           return true;
         }),
         catchError((error) => {
           console.error('[CourseAccessGuard] Error fetching course:', error);
           
-          // Si es 403 o 404, redirigir a option-page
           if (error.status === 403 || error.status === 404) {
-            router.navigate(['/option-page'], {
-              queryParams: { error: 'course_not_accessible' }
+            router.navigate(['/course-catalog'], {
+              queryParams: route.queryParams
             });
           } else {
             router.navigate(['/option-page']);
@@ -97,10 +111,37 @@ export const courseAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) 
       );
     }
 
-    // Para otros roles (ANALYST, COORDINATOR, EDUCATION_MANAGER),
-    // el backend validará que el curso esté en su campus
-    // El guard solo verifica que tengan el contexto correcto
-    return of(true);
+    // MODO 2: Validación delegada al backend (para statistics, course-details)
+    // Intenta cargar el curso - el backend ejecutará AccessControlService.validateCourseAccess()
+    // que validará:
+    // - Acceso al campus del curso
+    // - Si usuario tiene SOLO rol TEACHER: validará ownership
+    // - Si usuario tiene roles admin: solo requiere acceso al campus
+    return courseService.getCourseById(courseId).pipe(
+      map((course) => {
+        console.log('[CourseAccessGuard] Course access validated by backend, access granted');
+        return true;
+      }),
+      catchError((error) => {
+        console.error('[CourseAccessGuard] Backend denied access to course:', error);
+        
+        if (error.status === 403) {
+          console.warn('[CourseAccessGuard] Forbidden - user does not have access to this course');
+          router.navigate(['/course-catalog'], {
+            queryParams: route.queryParams
+          });
+        } else if (error.status === 404) {
+          console.warn('[CourseAccessGuard] Course not found');
+          router.navigate(['/course-catalog'], {
+            queryParams: route.queryParams
+          });
+        } else {
+          router.navigate(['/option-page']);
+        }
+        
+        return of(false);
+      })
+    );
   };
 
   // Intentar obtener el contexto inmediatamente

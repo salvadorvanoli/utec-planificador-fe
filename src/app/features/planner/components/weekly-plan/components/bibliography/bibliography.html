@@ -3,7 +3,7 @@
     <!-- Title with hover button -->
     <div class="flex items-center gap-2 mb-4 group">
       <h3 class="text-lg font-semibold">Bibliografía</h3>
-      @if (!isAdding()) {
+      @if (!isAdding() && !isReadOnly()) {
         <button
           pButton
           type="button"
@@ -59,13 +59,15 @@
                   <span class="text-sm text-gray-700 flex-shrink-0">•</span>
                   <span class="text-sm text-gray-700 flex-1 break-words overflow-wrap-anywhere">{{ reference }}</span>
                 </div>
-                <button
-                  pButton
-                  type="button"
-                  icon="pi pi-trash"
-                  class="p-button-sm p-button-text p-button-danger opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0 ml-2"
-                  (click)="onDeleteReference(reference)">
-                </button>
+                @if (!isReadOnly()) {
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-trash"
+                    class="p-button-sm p-button-text p-button-danger opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0 ml-2"
+                    (click)="onDeleteReference(reference)">
+                  </button>
+                }
               </li>
             }
           </ul>
