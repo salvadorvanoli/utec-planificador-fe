@@ -1,982 +1,931 @@
+<div align="center">
+
 # UTEC Planificador - Frontend
 
-Sistema de planificación académica desarrollado para la Universidad Tecnológica del Uruguay (UTEC). Esta aplicación web permite a los estudiantes gestionar sus horarios, tareas y planificación académica de manera eficiente e intuitiva.
+### Interfaz Web para Sistema de Planificación Académica
+
+[![Angular](https://img.shields.io/badge/Angular-20.2.0-red?logo=angular&logoColor=white)](https://angular.io/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![PrimeNG](https://img.shields.io/badge/PrimeNG-20.2.0-0078D7?logo=primeng&logoColor=white)](https://primeng.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![NGINX](https://img.shields.io/badge/NGINX-1.27-009639?logo=nginx&logoColor=white)](https://nginx.org/)
+
+**Aplicación web moderna para la gestión integral de planificación docente en UTEC**
+
+[Características](#características-principales) •
+[Inicio Rápido](#inicio-rápido) •
+[Arquitectura](#arquitectura) •
+[Documentación](#documentación) •
+[Testing](#testing)
+
+</div>
+
+---
+
+## Tabla de Contenidos
+
+- [Descripción](#descripción)
+- [Características Principales](#características-principales)
+- [Stack Tecnológico](#stack-tecnológico)
+- [Arquitectura](#arquitectura)
+- [Inicio Rápido](#inicio-rápido)
+- [Configuración](#configuración)
+- [Componentes Principales](#componentes-principales)
+- [Servicios](#servicios)
+- [Testing](#testing)
+- [Build y Deployment](#build-y-deployment)
+- [Documentación](#documentación)
+- [Contribuir](#contribuir)
+
+---
+
+## Descripción
+
+**UTEC Planificador Frontend** es una aplicación web de una sola página (SPA) construida con Angular que proporciona la interfaz de usuario para el sistema de planificación académica de la Universidad Tecnológica del Uruguay (UTEC). La aplicación permite a docentes gestionar cursos, planificaciones semanales, contenido programático y utilizar asistencia de IA para mejorar la calidad académica.
+
+### Integración del Sistema
+
+El frontend se comunica con dos servicios backend:
+- **API REST Backend** (Spring Boot): Gestión de datos académicos, autenticación y autorización
+- **AI Agent** (FastAPI): Asistente conversacional con GPT-4o-mini para asesoramiento pedagógico
+
+---
+
+## Características Principales
+
+### Gestión de Cursos
+
+- **Catálogo de Cursos**: Navegación y búsqueda avanzada con filtros múltiples
+- **Detalles Completos**: Visualización de información académica detallada
+- **CRUD Completo**: Creación, edición y eliminación de cursos (según rol)
+- **Multi-Campus**: Soporte para diferentes sedes de UTEC
+- **Asignación de Docentes**: Gestión de posiciones y roles docentes
+
+### Planificación Académica
+
+- **Planificación Semanal**: Gestión de actividades por semana académica
+- **Contenido Programático**: Objetivos, competencias, metodologías y evaluación
+- **Actividades**: Gestión de clases presenciales y virtuales con recursos
+- **Bibliografía**: Referencias físicas y digitales
+- **Horarios de Oficina**: Gestión de disponibilidad docente
+- **ODS y DUA**: Integración de Objetivos de Desarrollo Sostenible y Diseño Universal para el Aprendizaje
+
+### Asistente de IA
+
+- **Chat Conversacional**: Interfaz de chat integrada para consultas pedagógicas
+- **Sugerencias Inteligentes**: Recomendaciones automáticas para mejorar contenido
+- **Generación de Informes**: Reportes automáticos sobre planificaciones de cursos
+- **Contexto de Curso**: El agente tiene acceso a toda la información del curso
+
+### Gestión de Usuarios
+
+- **Autenticación**: Login con credenciales locales o LDAP
+- **Autorización**: Control de acceso basado en roles (RBAC)
+- **Perfil de Usuario**: Visualización y gestión de información personal
+- **Multi-Rol**: Soporte para diferentes permisos (Teacher, Coordinator, Administrator, etc.)
+
+### Características de UI/UX
+
+- **Responsive Design**: Adaptación a dispositivos móviles, tablets y escritorio
+- **Tema Moderno**: Diseño basado en PrimeNG con personalización Tailwind
+- **Modo Oscuro**: Preparado para implementación de tema oscuro
+- **Componentes Reutilizables**: Librería de componentes compartidos
+- **Navegación Intuitiva**: Breadcrumbs y menú lateral estructurado
+- **Feedback Visual**: Mensajes toast, spinners y confirmaciones
+
+### Exportación y Reportes
+
+- **Generación PDF**: Exportación de planificaciones a formato PDF
+- **Preview de PDF**: Visualización previa antes de descargar
+- **Estadísticas**: Dashboards con métricas de cursos y planificaciones
+
+---
+
+## Stack Tecnológico
+
+### Frontend Core
+
+| Tecnología | Versión | Propósito |
+|-----------|---------|-----------|
+| **Angular** | 20.2.0 | Framework principal SPA |
+| **TypeScript** | 5.9.2 | Lenguaje de programación con tipado estático |
+| **RxJS** | 7.8.0 | Programación reactiva y manejo de eventos asíncronos |
+| **Zone.js** | 0.15.0 | Detección de cambios de Angular |
+
+### UI Framework y Componentes
+
+| Tecnología | Versión | Propósito |
+|-----------|---------|-----------|
+| **PrimeNG** | 20.2.0 | Biblioteca de componentes UI empresariales |
+| **PrimeIcons** | 7.0.0 | Set de iconos |
+| **PrimeUI Themes** | 1.2.4 | Sistema de temas |
+| **Tailwind CSS** | 3.4.17 | Framework CSS utility-first |
+| **Tailwind PrimeUI** | 0.3.4 | Integración Tailwind con PrimeNG |
+
+### Herramientas de Visualización
+
+| Tecnología | Versión | Propósito |
+|-----------|---------|-----------|
+| **Chart.js** | 4.4.8 | Gráficos y visualización de datos |
+| **html2pdf.js** | 0.12.1 | Generación de PDFs desde HTML |
+| **Marked** | 17.0.0 | Procesamiento de Markdown |
+
+### Testing
+
+| Tecnología | Versión | Propósito |
+|-----------|---------|-----------|
+| **Jasmine** | 5.9.0 | Framework de testing BDD |
+| **Karma** | 6.4.0 | Test runner |
+| **Karma Chrome Launcher** | 3.2.0 | Ejecución en Chrome |
+| **Karma Coverage** | 2.2.0 | Reporte de cobertura |
+
+### Build y DevOps
+
+| Tecnología | Versión | Propósito |
+|-----------|---------|-----------|
+| **Angular CLI** | 20.2.0 | Herramienta de desarrollo y build |
+| **Node.js** | 22.x | Entorno de ejecución JavaScript |
+| **Docker** | - | Containerización |
+| **NGINX** | 1.27-alpine | Servidor web en producción |
+
+### Utilidades de Desarrollo
+
+| Tecnología | Versión | Propósito |
+|-----------|---------|-----------|
+| **Prettier** | - | Formateador de código |
+| **PostCSS** | 8.5.3 | Procesamiento CSS |
+| **Autoprefixer** | 10.4.20 | Prefijos CSS automáticos |
+
+---
+
+## Arquitectura
+
+### Arquitectura de Capas
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Presentation Layer                       │
+│           Components (Smart & Presentational)               │
+│                    Templates (HTML + SCSS)                  │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────┐
+│                       Application Layer                     │
+│      Services - State Management - HTTP Communication       │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────┐
+│                         Core Layer                          │
+│   Guards - Interceptors - Models - Constants - Types        │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                  ┌────────▼────────┐
+                  │   Backend APIs  │
+                  │  (Spring Boot   │
+                  │   + FastAPI)    │
+                  └─────────────────┘
+```
+
+### Estructura del Proyecto
+
+```
+src/app/
+├── core/                        # Funcionalidad central y transversal
+│   ├── constants/              # Constantes globales de la aplicación
+│   ├── enums/                  # Enumeraciones (Roles, Status, etc.)
+│   ├── guards/                 # Guards de Angular (AuthGuard)
+│   ├── interceptors/           # HTTP Interceptors (AuthInterceptor, ErrorInterceptor)
+│   ├── models/                 # Interfaces y tipos de datos del dominio
+│   ├── services/               # Servicios core (Auth, HTTP, State)
+│   └── types/                  # Tipos TypeScript personalizados
+│
+├── features/                    # Módulos de características de negocio
+│   ├── assign-page/            # Asignación de docentes a cursos
+│   ├── chat-page/              # Chat con agente de IA
+│   ├── course-catalog/         # Catálogo y búsqueda de cursos
+│   ├── course-details/         # Detalles completos de curso
+│   ├── option-page/            # Configuraciones y opciones
+│   ├── planner/                # Planificación semanal
+│   └── statistics-page/        # Estadísticas y reportes
+│
+├── layout/                      # Componentes de estructura
+│   ├── header/                 # Encabezado con navegación
+│   ├── footer/                 # Pie de página
+│   ├── main-layout/            # Layout principal con sidebar
+│   └── section-header/         # Encabezados de sección
+│
+├── pages/                       # Páginas independientes
+│   ├── home/                   # Página de inicio
+│   ├── login/                  # Página de autenticación
+│   └── pdf-preview/            # Visualización de PDFs
+│
+└── shared/                      # Componentes y utilidades compartidas
+    └── components/             # Componentes reutilizables
+        ├── breadcrumb/         # Navegación de migas de pan
+        ├── button/             # Botón personalizado
+        ├── carousel/           # Carrusel de imágenes
+        ├── color-block/        # Bloques de color temático
+        ├── course-card/        # Tarjeta de curso
+        ├── course-info/        # Información detallada de curso
+        ├── datepicker/         # Selector de fechas
+        ├── multiselect/        # Selector múltiple
+        ├── paginator/          # Paginador
+        ├── searchbar/          # Barra de búsqueda
+        ├── select/             # Selector dropdown
+        └── titulo/             # Componente de título
+```
+
+### Patrón de Componentes
+
+La aplicación utiliza dos tipos de componentes:
+
+**Smart Components (Container Components)**
+- Gestionan el estado y la lógica de negocio
+- Se comunican con servicios
+- Orquestan componentes presentacionales
+- Ejemplo: `course-catalog`, `chat-page`, `planner`
+
+**Presentational Components (Dumb Components)**
+- Solo reciben datos vía `@Input()`
+- Emiten eventos vía `@Output()`
+- Sin lógica de negocio
+- Altamente reutilizables
+- Ejemplo: `course-card`, `button`, `searchbar`
+
+### Flujo de Datos
+
+```
+User Interaction
+      ↓
+Component (Smart)
+      ↓
+Service Layer
+      ↓
+HTTP Interceptor (Auth Token)
+      ↓
+Backend API
+      ↓
+HTTP Response
+      ↓
+Service (Transform Data)
+      ↓
+Component (Update View)
+      ↓
+Template Rendering
+```
+
+---
 
 ## Inicio Rápido
 
+### Prerrequisitos
+
+- **Docker Desktop** 4.x+ (recomendado) o
+- **Node.js** 22 LTS + **npm** 10.x (desarrollo local)
+- **Git** (para clonar el repositorio)
+- **Backend corriendo** en `http://localhost:8080/api/v1`
+
 ### Opción 1: Docker (Recomendado)
 
+**Clonar y configurar:**
+
+```bash
+# Clonar repositorio
+git clone https://github.com/salvadorvanoli/utec-planificador-fe.git
+cd utec-planificador-fe
+
+# Configurar variables de entorno
+cp .env.example .env
+nano .env  # Editar BACKEND_API_URL si es necesario
+```
+
+**Iniciar servicios:**
+
 ```powershell
-# Iniciar frontend (NGINX + Angular)
+# Windows (PowerShell)
 .\scripts\start.ps1
 
-# Ver estado
+# Linux/macOS (bash con PowerShell instalado)
+pwsh ./scripts/start.ps1
+```
+
+**Verificar que todo funciona:**
+
+```bash
+# Ver estado del contenedor
 .\scripts\status.ps1
 
-# Ver logs
+# Ver logs en tiempo real
 .\scripts\logs.ps1
 
-# Detener
-.\scripts\stop.ps1
+# Probar aplicación
+curl http://localhost:4200
 ```
 
 **URL disponible:**
-- Frontend: http://localhost:4200
 
-**IMPORTANTE:** El frontend requiere que el backend esté corriendo en http://localhost:8080/api
+- **Aplicación Web**: http://localhost:4200
 
-### Opción 2: Desarrollo Local
+**Detener servicios:**
 
-**Requisitos:**
-- Node.js 22 LTS
-- npm
+```powershell
+.\scripts\stop.ps1
+```
+
+### Opción 2: Desarrollo Local (sin Docker)
+
+**Prerrequisitos adicionales:**
+
+1. Node.js 22 LTS instalado
+2. npm 10.x instalado
+3. Backend corriendo en `http://localhost:8080/api/v1`
+
+**Instalar y ejecutar:**
 
 ```bash
 # Instalar dependencias
 npm install
 
-# Servidor de desarrollo
+# Ejecutar servidor de desarrollo
 ng serve
 
-# Build de producción
-ng build
+# O usar npm script
+npm start
 ```
 
-## Requisitos
+La aplicación estará disponible en `http://localhost:4200`
 
-- **Docker Desktop** (para opción 1)
-- **Node.js 22 LTS** y **npm** (para opción 2)
-- **PowerShell** (incluido en Windows, instalable en Linux/macOS)
-- **Backend corriendo** en http://localhost:8080/api
+**Hot Reload:** Los cambios se reflejan automáticamente en el navegador.
+
+### Primer Login
+
+Credenciales de prueba (si el backend tiene DataSeeder activo):
+
+```
+Email: juan.perez@utec.edu.uy
+Password: password123
+```
+
+---
 
 ## Configuración
 
-La URL del backend se configura en:
-- `src/environments/environment.ts` - Desarrollo
-- Variables de entorno Docker (modo producción)
+### Variables de Entorno
 
-## Propósito del Proyecto
+#### Desarrollo Local
 
-El **UTEC Planificador** es una herramienta integral diseñada para optimizar la experiencia académica de los estudiantes universitarios, proporcionando funcionalidades para:
-
-- **Gestión de horarios académicos**: Visualización y organización de cronogramas de clases
-- **Planificación de tareas**: Sistema completo de gestión de entregas y evaluaciones
-- **Dashboard personalizado**: Panel de control con métricas y resúmenes académicos
-- **Gestión de recursos**: Acceso centralizado a materiales y herramientas educativas
-
-## Stack Tecnológico
-
-### Framework y Lenguajes
-- **Angular** `v20.2.0` - Framework principal para desarrollo de aplicaciones SPA
-- **TypeScript** `v5.7.0` - Lenguaje de programación con tipado estático
-- **SCSS** - Preprocesador CSS para estilos avanzados
-
-### Librerías de UI y Estilos
-- **PrimeNG** `v20.2.0` - Biblioteca de componentes UI empresariales
-- **PrimeIcons** `v7.0.0` - Conjunto de iconos oficial de PrimeNG
-- **Tailwind CSS** `v4.1.4` - Framework CSS utility-first para estilos responsive
-
-### Herramientas de Desarrollo
-- **Angular CLI** `v20.2.0` - Herramienta de línea de comandos para desarrollo Angular
-- **Prettier** - Formateador de código automático
-- **ESLint** - Herramienta de análisis estático de código
-
-## Arquitectura del Proyecto
-
-La aplicación sigue una arquitectura modular basada en **feature-driven development** con separación clara de responsabilidades, implementando los principios de **Domain-Driven Design (DDD)** y **Clean Architecture**.
-
-### Estructura de Directorios
-
-```
-src/
-├── app/
-│   ├── core/                    # Funcionalidad central del sistema
-│   ├── features/                # Módulos de características de negocio
-│   ├── layout/                  # Componentes de estructura y navegación
-│   ├── pages/                   # Páginas independientes
-│   └── shared/                  # Componentes y utilidades reutilizables
-└── assets/                      # Recursos estáticos
-```
-## Descripción Detallada de Directorios
-
-### `/src/app/core` - Núcleo del Sistema
-
-Contiene la funcionalidad esencial que se carga una sola vez durante el ciclo de vida de la aplicación.
-
-#### Subdirectorios:
-
-- **`/constants`**: Valores inmutables utilizados globalmente
-   ```typescript
-   // Ejemplo: API_ENDPOINTS, DATE_FORMATS, STORAGE_KEYS
-   export const API_ENDPOINTS = {
-      AUTH: '/api/auth',
-      USERS: '/api/users'
-   } as const;
-   ```
-
-- **`/enums`**: Enumeraciones que definen estados y opciones fijas
-   ```typescript
-   // Ejemplo: TaskStatus, Priority, UserRole
-   export enum TaskStatus {
-      PENDING = 'pending',
-      IN_PROGRESS = 'in_progress',
-      COMPLETED = 'completed'
-   }
-   ```
-
-- **`/guards`**: Protección de rutas y control de acceso
-  - AuthGuard: Verificación de autenticación
-  - RoleGuard: Control de permisos por rol
-  - CanDeactivateGuard: Prevención de pérdida de datos
-
-- **`/interceptors`**: Interceptación y transformación de peticiones HTTP
-  - AuthInterceptor: Inyección automática de tokens
-  - ErrorInterceptor: Manejo centralizado de errores
-  - LoadingInterceptor: Indicadores de carga globales
-
-- **`/models`**: Interfaces y tipos que definen la estructura de datos
-   ```typescript
-   // Ejemplo: User, Task, ApiResponse
-   export interface User {
-      id: string;
-      email: string;
-      role: UserRole;
-      profile: UserProfile;
-   }
-   ```
-
-- **`/services`**: Servicios singleton para funcionalidad transversal
-  - ApiService: Cliente HTTP base
-  - AuthService: Gestión de autenticación
-  - NotificationService: Sistema de notificaciones
-
-- **`/types`**: Tipos utilitarios avanzados de TypeScript
-  ```typescript
-  // Ejemplo: Result<T>, Dictionary<T>, RequireOnly<T>
-  export type Result<T, E = Error> = 
-    | { success: true; data: T }
-    | { success: false; error: E };
-  ```
-
-### `/src/app/features` - Características de Negocio
-
-Módulos completos e independientes implementando funcionalidades específicas con **lazy loading**.
-
-#### Estructura por Feature:
-```
-/features/dashboard/
-├── dashboard.component.ts       # Componente principal
-├── components/                  # Componentes específicos
-├── services/                    # Servicios de dominio
-├── models/                      # Tipos específicos del dominio
-└── utils/                       # Utilidades del feature
-```
-
-**Ejemplos de Features:**
-- **`/dashboard`**: Panel principal con métricas y resúmenes académicos
-- **`/planning`**: Herramientas de planificación y gestión de horarios
-- **`/tasks`**: Sistema CRUD completo para gestión de tareas
-
-### `/src/app/layout` - Componentes Estructurales
-
-Define la arquitectura visual y navegacional de la aplicación.
-
-- **`/header`**: Barra de navegación superior
-  - Logo institucional responsive
-  - Menú de navegación principal
-  - Acciones de usuario (perfil, notificaciones)
-
-- **`/footer`**: Pie de página institucional
-  - Enlaces corporativos
-  - Información de contacto
-  - Derechos de autor
-
-- **`/main-layout`**: Layout principal que compone header, content y footer
-   ```typescript
-   // Estructura del main-layout
-   template: `
-      <app-header />
-      <main class="min-h-screen">
-         <router-outlet />
-      </main>
-      <app-footer />
-   `
-   ```
-
-### `/src/app/pages` - Páginas Independientes
-
-Páginas que no requieren lazy loading y representan vistas completas.
-
-- **`/home`**: Landing page con información institucional
-- **`/login`**: Página de autenticación y registro
-- **`/not-found`**: Página de error 404 personalizada
-
-### `/src/app/shared` - Componentes Reutilizables
-
-Elementos compartidos sin dependencias de dominio específico.
-
-- **`/components`**: Componentes UI reutilizables
-   ```typescript
-   // Ejemplo: ButtonComponent, ModalComponent, LoaderComponent
-   @Component({
-      selector: 'app-button',
-      template: `<button [class]="buttonClasses()">...</button>`
-   })
-   ```
-
-- **`/directives`**: Directivas personalizadas
-  - HighlightDirective: Resaltado de texto
-  - TooltipDirective: Tooltips informativos
-  - AutofocusDirective: Enfoque automático
-
-- **`/pipes`**: Transformadores de datos para templates
-   ```typescript
-   // Ejemplo: DateFormatPipe, CurrencyPipe, TruncatePipe
-   @Pipe({ name: 'dateFormat' })
-   export class DateFormatPipe implements PipeTransform {
-      transform(date: Date, format: string): string { ... }
-   }
-   ```
-
-- **`/utils`**: Funciones utilitarias y helpers
-   ```typescript
-   // Ejemplo: dateHelpers, stringUtils, arrayUtils
-   export const dateHelpers = {
-      formatToLocal: (date: Date) => { ... },
-      isWeekend: (date: Date) => { ... }
-   };
-   ```
-
-- **`/validators`**: Validadores personalizados para formularios reactivos
-   ```typescript
-   // Ejemplo: strongPassword, utecEmail, futureDate
-   export const utecEmailValidator = (control: AbstractControl) => {
-      const email = control.value;
-      return email?.endsWith('@utec.edu.uy') ? null : { utecEmail: true };
-   };
-   ```
-
-### `/src/assets` - Recursos Estáticos
-
-La carpeta `assets` contiene todos los recursos estáticos del proyecto organizados estratégicamente por categorías para mantener la identidad visual institucional de UTEC y optimizar el rendimiento de la aplicación.
-
-#### Estructura Organizacional
-
-```
-src/assets/
-├── fonts/                      # Tipografías institucionales UTEC
-│   └── utec/                   # Familias tipográficas oficiales
-├── icons/                      # Iconografía institucional y funcional
-├── images/                     # Imágenes y recursos gráficos
-│   ├── backgrounds/                   # Fondos y texturas
-│   ├── illustrations/                 # Ilustraciones vectoriales
-│   └── photos/                        # Fotografías institucionales
-└── logos/                      # Isologotipos y marcas UTEC
-    ├── utec-logo-primary.svg          # Logo principal vectorial
-    ├── utec-logo-horizontal.png       # Versión horizontal
-    ├── utec-logo-vertical.png         # Versión vertical
-    └── utec-isologo.svg               # Isologo institucional
-```
-
-#### Descripción Detallada por Categoría
-
-##### **Tipografías (`/fonts/utec/`)**
-
-**Propósito**: Mantener consistencia visual con la identidad institucional de UTEC.
-
-**Familias tipográficas institucionales:**
-
-- **UTEC Gruesa** (`utec_gruesa_3.0.ttf`)
-  - **Uso**: Títulos principales, encabezados destacados
-  - **Características**: Alta legibilidad, impacto visual fuerte
-  - **Implementación**: `font-family: 'UTEC Gruesa', sans-serif;`
-
-- **UTEC Liviana** (`utec_liviana_3.0.ttf`)
-  - **Uso**: Subtítulos, texto secundario
-  - **Características**: Elegante, moderna, ligera
-  - **Implementación**: `font-family: 'UTEC Liviana', sans-serif;`
-
-- **UTEC Text** (4 variantes)
-  - **Black** (`utec_text_black_3.0.ttf`): Texto con máximo peso visual
-  - **Heavy** (`utec_text_heavy_3.0.ttf`): Texto con peso pesado
-  - **Roman** (`utec_text_roman_3.0.ttf`): Texto estándar para contenido
-  - **Light** (`utec_text_light_3.0.ttf`): Texto ligero para anotaciones
-
-**Configuración CSS:**
-```scss
-// Carga automática en styles.scss
-@font-face {
-   font-family: 'UTEC Gruesa';
-   src: url('assets/fonts/utec/utec_gruesa_3.0.ttf') format('truetype');
-   font-weight: bold;
-   font-display: swap; // Optimización de carga
-}
-```
-
-##### **Iconografía (`/icons/`)**
-
-**Propósito**: Proporcionar elementos visuales consistentes para la interfaz de usuario.
-
-**Características del conjunto:**
-- **Formato**: PNG optimizado para web
-- **Nomenclatura**: Estandarizada (`icons-XX.png`)
-- **Cantidad**: 59 iconos únicos (icons-25 hasta icons-83)
-- **Estilo**: Coherente con la identidad visual UTEC
-- **Uso**: Navegación, acciones, categorización de contenido
-
-**Iconos principales por funcionalidad:**
+**`src/environments/environment.ts`:**
 ```typescript
-// Ejemplos de uso en componentes
-const ICONS = {
-   ACADEMIC: 'assets/icons/icons-25.png',      // Académico
-   PLANNING: 'assets/icons/icons-26.png',      // Planificación
-   TASKS: 'assets/icons/icons-27.png',         // Tareas
-   CALENDAR: 'assets/icons/icons-28.png',      // Calendario
-   DASHBOARD: 'assets/icons/icons-29.png',     // Panel de control
-   // ... conjunto completo disponible
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8080/api/v1'
 };
 ```
 
-**Optimización implementada:**
-- Renombrado automático desde formato legacy (`Recurso XXicon_.png`)
-- Nomenclatura consistente para facilitar mantenimiento
-- Carga lazy para optimizar rendimiento inicial
+#### Producción (Docker)
 
-##### **Imágenes (`/images/`)**
+**`.env` file:**
+```env
+# Compose
+COMPOSE_PROJECT_NAME=utec-planificador
 
-**Propósito**: Recursos gráficos para enriquecer la experiencia visual.
+# Frontend
+FRONTEND_PORT=4200
+BACKEND_API_URL=http://localhost:8080/api/v1
+NODE_ENV=production
 
-**Categorías organizacionales:**
-- **`/backgrounds/`**: Fondos de pantalla, texturas, patrones
-- **`/illustrations/`**: Ilustraciones vectoriales y gráficos explicativos
-- **`/photos/`**: Fotografías institucionales, instalaciones UTEC
-
-**Mejores prácticas:**
-- Formato WebP para mejor compresión
-- Múltiples resoluciones (responsive images)
-- Lazy loading automático con `NgOptimizedImage`
-
-##### **Logos (`/logos/`)**
-
-**Propósito**: Isologotipos oficiales para branding institucional.
-
-**Variantes disponibles:**
-- **Logo Principal** (`utec-logo-primary.svg`)
-  - Formato vectorial escalable
-  - Uso en headers y elementos principales
-  
-- **Versiones Específicas:**
-  - Horizontal: Para headers amplios
-  - Vertical: Para sidebars y espacios estrechos
-  - Isologo: Símbolo sin texto para iconos
-
-**Implementación responsive:**
-```html
-<!-- Uso con NgOptimizedImage -->
-<img ngSrc="assets/logos/utec-logo-primary.svg" 
-   alt="UTEC - Universidad Tecnológica"
-   width="200" 
-   height="60"
-   priority
->
+# Health Check
+HEALTHCHECK_INTERVAL=30s
+HEALTHCHECK_TIMEOUT=3s
+HEALTHCHECK_RETRIES=3
 ```
 
-#### Fuentes de Recursos Institucionales
+### Configuración de Angular
 
-Todos los recursos visuales y tipográficos han sido extraídos de las **fuentes oficiales de UTEC** para garantizar coherencia con la identidad institucional:
+**`angular.json`:** Configuración principal del proyecto Angular
+- Build configurations (development, production)
+- Asset management
+- Style preprocessing (SCSS)
+- Budget limits
 
-##### **Fuentes Principales (Versión Organizada)**
+**`tsconfig.json`:** Configuración de TypeScript
+- Compiler options
+- Path mappings
+- Module resolution
 
-- **Recursos Generales**: https://red.utec.edu.uy/recursos_old/
-  - Biblioteca completa de recursos institucionales
-  - Materiales organizados por categorías
-  - Versión estable y bien estructurada
+**`tailwind.config.js`:** Configuración de Tailwind CSS
+- Personalización de tema
+- Plugins
+- PurgeCSS para optimización
 
-- **Tipografías Oficiales**: https://red.utec.edu.uy/recursos_old/tipografia/
-  - Familias UTEC Gruesa, Liviana y Text
-  - Archivos `.ttf` en versión 3.0
-  - Licencias de uso institucional
+---
 
-- **Iconografía Institucional**: https://red.utec.edu.uy/recursos_old/iconos/
-  - Conjunto completo de iconos temáticos
-  - Formato PNG optimizado
-  - Consistencia visual garantizada
+## Componentes Principales
 
-- **Isologotipos y Marcas**: https://red.utec.edu.uy/recursos_old/logos-utec/
-  - Logos en múltiples formatos (SVG, PNG)
-  - Variantes horizontal, vertical e isologo
-  - Especificaciones de uso y aplicación
+### Componentes de Negocio
 
-##### **Fuente Actualizada (En Desarrollo)**
+#### Course Catalog
+**Ubicación:** `features/course-catalog`
+**Propósito:** Búsqueda y navegación de cursos con filtros avanzados
+**Características:**
+- Búsqueda por texto
+- Filtros múltiples (campus, programa, docente, etc.)
+- Paginación
+- Vista de tarjetas
 
-- **Recursos Nuevos**: https://red.utec.edu.uy/recursos/
-  - Versión más reciente de recursos
-  - Menor organización
+#### Course Details
+**Ubicación:** `features/course-details`
+**Propósito:** Visualización detallada de información de curso
+**Características:**
+- Información completa del curso
+- Contenido programático
+- Planificaciones semanales
+- Horarios de oficina
+- Acciones CRUD (según permisos)
 
-**Nota de mantenimiento**: Se recomienda revisar periódicamente la fuente actualizada para incorporar nuevos recursos o versiones mejoradas de elementos existentes.
+#### Planner (Weekly Planning)
+**Ubicación:** `features/planner`
+**Propósito:** Gestión de planificaciones semanales
+**Características:**
+- Vista por semana
+- Gestión de actividades
+- Agregar bibliografía
+- Generación de PDF
+- Integración con IA para sugerencias
 
-#### Estrategia de Optimización
+#### Chat Page
+**Ubicación:** `features/chat-page`
+**Propósito:** Interfaz de chat con agente de IA
+**Características:**
+- Chat conversacional en tiempo real
+- Historial de mensajes por sesión
+- Contexto de curso automático
+- Sugerencias y recomendaciones
+- Generación de informes
 
-**Performance:**
-- Lazy loading de imágenes no críticas
-- Compresión WebP donde sea posible
-- Font-display: swap para tipografías
-- Versionado de assets para cache busting
+#### Statistics Page
+**Ubicación:** `features/statistics-page`
+**Propósito:** Visualización de estadísticas y métricas
+**Características:**
+- Gráficos con Chart.js
+- Métricas de curso
+- Comparativas
+- Exportación de datos
 
-**Mantenibilidad:**
-- Nomenclatura consistente y descriptiva
-- Organización por funcionalidad
-- Path mappings para referencias limpias (`@assets/*`)
-- Documentación de uso por categoría
+### Componentes Compartidos
 
-**Escalabilidad:**
-- Estructura preparada para nuevos recursos
-- Categorización extensible
-- Automatización de procesos de renombrado
-- Integración con pipeline de construcción
+#### Course Card
+**Ubicación:** `shared/components/course-card`
+**Propósito:** Tarjeta visual de curso para listas
+**Props:**
+- `course`: Datos del curso
+- `showActions`: Mostrar acciones
+**Eventos:**
+- `cardClick`: Click en la tarjeta
+- `actionClick`: Click en acción específica
 
-## Configuración de Path Mappings
+#### Searchbar
+**Ubicación:** `shared/components/searchbar`
+**Propósito:** Barra de búsqueda con debounce
+**Props:**
+- `placeholder`: Texto placeholder
+- `value`: Valor inicial
+**Eventos:**
+- `searchChange`: Emisión de búsqueda (con debounce)
 
-El archivo `tsconfig.app.json` define alias para importaciones limpias y mantenibles:
+#### Multiselect
+**Ubicación:** `shared/components/multiselect`
+**Propósito:** Selector múltiple con chips
+**Props:**
+- `options`: Lista de opciones
+- `selectedValues`: Valores seleccionados
+- `label`: Etiqueta del campo
+**Eventos:**
+- `selectionChange`: Cambio en selección
 
-```jsonc
-{
-   "compilerOptions": {
-      "paths": {
-         "@app/*": ["./src/app/*"],
-         "@core/*": ["./src/app/core/*"],
-         "@shared/*": ["./src/app/shared/*"],
-         "@features/*": ["./src/app/features/*"],
-         "@layout/*": ["./src/app/layout/*"],
-         "@pages/*": ["./src/app/pages/*"],
-         "@assets/*": ["./src/assets/*"]
-      }
-   }
-}
-```
+---
 
-### Uso de Path Mappings
+## Servicios
 
+### Servicios Core
+
+#### AuthService
+**Ubicación:** `core/services/auth.service.ts`
+**Responsabilidades:**
+- Autenticación de usuarios (login/logout)
+- Gestión de tokens JWT
+- Estado de autenticación (Observable)
+- Almacenamiento en localStorage
+- Decodificación de tokens
+
+**Métodos principales:**
 ```typescript
-// ✓ Importaciones correctas con path mappings
-import { AuthService } from '@core/services/auth.service';
-import { ButtonComponent } from '@shared/components/ui/button/button.component';
-import { DashboardComponent } from '@features/dashboard/dashboard.component';
-import { Header } from '@layout/header/header';
-
-// ✗ Evitar importaciones relativas complejas
-import { AuthService } from '../../../core/services/auth.service';
+login(credentials: LoginDto): Observable<AuthResponse>
+logout(): void
+checkAuthStatus(): void
+getCurrentUser(): User | null
+isAuthenticated(): boolean
+getToken(): string | null
 ```
 
-## Configuración de Rutas
+#### CourseService
+**Ubicación:** `core/services/course.service.ts`
+**Responsabilidades:**
+- CRUD de cursos
+- Búsqueda y filtrado
+- Gestión de ODS y DUA
+- Gestión de sistemas de calificación
+- Obtención de períodos académicos
 
-### Estructura del Archivo `app.routes.ts`
-
-El sistema de routing está diseñado con una arquitectura jerárquica que utiliza **nested routing** para organizar las rutas por layouts y responsabilidades:
-
+**Métodos principales:**
 ```typescript
-import { Routes } from '@angular/router';
-import { MainLayout } from '@layout/main-layout/main-layout';
-import { Home } from '@pages/home/home';
-
-export const routes: Routes = [
-   {
-      path: '',
-      component: MainLayout,                                                        // Layout padre
-      children: [                                                                   // Rutas anidadas
-         { path: '', redirectTo: '/inicio', pathMatch: 'full' },
-         {
-            path: 'inicio',
-            component: Home                                                         // Page: Carga inmediata
-         },
-         {
-            path: 'dashboard',
-            loadComponent: () => import('@features/dashboard/dashboard.component')  // Feature: Lazy loading
-         },
-         {
-            path: 'planning',
-            loadComponent: () => import('@features/planning/planning.component')    // Feature: Lazy loading
-         },
-         {
-            path: 'tasks',
-            loadComponent: () => import('@features/tasks/tasks.component')          // Feature: Lazy loading
-         }
-      ]
-   }
-];
+getCourses(filters?: FilterParams): Observable<PageResponse<Course>>
+getCourseById(id: number): Observable<Course>
+createCourse(course: CourseRequest): Observable<Course>
+updateCourse(id: number, course: CourseRequest): Observable<Course>
+deleteCourse(id: number): Observable<void>
 ```
 
-### Manejo de Layouts en las Rutas
+#### WeeklyPlanningService
+**Ubicación:** `core/services/weekly-planning.service.ts`
+**Responsabilidades:**
+- CRUD de planificaciones semanales
+- Obtención por curso y semana
+- Gestión de actividades
+- Gestión de referencias bibliográficas
 
-#### **Layout Principal (MainLayout)**
+#### AIAgentService
+**Ubicación:** `core/services/ai-agent.service.ts`
+**Responsabilidades:**
+- Comunicación con agente de IA
+- Envío de mensajes de chat
+- Obtención de sugerencias
+- Generación de reportes
+- Limpieza de sesiones
+
+**Métodos principales:**
 ```typescript
-{
-   path: '',
-   component: MainLayout,  // Componente que envuelve todas las rutas principales
-   children: [
-      // Todas las rutas que usan header y footer
-   ]
-}
+sendMessage(sessionId: string, message: string, courseId: number): Observable<ChatResponse>
+getSuggestions(courseId: number): Observable<SuggestionsResponse>
+generateReport(courseId: number): Observable<ReportResponse>
+clearSession(sessionId: string): Observable<void>
 ```
 
-**Características del MainLayout:**
-- Proporciona estructura visual consistente (header, footer)
-- Contiene `<router-outlet>` para renderizar las rutas hijas
-- Se carga una sola vez y permanece activo durante la navegación
-
-#### **Múltiples Layouts (Patrón Escalable)**
-```typescript
-export const routes: Routes = [
-   // Layout principal para usuarios autenticados
-   {
-      path: '',
-      component: MainLayout,
-      canActivate: [AuthGuard],
-      children: [
-         { path: 'dashboard', loadComponent: () => import('@features/dashboard/dashboard.component') },
-         { path: 'tasks', loadComponent: () => import('@features/tasks/tasks.component') }
-      ]
-   },
-   // Layout de autenticación (sin header/footer)
-   {
-      path: 'auth',
-      component: AuthLayout,
-      children: [
-         { path: 'login', component: LoginComponent },
-         { path: 'register', loadComponent: () => import('@pages/register/register.component') }
-      ]
-   },
-   // Layout de administración
-   {
-      path: 'admin',
-      component: AdminLayout,
-      canActivate: [AdminGuard],
-      children: [
-         { path: 'users', loadComponent: () => import('@features/admin/users/users.component') },
-         { path: 'settings', loadComponent: () => import('@features/admin/settings/settings.component') }
-      ]
-   }
-];
-```
-
-### Diferencias entre Pages y Features en las Rutas
-
-#### **Pages: Carga Inmediata (`component`)**
-```typescript
-{
-   path: 'inicio',
-   component: Home    // Import directo, disponible inmediatamente
-}
-```
-
-**Características de Pages:**
-- **Carga Eager**: Se incluyen en el bundle principal
-- **Páginas críticas**: Home, Login, Error 404
-- **Contenido estático**: Información institucional, landing pages
-- **Performance**: Disponibles instantáneamente, no requieren descarga adicional
-- **Uso**: Para páginas que SIEMPRE se necesitan o son muy pequeñas
-
-#### **Features: Carga Diferida (`loadComponent`)**
-```typescript
-{
-   path: 'dashboard',
-   loadComponent: () => import('@features/dashboard/dashboard.component')
-}
-```
-
-**Características de Features:**
-- **Carga Lazy**: Se descargan solo cuando se navega a ellas
-- **Funcionalidades complejas**: Dashboard, gestión de tareas, planificación
-- **Bundle separado**: Cada feature genera su propio chunk de JavaScript
-- **Performance**: Reduce el tamaño del bundle inicial
-- **Uso**: Para módulos completos con lógica de negocio
-
-### Comparación Práctica
-
-| Aspecto | Pages (`component`) | Features (`loadComponent`) |
-|---------|--------------------|-----------------------------|
-| **Carga** | Inmediata (Eager) | Bajo demanda (Lazy) |
-| **Bundle** | Principal (main.js) | Separado (feature.js) |
-| **Tamaño inicial** | Aumenta bundle | Reduce bundle inicial |
-| **Primera navegación** | Instantánea | Requiere descarga |
-| **Uso recomendado** | Páginas críticas/pequeñas | Funcionalidades complejas |
-| **Ejemplo** | Home, Login, 404 | Dashboard, Tasks, Planning |
-
-### Ventajas del Patrón Implementado
-
-#### **1. Performance Optimizada**
-```typescript
-// Bundle inicial: ~200KB (solo layout + pages críticas)
-// Feature chunks: 50-100KB cada uno (se cargan bajo demanda)
-```
-
-#### **2. Escalabilidad**
-```typescript
-// Fácil agregar nuevas features sin afectar el bundle principal
-{
-   path: 'reports',
-   loadComponent: () => import('@features/reports/reports.component')
-}
-```
-
-#### **3. Mantenibilidad**
-- Separación clara entre contenido estático y funcionalidades dinámicas
-- Cada feature es autocontenida y puede desarrollarse independientemente
-
-#### **4. Experiencia de Usuario**
-- Carga inicial rápida (solo lo esencial)
-- Navegación fluida entre pages
-- Carga progresiva de features según necesidad
-
-### Mejores Prácticas para Routing
-
-#### **1. Nomenclatura Consistente**
-```typescript
-// URLs en español para el contexto académico UTEC
-{ path: 'inicio', component: Home },
-{ path: 'tareas', loadComponent: () => import('@features/tasks/tasks.component') },
-{ path: 'planificacion', loadComponent: () => import('@features/planning/planning.component') }
-```
-
-#### **2. Redirecciones Apropiadas**
-```typescript
-{ path: '', redirectTo: '/inicio', pathMatch: 'full' },        // Ruta por defecto
-{ path: '**', redirectTo: '/not-found' }                       // Rutas no encontradas
-```
-
-#### **3. Guards de Protección**
-```typescript
-{
-   path: 'dashboard',
-   loadComponent: () => import('@features/dashboard/dashboard.component'),
-   canActivate: [AuthGuard, RoleGuard]
-}
-```
-
-#### **4. Resolvers para Datos**
-```typescript
-{
-   path: 'tasks',
-   loadComponent: () => import('@features/tasks/tasks.component'),
-   resolve: {
-      tasks: TasksResolver,
-      categories: CategoriesResolver
-   }
-}
-```
-
-## Sistema de Estilos
-
-### Configuración de Styles.scss
-
-El archivo `styles.scss` centraliza la configuración global de estilos:
-
-#### Importaciones Base
-```scss
-@use './tailwind.css';           // Framework Tailwind CSS
-@use "primeicons/primeicons.css"; // Iconos de PrimeNG
-```
-
-#### Tipografías Institucionales
-```scss
-// Configuración de @font-face para tipografías UTEC
-@font-face {
-   font-family: 'UTEC Gruesa 3.0';
-   src: url('assets/fonts/utec/utec_gruesa_3.0.ttf') format('truetype');
-}
-
-// Clases utilitarias para tipografías
-.utec-gruesa-3 {
-   font-family: 'UTEC Gruesa 3.0', system-ui, sans-serif !important;
-}
-```
-
-#### Variables CSS Institucionales
-```scss
-:root {
-  --utec-blue: #00A9E0;    // Azul institucional UTEC
-  --utec-black: #000000;   // Negro corporativo
-  --utec-white: #FFFFFF;   // Blanco base
-}
-```
-
-### Identidad Visual Institucional
-
-Este proyecto adhiere estrictamente a las **especificaciones oficiales de identidad visual de UTEC** para garantizar coherencia con la imagen institucional.
-
-#### **Documento de Referencia Oficial**
-
-**Manual de Identidad Visual UTEC**  
-**URL**: https://utec.edu.uy/uploads/documento/82a36430707aab6fe708f8fbdf9497a1723251db.pdf
-
-Este documento contiene las **especificaciones técnicas oficiales** para:
-
-##### **Paleta de Colores Institucional**
-- Códigos hexadecimales exactos
-- Valores CMYK para impresión
-- Especificaciones RGB para medios digitales
-- Variaciones y combinaciones permitidas
-
-##### **Especificaciones Tipográficas**
-- Familias UTEC oficiales (Gruesa, Liviana, Text)
-- Tamaños y espaciados recomendados
-- Jerarquías y aplicaciones por contexto
-- Combinaciones tipográficas apropiadas
-
-##### **Uso Correcto de Isologotipos**
-- Versiones aprobadas del logo UTEC
-- Espacios de protección mínimos
-- Tamaños mínimos de reproducción
-- Aplicaciones sobre fondos diversos
-
-##### **Sistemas de Retícula y Composición**
-- Estructuras de layout recomendadas
-- Proporciones y márgenes institucionales
-- Principios de composición visual
-
-#### **Cumplimiento Normativo**
-
-**Responsabilidad del Proyecto:**
-- Todos los elementos visuales implementados siguen las directrices oficiales
-- Los recursos tipográficos y cromáticos son extraídos de fuentes institucionales
-- Las aplicaciones de marca respetan los estándares establecidos
-
-**Referencias de Implementación:**
-```scss
-// Colores implementados según manual oficial
-:root {
-   --utec-primary-blue: #00A9E0;     // Azul principal según especificación
-   --utec-secondary-black: #000000;  // Negro institucional
-   --utec-base-white: #FFFFFF;       // Blanco base para contraste
-  
-   // Extensiones para variaciones aprobadas
-   --utec-blue-light: #33BAEB;       // Variante clara del azul
-   --utec-blue-dark: #0088B3;        // Variante oscura del azul
-   --utec-gray-light: #F5F5F5;       // Gris claro para fondos
-   --utec-gray-medium: #CCCCCC;      // Gris medio para separadores
-}
-```
-
-**Tipografías según especificación oficial:**
-```scss
-// Implementación exacta según manual de identidad
-@font-face {
-   font-family: 'UTEC Gruesa 3.0';
-   src: url('assets/fonts/utec/utec_gruesa_3.0.ttf') format('truetype');
-   font-weight: bold;
-   font-display: swap;
-}
-
-@font-face {
-   font-family: 'UTEC Liviana 3.0';
-   src: url('assets/fonts/utec/utec_liviana_3.0.ttf') format('truetype');
-   font-weight: 300;
-   font-display: swap;
-}
-
-// Familia UTEC Text completa según especificaciones
-@font-face {
-   font-family: 'UTEC Text';
-   src: url('assets/fonts/utec/utec_text_roman_3.0.ttf') format('truetype');
-   font-weight: normal;
-}
-```
-
-#### **Aplicación Práctica en Componentes**
-
-**Ejemplo de uso correcto según identidad institucional:**
-```typescript
-// Componente siguiendo especificaciones visuales UTEC
-@Component({
-   selector: 'app-header',
-   template: `
-      <header class="bg-utec-blue text-utec-white">
-         <img src="assets/logos/utec-logo-primary.svg" 
-            alt="UTEC - Universidad Tecnológica"
-            class="h-12 w-auto">
-         <h1 class="font-utec-gruesa text-2xl">
-            {{ title }}
-         </h1>
-      </header>
-   `,
-   styles: [`
-      .bg-utec-blue { background-color: var(--utec-primary-blue); }
-      .text-utec-white { color: var(--utec-base-white); }
-      .font-utec-gruesa { font-family: 'UTEC Gruesa 3.0', sans-serif; }
-   `]
-})
-```
-
-#### **Mantenimiento de Consistencia**
-
-Para garantizar el cumplimiento continuo de la identidad visual:
-
-1. **Revisión periódica** del documento oficial para actualizaciones
-2. **Validación** de nuevos recursos contra las especificaciones
-3. **Testing visual** para verificar coherencia en diferentes dispositivos
-4. **Documentación** de cualquier adaptación necesaria para web
-
-> **Nota importante**: Cualquier desviación de las especificaciones oficiales debe ser justificada técnicamente y aprobada por las autoridades competentes de UTEC.
-
-#### Jerarquía Tipográfica Global
-```scss
-body {
-   font-family: 'UTEC Text Light', system-ui, sans-serif !important;
-}
-
-h1 {
-   font-family: 'UTEC Text Black', system-ui, sans-serif !important;
-}
-
-h2, h3, h4, h5, h6 {
-   font-family: 'UTEC Text Heavy', system-ui, sans-serif !important;
-}
-```
-
-### Convenciones para Nuevos Estilos
-
-#### 1. Organización por Secciones
-```scss
-/* =============================================================================
-   VARIABLES GLOBALES
-   ============================================================================= */
-:root {
-   --custom-variable: value;
-}
-
-/* =============================================================================
-   COMPONENTES BASE
-   ============================================================================= */
-.btn-primary {
-   background: var(--utec-blue);
-   color: var(--utec-white);
-}
-
-/* =============================================================================
-   UTILITIES PERSONALIZADAS
-   ============================================================================= */
-.text-utec-blue {
-   color: var(--utec-blue);
-}
-```
-
-#### 2. Naming Conventions
-- **Variables CSS**: `--prefix-property-modifier`
-- **Clases utilitarias**: `prefix-property-value`
-- **Componentes**: `component-name__element--modifier` (BEM)
-
-#### 3. Responsive Design
-```scss
-// Mobile First Approach
-.component {
-   font-size: 1rem;
-  
-   @media (min-width: 768px) {
-      font-size: 1.125rem;
-   }
-  
-   @media (min-width: 1024px) {
-      font-size: 1.25rem;
-   }
-}
-```
-
-#### 4. Integración con Tailwind
-```scss
-// Extender utilidades de Tailwind cuando sea necesario
-@layer utilities {
-   .text-shadow-utec {
-      text-shadow: 2px 2px 4px rgba(0, 169, 224, 0.3);
-   }
-}
-```
-
-## Comandos de Desarrollo
-
-```bash
-# Iniciar servidor de desarrollo
-npm start
-
-# Generar build de producción
-npm run build
-
-# Ejecutar pruebas unitarias
-npm run test
-
-# Ejecutar pruebas en modo headless (CI/CD)
-npm run test:headless
-
-# Ejecutar pruebas con cobertura de código
-npm run test:coverage
-
-# Build con watch mode
-npm run watch
-
-# Generar componente
-ng generate component path/component-name
-
-# Generar servicio
-ng generate service path/service-name
-
-# Generar guard
-ng generate guard path/guard-name
-```
+### Servicios de Dominio
+
+| Servicio | Ubicación | Propósito |
+|----------|-----------|-----------|
+| **ActivityService** | core/services/ | Gestión de actividades de planificación |
+| **CampusService** | core/services/ | Gestión de sedes |
+| **CurricularUnitService** | core/services/ | Gestión de unidades curriculares |
+| **EnumService** | core/services/ | Obtención de enumeraciones del backend |
+| **ModificationService** | core/services/ | Auditoría de modificaciones |
+| **OfficeHoursService** | core/services/ | Gestión de horarios de oficina |
+| **PositionService** | core/services/ | Gestión de posiciones docentes |
+| **ProgrammaticContentService** | core/services/ | Gestión de contenido programático |
+| **UserService** | core/services/ | Gestión de usuarios |
+| **PDFService** | core/services/ | Generación de PDFs |
+| **FilterStateService** | core/services/ | Gestión de estado de filtros |
+
+### Guards e Interceptors
+
+#### AuthGuard
+**Ubicación:** `core/guards/auth.guard.ts`
+**Propósito:** Proteger rutas que requieren autenticación
+**Comportamiento:**
+- Verifica si el usuario está autenticado
+- Redirige a `/login` si no hay sesión activa
+- Permite acceso si hay token válido
+
+#### AuthInterceptor
+**Ubicación:** `core/interceptors/auth.interceptor.ts`
+**Propósito:** Agregar token JWT a requests HTTP
+**Comportamiento:**
+- Intercepta todos los requests HTTP
+- Agrega header `Authorization: Bearer <token>`
+- Permite requests públicos (login, health)
+
+#### ErrorInterceptor
+**Ubicación:** `core/interceptors/error.interceptor.ts` (si existe)
+**Propósito:** Manejo centralizado de errores HTTP
+**Comportamiento:**
+- Intercepta errores HTTP
+- Muestra mensajes toast
+- Maneja errores 401 (logout automático)
+- Maneja errores 403, 404, 500, etc.
+
+---
 
 ## Testing
 
-Este proyecto implementa una suite completa de tests unitarios usando **Jasmine** y **Karma** para garantizar la calidad y estabilidad del código.
+### Suite de Tests
 
-### Estadísticas de Testing
+La aplicación incluye tests unitarios con Jasmine y Karma.
 
-- ✅ **75 tests** ejecutándose exitosamente
-- 📊 **Cobertura objetivo**: 80%+ en código crítico
-- 🚀 **Tests automatizados** en CI/CD
-
-### Tipos de Tests Implementados
-
-- **Componentes**: Validación de lógica, inputs, outputs y renderizado DOM
-- **Servicios**: Testing de lógica de negocio e interacciones HTTP
-- **Guards**: Verificación de control de acceso y navegación
-- **Interceptors**: Pruebas de transformación de peticiones HTTP
-- **Formularios**: Validación de forms reactivos y mensajes de error
-
-### Documentación Completa
-
-Para información detallada sobre cómo escribir, ejecutar y mantener tests, consulta la documentación completa:
-
-📚 **[TESTING_DOCUMENTATION.md](./TESTING_DOCUMENTATION.md)**
-
-La documentación incluye:
-- Guía de configuración del entorno de testing
-- Ejemplos prácticos por categoría (componentes, servicios, guards, etc.)
-- Patrones y mejores prácticas
-- Solución de problemas comunes
-- Testing de Signals, Formularios Reactivos y HTTP
+**Estadísticas de Testing:**
+- Framework: Jasmine 5.9.0
+- Test Runner: Karma 6.4.0
+- Navegador: Chrome 142 (desarrollo), ChromeHeadless (CI)
+- Cobertura mínima configurada: 50%
 
 ### Ejecutar Tests
 
 ```bash
-# Modo desarrollo con watch
+# Modo watch (desarrollo)
 npm test
 
-# Modo headless para CI/CD
+# Ejecución única en headless
 npm run test:headless
 
-# Con cobertura de código
+# Con reporte de cobertura
 npm run test:coverage
+
+# Modo CI/CD
+npm run test:ci
 ```
 
-## Estándares de Calidad
+### Tests Implementados
 
-- **TypeScript estricto**: Configuración strict activada para type safety
-- **Angular Standalone Components**: Arquitectura moderna sin NgModules
-- **Signals**: Sistema reactivo nativo de Angular para gestión de estado
-- **OnPush Change Detection**: Optimización de rendimiento en componentes
-- **Lazy Loading**: Carga diferida para mejora de performance inicial
-- **Path Mappings**: Importaciones limpias y mantenibles
-- **Responsive Design**: Diseño adaptativo mobile-first
-- **Accesibilidad**: Cumplimiento de estándares WCAG 2.1
+**Services:**
+- `AuthService`: Login, logout, checkAuthStatus, state management
+- `CourseService`: CRUD operations, filtros, ODS, DUA, períodos
+
+**Guards:**
+- `AuthGuard`: Protección de rutas
+
+**Interceptors:**
+- `AuthInterceptor`: Inyección de tokens
+
+**Components:**
+- `App`: Componente principal
+
+### Reportes
+
+Después de ejecutar `npm run test:coverage`, los reportes se generan en:
+
+- **HTML Report**: `coverage/utec-planificador-fe/index.html`
+- **LCOV**: `coverage/utec-planificador-fe/lcov.info`
+- **Text Summary**: Consola
+
+### Configuración de Tests
+
+**`karma.conf.js`:**
+```javascript
+module.exports = function(config) {
+  config.set({
+    basePath: '',
+    frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter'),
+      require('karma-coverage'),
+      require('@angular-devkit/build-angular/plugins/karma')
+    ],
+    browsers: ['Chrome', 'ChromeHeadless'],
+    coverageReporter: {
+      type: 'html',
+      dir: require('path').join(__dirname, './coverage/utec-planificador-fe'),
+      subdir: '.',
+      reporters: [
+        { type: 'html' },
+        { type: 'text-summary' },
+        { type: 'lcovonly' }
+      ],
+      check: {
+        global: {
+          statements: 50,
+          branches: 50,
+          functions: 50,
+          lines: 50
+        }
+      }
+    }
+  });
+};
+```
+
+**Documentación completa:** [TESTING_DOCUMENTATION.md](./TESTING_DOCUMENTATION.md)
 
 ---
 
-*Desarrollado para la Universidad Tecnológica del Uruguay (UTEC) - Proyecto Académico 2025*
+## Build y Deployment
+
+### Build de Producción
+
+**Build local:**
+
+```bash
+# Build optimizado para producción
+ng build --configuration production
+
+# Output: dist/utec-planificador-fe/browser/
+```
+
+**Optimizaciones aplicadas:**
+- Ahead-of-Time (AOT) compilation
+- Tree-shaking
+- Minificación
+- Code splitting
+- Lazy loading de módulos
+
+### Docker Build
+
+**Dockerfile multi-stage:**
+
+**Stage 1: Build**
+- Base: `node:22-alpine`
+- Instala dependencias
+- Compila Angular app
+- Output: `dist/utec-planificador-fe/browser/`
+
+**Stage 2: Production**
+- Base: `nginx:1.27-alpine`
+- Copia build artifacts
+- Configura NGINX
+- Expone puerto 80
+
+**Build manual:**
+
+```bash
+# Build imagen
+docker build -t utec-planificador-fe:latest .
+
+# Run contenedor
+docker run -p 4200:80 utec-planificador-fe:latest
+```
+
+**Con Docker Compose:**
+
+```bash
+# Development
+docker-compose up -d
+
+# Production
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+### NGINX Configuration
+
+**`nginx.conf`:**
+- Optimización de performance (gzip, sendfile)
+- Configuración SPA (fallback a index.html)
+- Cache de assets estáticos
+- Headers de seguridad
+- Logging
+
+**Características:**
+```nginx
+# Gzip compression
+gzip on;
+gzip_types text/plain text/css application/json application/javascript;
+
+# SPA fallback
+location / {
+    try_files $uri $uri/ /index.html;
+}
+
+# Cache estático
+location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+}
+```
+
+### Health Checks
+
+**Docker health check:**
+```yaml
+healthcheck:
+  test: ["CMD", "curl", "--fail", "http://localhost"]
+  interval: 30s
+  timeout: 3s
+  retries: 3
+```
+
+---
+
+## Documentación
+
+### Documentación Disponible
+
+| Documento | Ubicación | Descripción |
+|-----------|-----------|-------------|
+| [TESTING_DOCUMENTATION.md](./TESTING_DOCUMENTATION.md) | Raíz | Guía completa de testing con ejemplos |
+| README.md | Raíz | Este documento (visión general) |
+
+### Documentación de Código
+
+**TSDoc:** Documentación inline en servicios y componentes críticos
+
+**Ejemplo:**
+```typescript
+/**
+ * Autentica un usuario con credenciales
+ * @param credentials - Email y password del usuario
+ * @returns Observable con respuesta de autenticación (token + user)
+ * @throws Error si las credenciales son inválidas
+ */
+login(credentials: LoginDto): Observable<AuthResponse> {
+  // ...
+}
+```
+
+### API Documentation
+
+**Swagger del Backend:** http://localhost:8080/api/v1/swagger-ui.html
+
+---
+
+## Contribuir
+
+### Guía de Contribución
+
+1. **Fork** el repositorio
+2. **Crea** una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. **Commit** tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** a la rama (`git push origin feature/AmazingFeature`)
+5. **Abre** un Pull Request
+
+### Convenciones de Código
+
+- **Angular Style Guide**: Guía oficial de Angular
+- **Naming**:
+  - Components: `kebab-case` (archivos), `PascalCase` (clases)
+  - Services: `camelCase.service.ts`
+  - Models: `PascalCase` interfaces
+  - Constants: `UPPER_SNAKE_CASE`
+- **Testing**: Todo nuevo componente/servicio debe incluir tests
+- **Commits**: Mensajes descriptivos en inglés
+
+### Comandos de Verificación
+
+```bash
+# Linting (si está configurado)
+ng lint
+
+# Tests
+npm test
+
+# Build
+ng build
+
+# Format (Prettier)
+npx prettier --write "src/**/*.{ts,html,scss}"
+```
+
+---
+
+## Licencia
+
+Este proyecto es parte del Proyecto Final de la carrera **Analista en Tecnologías de la Información** de la **Universidad Tecnológica del Uruguay (UTEC)**.
+
+**Desarrollado por:** Salvador Vanoli
+
+**Institución:** Universidad Tecnológica del Uruguay (UTEC)
+
+**Año:** 2025
+
+---
+
+## Soporte y Contacto
+
+### Resolución de Problemas
+
+La documentación completa se encuentra en el directorio del proyecto. Para problemas específicos:
+
+- Revisar documentación de testing en `TESTING_DOCUMENTATION.md`
+- Verificar configuración de entornos en `src/environments/`
+- Consultar logs de Docker con `.\scripts\logs.ps1`
+
+### Preguntas Frecuentes
+
+**P: ¿Cómo cambio la URL del backend?**
+
+R: Edita `src/environments/environment.ts` para desarrollo local, o `BACKEND_API_URL` en `.env` para Docker.
+
+**P: ¿Por qué no se conecta al backend?**
+
+R: Verifica que el backend esté corriendo en `http://localhost:8080/api/v1` y que no haya problemas de CORS.
+
+**P: ¿Cómo genero la documentación de componentes?**
+
+R: Usa Compodoc: `npm install -g @compodoc/compodoc` y luego `compodoc -p tsconfig.json`.
+
+**P: ¿Cómo agrego un nuevo componente?**
+
+R: Usa Angular CLI: `ng generate component features/mi-feature/mi-componente`.
+
+---
+
+<div align="center">
+
+**Si este proyecto te fue útil, considera darle una estrella**
+
+Desarrollado en UTEC
+
+[Volver arriba](#utec-planificador---frontend)
+
+</div>
+
