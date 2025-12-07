@@ -62,6 +62,7 @@
   [isLoading]="isLoadingCourse()"
   [isAdminMode]="true"
   [curricularUnitId]="selectedCurricularUnit() ? +selectedCurricularUnit() : null"
+  [campusId]="campusId()"
   [teacherIds]="selectedTeacherIds()"
   (onCourseCreated)="onCourseCreated($event)"
   (onCourseUpdated)="onCourseUpdated($event)"

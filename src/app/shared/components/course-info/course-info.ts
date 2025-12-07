@@ -34,6 +34,7 @@ export class CourseInfo implements OnInit {
   isAdminMode = input<boolean>(false); // Controls if admin fields are editable (teachers, unit, shift, dates)
   isReadOnly = input<boolean>(false); // Controls if ALL fields are readonly (for course-details view)
   curricularUnitId = input<number | null>(null); // For course creation
+  campusId = input<number | null>(null); // For course creation
   teacherIds = input<number[]>([]); // Teacher IDs for course creation (supports multiple teachers)
   
   onCourseUpdated = output<Course>();
@@ -655,6 +656,12 @@ export class CourseInfo implements OnInit {
     if (!curricularUnitId) {
       throw new Error('Curricular unit ID is required');
     }
+
+    // Get campusId from course or from input (creation mode)
+    const campusId = course.campus?.id ?? this.campusId();
+    if (!campusId) {
+      throw new Error('Campus ID is required');
+    }
     
     // Get userIds from course teachers or from input (creation mode)
     let userIds: number[];
@@ -681,6 +688,7 @@ export class CourseInfo implements OnInit {
       sustainableDevelopmentGoals: course.sustainableDevelopmentGoals,
       universalDesignLearningPrinciples: course.universalDesignLearningPrinciples,
       curricularUnitId,
+      campusId,
       userIds,
     };
   }
@@ -693,6 +701,7 @@ export class CourseInfo implements OnInit {
     }
 
     const curricularUnitId = this.curricularUnitId();
+    const campusId = this.campusId();
     const teacherIds = this.teacherIds();
 
     if (!curricularUnitId) {
@@ -700,6 +709,16 @@ export class CourseInfo implements OnInit {
         severity: 'error',
         summary: 'Error',
         detail: 'No se especificó la unidad curricular',
+        life: 3000
+      });
+      return;
+    }
+
+    if (!campusId) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se especificó la sede',
         life: 3000
       });
       return;
@@ -753,6 +772,7 @@ export class CourseInfo implements OnInit {
       startDate: this.formatDateForBackend(this.startDate()!),
       endDate: this.formatDateForBackend(this.endDate()!),
       curricularUnitId: curricularUnitId,
+      campusId: campusId,
       userIds: teacherIds
     };
 
@@ -886,8 +906,9 @@ export class CourseInfo implements OnInit {
       return;
     }
 
-    // Get curricularUnitId and teacherIds from existing course
+    // Get curricularUnitId, campusId, and teacherIds from existing course
     const curricularUnitId = courseData.curricularUnit?.id;
+    const campusId = courseData.campus?.id;
     const originalTeacherIds = courseData.teachers?.map(t => t.id) || [];
 
     if (!curricularUnitId) {
@@ -895,6 +916,16 @@ export class CourseInfo implements OnInit {
         severity: 'error',
         summary: 'Error',
         detail: 'No se encontró la unidad curricular del curso',
+        life: 3000
+      });
+      return;
+    }
+
+    if (!campusId) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se encontró la sede del curso',
         life: 3000
       });
       return;
@@ -916,6 +947,7 @@ export class CourseInfo implements OnInit {
       startDate: this.formatDateForBackend(this.startDate()!),
       endDate: this.formatDateForBackend(this.endDate()!),
       curricularUnitId: curricularUnitId,
+      campusId: campusId,
       userIds: originalTeacherIds // Use original teacher IDs (cannot be changed in edit mode)
     };
 

@@ -1,3 +1,4 @@
+import { Campus } from './campus';
 import { CurricularUnitResponse } from './curricular-unit';
 import { UserBasicResponse } from './user';
 
@@ -14,6 +15,7 @@ export interface Course {
   sustainableDevelopmentGoals: string[];
   universalDesignLearningPrinciples: string[];
   curricularUnit: CurricularUnitResponse;
+  campus: Campus;
   teachers: UserBasicResponse[];
 }
 
@@ -26,6 +28,7 @@ export interface CourseBasicResponse {
   curricularUnitName: string;
   termName: string;
   programName: string;
+  campusName: string;
   teachers: UserBasicResponse[];
   lastModificationDate: string | null;
 }
@@ -57,6 +60,7 @@ export interface CourseRequest {
   sustainableDevelopmentGoals?: string[]; // Optional
   universalDesignLearningPrinciples?: string[]; // Optional
   curricularUnitId: number; // Required
+  campusId: number; // Required
   userIds: number[]; // Required
 }
 

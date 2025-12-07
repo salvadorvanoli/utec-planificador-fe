@@ -39,6 +39,14 @@ describe('CourseService', () => {
         }
       }
     },
+    campus: {
+      id: 1,
+      name: 'UTEC Fray Bentos',
+      regionalTechnologicalInstitute: {
+        id: 1,
+        name: 'ITR Suroeste'
+      }
+    },
     teachers: [
       {
         id: 1,
@@ -60,6 +68,7 @@ describe('CourseService', () => {
     sustainableDevelopmentGoals: [],
     universalDesignLearningPrinciples: [],
     curricularUnitId: 1,
+    campusId: 1,
     userIds: [1]
   };
 
@@ -352,6 +361,7 @@ describe('CourseService', () => {
       curricularUnitName: 'Programación I',
       termName: 'Semestre 1',
       programName: 'Ingeniería en Sistemas',
+      campusName: 'UTEC San Jose',
       teachers: [{
         id: 1,
         fullName: 'Juan Pérez',

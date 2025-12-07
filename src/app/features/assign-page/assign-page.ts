@@ -69,6 +69,11 @@ export class AssignPage implements OnInit {
     this.selectedTeachers().map(id => +id)
   );
 
+  readonly campusId = computed<number | null>(() => {
+    const context = this.positionService.selectedContext();
+    return context?.campus.id ?? null;
+  });
+
   readonly isFormValid = computed<boolean>(() => 
     !!this.selectedCurricularUnit() && this.selectedTeachers().length > 0
   );
