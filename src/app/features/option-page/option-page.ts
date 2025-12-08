@@ -39,18 +39,40 @@ export class OptionPage implements OnInit {
       const roles = this.positionService.availableRoles();
       const options: string[] = [];
 
+      // Define all possible option descriptions
+      const OPTION_PLANNER = '<strong>Planificador:</strong> Acceda a los cursos donde es docente para crear y gestionar sus planificaciones semanales, incluyendo contenidos, actividades y evaluación.';
+      const OPTION_STATISTICS = '<strong>Panel Estadístico:</strong> Visualice estadísticas detalladas de sus cursos, incluyendo distribución de horas y balance de modalidades.';
+      const OPTION_EDUBOT = '<strong>EduBot:</strong> Utilice el asistente de inteligencia artificial para obtener recomendaciones pedagógicas y sugerencias para sus planificaciones.';
+      const OPTION_ASSIGN = '<strong>Asignar Cursos:</strong> Gestione la asignación de docentes a los diferentes cursos de la sede seleccionada.';
+      const OPTION_INFO = '<strong>Información de Cursos:</strong> Consulte y descargue información completa de todos los cursos de la sede, incluyendo sus planificaciones en formato PDF.';
+
+      // Helper function to add option only if not already included
+      const addOption = (option: string) => {
+        if (!options.includes(option)) {
+          options.push(option);
+        }
+      };
+
+      // Add options based on each role individually
       if (roles.includes(Role.TEACHER)) {
-        options.push('<strong>Planificador:</strong> Acceda a los cursos donde es docente para crear y gestionar sus planificaciones semanales, incluyendo contenidos, actividades y evaluación.');
-        options.push('<strong>Panel Estadístico:</strong> Visualice estadísticas detalladas de sus cursos, incluyendo distribución de horas y balance de modalidades.');
-        options.push('<strong>EduBot:</strong> Utilice el asistente de inteligencia artificial para obtener recomendaciones pedagógicas y sugerencias para sus planificaciones.');
+        addOption(OPTION_PLANNER);
+        addOption(OPTION_STATISTICS);
+        addOption(OPTION_EDUBOT);
       }
 
-      if (roles.includes(Role.COORDINATOR) || roles.includes(Role.ANALYST)) {
-        options.push('<strong>Asignar Cursos:</strong> Gestione la asignación de docentes a los diferentes cursos de la sede seleccionada.');
+      if (roles.includes(Role.ANALYST)) {
+        addOption(OPTION_ASSIGN);
       }
 
-      if (roles.includes(Role.COORDINATOR) || roles.includes(Role.EDUCATION_MANAGER)) {
-        options.push('<strong>Información de Cursos:</strong> Consulte y descargue información completa de todos los cursos de la sede, incluyendo sus planificaciones en formato PDF.');
+      if (roles.includes(Role.COORDINATOR)) {
+        addOption(OPTION_STATISTICS);
+        addOption(OPTION_ASSIGN);
+        addOption(OPTION_INFO);
+      }
+
+      if (roles.includes(Role.EDUCATION_MANAGER)) {
+        addOption(OPTION_STATISTICS);
+        addOption(OPTION_INFO);
       }
 
       if (options.length > 0) {
