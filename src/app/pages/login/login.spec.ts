@@ -214,7 +214,7 @@ describe('Login', () => {
       emailControl?.markAsTouched();
       emailControl?.setValue('');
 
-      expect(component.getEmailError()).toBe('El correo es requerido');
+      expect(component.emailError()).toBe('El correo es requerido');
     });
 
     it('should return email format error', () => {
@@ -222,7 +222,7 @@ describe('Login', () => {
       emailControl?.markAsTouched();
       emailControl?.setValue('invalid-email');
 
-      expect(component.getEmailError()).toBe('Ingresa un correo válido');
+      expect(component.emailError()).toBe('Ingresa un correo válido');
     });
 
     it('should return email max length error', () => {
@@ -231,7 +231,7 @@ describe('Login', () => {
       const longEmail = 'a'.repeat(101) + '@test.com';
       emailControl?.setValue(longEmail);
 
-      expect(component.getEmailError()).toBe('El correo no puede exceder 100 caracteres');
+      expect(component.emailError()).toBe('El correo no puede exceder 100 caracteres');
     });
 
     it('should return password required error', () => {
@@ -239,7 +239,7 @@ describe('Login', () => {
       passwordControl?.markAsTouched();
       passwordControl?.setValue('');
 
-      expect(component.getPasswordError()).toBe('La contraseña es requerida');
+      expect(component.passwordError()).toBe('La contraseña es requerida');
     });
 
     it('should return empty string when no errors', () => {
@@ -248,8 +248,8 @@ describe('Login', () => {
         password: 'password123'
       });
 
-      expect(component.getEmailError()).toBe('');
-      expect(component.getPasswordError()).toBe('');
+      expect(component.emailError()).toBe('');
+      expect(component.passwordError()).toBe('');
     });
   });
 

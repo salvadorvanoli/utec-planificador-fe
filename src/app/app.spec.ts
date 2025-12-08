@@ -1,7 +1,7 @@
 import { provideZoneChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { provideRouter } from '@angular/router';
 
 describe('App', () => {
@@ -11,7 +11,8 @@ describe('App', () => {
       providers: [
         provideZoneChangeDetection(),
         provideRouter([]),
-        MessageService
+        MessageService,
+        ConfirmationService
       ]
     }).compileComponents();
   });

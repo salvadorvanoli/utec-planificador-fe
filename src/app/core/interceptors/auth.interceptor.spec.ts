@@ -3,11 +3,14 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth.interceptor';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 describe('authInterceptor', () => {
   let httpClient: HttpClient;
   let httpMock: HttpTestingController;
   let authService: jasmine.SpyObj<AuthService>;
+  let router: Router;
 
   beforeEach(() => {
     const authServiceSpy = jasmine.createSpyObj('AuthService', ['clearSession']);
@@ -16,6 +19,7 @@ describe('authInterceptor', () => {
       providers: [
         provideHttpClient(withInterceptors([authInterceptor])),
         provideHttpClientTesting(),
+        provideRouter([]),
         { provide: AuthService, useValue: authServiceSpy }
       ]
     });
@@ -23,6 +27,7 @@ describe('authInterceptor', () => {
     httpClient = TestBed.inject(HttpClient);
     httpMock = TestBed.inject(HttpTestingController);
     authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
+    router = TestBed.inject(Router);
   });
 
   afterEach(() => {
@@ -39,12 +44,19 @@ describe('authInterceptor', () => {
     req.flush({});
   });
 
-  it('should redirect to login on 401 error', () => {
+  it('should redirect to login on 401 error in protected route', (done) => {
     const testUrl = '/api/data';
+
+    // Mock router URL to be a protected route
+    Object.defineProperty(router, 'url', {
+      value: '/planner',
+      writable: true
+    });
 
     httpClient.get(testUrl).subscribe({
       error: () => {
         expect(authService.clearSession).toHaveBeenCalled();
+        done();
       }
     });
 
@@ -52,12 +64,19 @@ describe('authInterceptor', () => {
     req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
   });
 
-  it('should clear session on 401 error', () => {
+  it('should clear session on 401 error in protected route', (done) => {
     const testUrl = '/api/data';
+
+    // Mock router URL to be a protected route
+    Object.defineProperty(router, 'url', {
+      value: '/planner',
+      writable: true
+    });
 
     httpClient.get(testUrl).subscribe({
       error: () => {
         expect(authService.clearSession).toHaveBeenCalled();
+        done();
       }
     });
 
@@ -122,12 +141,19 @@ describe('authInterceptor', () => {
     });
   });
 
-  it('should handle 401 on specific URL patterns', () => {
+  it('should handle 401 on specific URL patterns in protected route', (done) => {
     const protectedUrl = '/api/protected/resource';
+
+    // Mock router URL to be a protected route
+    Object.defineProperty(router, 'url', {
+      value: '/planner',
+      writable: true
+    });
 
     httpClient.get(protectedUrl).subscribe({
       error: () => {
         expect(authService.clearSession).toHaveBeenCalled();
+        done();
       }
     });
 
