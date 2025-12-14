@@ -286,10 +286,6 @@ export class PdfService {
               <td style="padding: 8px; font-weight: bold;">Horas virtuales:</td>
               <td style="padding: 8px;">${r.executiveSummary.virtualHours}</td>
             </tr>
-            <tr>
-              <td style="padding: 8px; font-weight: bold;">Horas híbridas:</td>
-              <td style="padding: 8px;">${r.executiveSummary.hybridHours}</td>
-            </tr>
             <tr style="background-color: #f5f5f5;">
               <td style="padding: 8px; font-weight: bold;">Duración promedio de actividad:</td>
               <td style="padding: 8px;">${r.executiveSummary.averageActivityDuration}</td>
